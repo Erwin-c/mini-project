@@ -74,6 +74,30 @@ int SNPRINTF(char *dest, const size_t destlen, size_t n, const char *fmt, ...) {
   return ret;
 }
 
+void DeleteRChar(char *str, const char chr) {
+  if (str == NULL) {
+    return;
+  }
+
+  if (strlen(str) == 0) {
+    return;
+  }
+
+  int istrlen = strlen(str);
+
+  while (istrlen > 0) {
+    if (str[istrlen - 1] != chr) {
+      break;
+    }
+
+    str[istrlen - 1] = 0;
+
+    --istrlen;
+  }
+
+  return;
+}
+
 bool MKDIR(const char *filename, bool bisfilename) {
   char strPathName[301];
   int ilen = strlen(filename);
@@ -221,6 +245,69 @@ void timetostr(const time_t ltime, char *stime, const char *fmt) {
   return;
 }
 
+CFile::CFile() {
+  m_fp = NULL;
+  m_bEnBuffer = true;
+  memset(m_filename, 0, sizeof(m_filename));
+  memset(m_filenametmp, 0, sizeof(m_filenametmp));
+}
+
+bool CFile::Open(const char *filename, const char *openmode, bool bEnBuffer) {
+  Close();
+
+  if ((m_fp = FOPEN(filename, openmode)) == NULL) {
+    return false;
+  }
+
+  memset(m_filename, 0, sizeof(m_filename));
+
+  STRNCPY(m_filename, sizeof(m_filename), filename, 300);
+
+  m_bEnBuffer = bEnBuffer;
+
+  return true;
+}
+
+bool CFile::Fgets(char *buffer, const int readsize, bool bdelcrt) {
+  if (m_fp == NULL) {
+    return false;
+  }
+
+  memset(buffer, 0, readsize + 1);
+
+  if (fgets(buffer, readsize, m_fp) == NULL) {
+    return false;
+  }
+
+  if (bdelcrt) {
+    DeleteRChar(buffer, '\n');
+    DeleteRChar(buffer, '\r');
+  }
+
+  return true;
+}
+
+void CFile::Close() {
+  if (m_fp == NULL) {
+    return;
+  }
+
+  fclose(m_fp);
+
+  m_fp = NULL;
+  memset(m_filename, 0, sizeof(m_filename));
+
+  if (strlen(m_filenametmp) != 0) {
+    remove(m_filenametmp);
+  }
+
+  memset(m_filenametmp, 0, sizeof(m_filenametmp));
+
+  return;
+}
+
+CFile::~CFile() { Close(); }
+
 CLogFile::CLogFile(const long MaxLogSize) {
   m_tracefp = NULL;
 
@@ -236,12 +323,6 @@ CLogFile::CLogFile(const long MaxLogSize) {
   }
 
   // pthread_pin_init(&spin,0);
-}
-
-CLogFile::~CLogFile() {
-  Close();
-
-  // pthread_spin_destroy(&spin);
 }
 
 bool CLogFile::Open(const char *filename, const char *openmode, bool bBackup,
@@ -360,4 +441,10 @@ void CLogFile::Close() {
   m_bEnBuffer = false;
 
   return;
+}
+
+CLogFile::~CLogFile() {
+  Close();
+
+  // pthread_spin_destroy(&spin);
 }

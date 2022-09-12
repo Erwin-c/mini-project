@@ -17,6 +17,8 @@ char *STRNCPY(char *dest, const size_t destlen, const char *src, size_t n);
 
 int SNPRINTF(char *dest, const size_t destlen, size_t n, const char *fmt, ...);
 
+void DeleteRChar(char *str, const char chr);
+
 bool MKDIR(const char *filename, bool bisfilename = true);
 
 FILE *FOPEN(const char *filename, const char *mode);
@@ -24,6 +26,25 @@ FILE *FOPEN(const char *filename, const char *mode);
 void LocalTime(char *stime, const char *fmt = NULL, const int timetvl = 0);
 
 void timetostr(const time_t ltime, char *stime, const char *fmt = NULL);
+
+class CFile {
+ private:
+  FILE *m_fp;
+  bool m_bEnBuffer;
+  char m_filename[301];
+  char m_filenametmp[301];
+
+ public:
+  CFile();
+
+  bool Open(const char *filename, const char *openmode, bool bEnBuffer = true);
+
+  bool Fgets(char *buffer, const int readsize, bool bdelcrt = false);
+
+  void Close();
+
+  ~CFile();
+};
 
 class CLogFile {
  public:
@@ -37,8 +58,6 @@ class CLogFile {
 
   CLogFile(const long MaxLogSize = 100);
 
-  ~CLogFile();
-
   bool Open(const char *filename, const char *openmode = NULL,
             bool bBackup = true, bool bEnBuffer = false);
 
@@ -48,6 +67,8 @@ class CLogFile {
   bool WriteEx(const char *fmt, ...);
 
   void Close();
+
+  ~CLogFile();
 };
 
 #endif  // _PUBLIC_H_
