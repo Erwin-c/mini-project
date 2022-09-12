@@ -1,15 +1,14 @@
-/****************************************************************************************/
-/*   程序名：_public.h，此程序是开发框架公用函数和类的声明文件。 */
-/*   作者：吴从周 */
-/****************************************************************************************/
+/*
+ * _public.h
+ *
+ *  Author: Erwin
+ */
 
 #ifndef _PUBILC_H_
 #define _PUBILC_H_
 
-#include <sys/time.h>
-
-#include <cstddef>
-#include <cstdio>
+#include <string>
+#include <vector>
 
 char *STRCPY(char *dest, const size_t destlen, const char *src);
 
@@ -17,7 +16,11 @@ char *STRNCPY(char *dest, const size_t destlen, const char *src, size_t n);
 
 int SNPRINTF(char *dest, const size_t destlen, size_t n, const char *fmt, ...);
 
+void DeleteLChar(char *str, const char chr);
+
 void DeleteRChar(char *str, const char chr);
+
+void DeleteLRChar(char *str, const char chr);
 
 bool MKDIR(const char *filename, bool bisfilename = true);
 
@@ -26,6 +29,25 @@ FILE *FOPEN(const char *filename, const char *mode);
 void LocalTime(char *stime, const char *fmt = NULL, const int timetvl = 0);
 
 void timetostr(const time_t ltime, char *stime, const char *fmt = NULL);
+
+class CCmdStr {
+ public:
+  std::vector<std::string> m_vCmdStr;
+
+  CCmdStr();
+  CCmdStr(const std::string &buffer, const char *sepstr,
+          const bool bdelspace = false);
+
+  void SplitToCmd(const std::string &buffer, const char *sepstr,
+                  const bool bdelspace = false);
+
+  int CmdCount();
+
+  bool GetValue(const int inum, char *value, const int ilen = 0);
+  bool GetValue(const int inum, double *value);
+
+  ~CCmdStr();
+};
 
 class CFile {
  private:

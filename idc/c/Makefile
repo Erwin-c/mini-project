@@ -11,3 +11,4 @@ crtmetdata: crtmetdata.cc
 
 clean:
 	rm crtmetdata
+	rm ../bin/crtmetdata
