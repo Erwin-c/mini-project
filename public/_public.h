@@ -31,9 +31,10 @@ void LocalTime(char *stime, const char *fmt = NULL, const int timetvl = 0);
 void timetostr(const time_t ltime, char *stime, const char *fmt = NULL);
 
 class CCmdStr {
- public:
+ private:
   std::vector<std::string> m_vCmdStr;
 
+ public:
   CCmdStr();
   CCmdStr(const std::string &buffer, const char *sepstr,
           const bool bdelspace = false);
@@ -69,15 +70,16 @@ class CFile {
 };
 
 class CLogFile {
- public:
+ private:
   FILE *m_tracefp;
   char m_filename[301];
   char m_openmode[11];
   bool m_bEnBuffer;
   bool m_bBackup;
   long m_MaxLogSize;
-  // pthread_spinlock_t spin;。
+  // pthread_spinlock_t spin;
 
+ public:
   CLogFile(const long MaxLogSize = 100);
 
   bool Open(const char *filename, const char *openmode = NULL,
