@@ -6,8 +6,6 @@
 
 #include <_public.h>
 
-#include <vector>
-
 CLogFile logfile;
 
 struct st_stcode {
@@ -61,6 +59,10 @@ bool LoadSTCode(const char* inifile) {
 
   char strBuffer[301];
 
+  CCmdStr CmdStr;
+
+  struct st_stcode stcode;
+
   while (true) {
     // Executed in Fgets()
     // memset(strBuffer, 0, sizeof(strBuffer));
@@ -68,7 +70,27 @@ bool LoadSTCode(const char* inifile) {
       break;
     }
 
-    logfile.Write("=%s=\n", strBuffer);
+    CmdStr.SplitToCmd(strBuffer, ",", true);
+
+    if (CmdStr.CmdCount() != 6) {
+      continue;
+    }
+
+    CmdStr.GetValue(0, stcode.provname, 30);
+    CmdStr.GetValue(1, stcode.obtid, 10);
+    CmdStr.GetValue(2, stcode.obtname, 30);
+    CmdStr.GetValue(3, &stcode.lat);
+    CmdStr.GetValue(4, &stcode.lon);
+    CmdStr.GetValue(5, &stcode.height);
+
+    vstcode.push_back(stcode);
+  }
+
+  for (size_t ii = 0; ii < vstcode.size(); ++ii) {
+    logfile.Write(
+        "provname=%s, obtid=%s, obtname=%s, lat=%.2f, lon=%.2f, height=%.2f\n",
+        vstcode[ii].provname, vstcode[ii].obtid, vstcode[ii].obtname,
+        vstcode[ii].lat, vstcode[ii].lon, vstcode[ii].height);
   }
 
   return true;

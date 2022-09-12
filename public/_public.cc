@@ -8,8 +8,6 @@
 
 #include <stdarg.h>
 #include <sys/stat.h>
-#include <sys/types.h>
-#include <time.h>
 #include <unistd.h>
 
 #include <cstring>
@@ -27,9 +25,13 @@ char *STRCPY(char *dest, const size_t destlen, const char *src) {
     return dest;
   }
 
+  // TBD: Why 'destlen - 1'
   if (strlen(src) > destlen - 1) {
+    // The behavior is undefined if the strings overlap
     strncpy(dest, src, destlen - 1);
   } else {
+    // The behavior is undefined if the dest array is not large enough
+    // The behavior is undefined if the strings overlap
     strcpy(dest, src);
   }
 
@@ -42,6 +44,7 @@ char *STRNCPY(char *dest, const size_t destlen, const char *src, size_t n) {
   }
 
   memset(dest, 0, destlen);
+
   if (src == NULL) {
     return dest;
   }
@@ -74,6 +77,33 @@ int SNPRINTF(char *dest, const size_t destlen, size_t n, const char *fmt, ...) {
   return ret;
 }
 
+void DeleteLChar(char *str, const char chr) {
+  if (str == NULL) {
+    return;
+  }
+
+  if (strlen(str) == 0) {
+    return;
+  }
+
+  char strTemp[strlen(str) + 1];
+
+  int iTemp = 0;
+
+  memset(strTemp, 0, sizeof(strTemp));
+  strcpy(strTemp, str);
+
+  while (strTemp[iTemp] == chr) {
+    ++iTemp;
+  }
+
+  memset(str, 0, strlen(str) + 1);
+
+  strcpy(str, strTemp + iTemp);
+
+  return;
+}
+
 void DeleteRChar(char *str, const char chr) {
   if (str == NULL) {
     return;
@@ -94,6 +124,13 @@ void DeleteRChar(char *str, const char chr) {
 
     --istrlen;
   }
+
+  return;
+}
+
+void DeleteLRChar(char *str, const char chr) {
+  DeleteLChar(str, chr);
+  DeleteRChar(str, chr);
 
   return;
 }
@@ -244,6 +281,98 @@ void timetostr(const time_t ltime, char *stime, const char *fmt) {
 
   return;
 }
+
+CCmdStr::CCmdStr() { m_vCmdStr.clear(); }
+
+CCmdStr::CCmdStr(const std::string &buffer, const char *sepstr,
+                 const bool bdelspace) {
+  m_vCmdStr.clear();
+
+  SplitToCmd(buffer, sepstr, bdelspace);
+}
+
+void CCmdStr::SplitToCmd(const std::string &buffer, const char *sepstr,
+                         const bool bdelspace) {
+  m_vCmdStr.clear();
+
+  int iPOS = 0;
+  std::string srcstr, substr;
+
+  srcstr = buffer;
+
+  while ((iPOS = srcstr.find(sepstr)) >= 0) {
+    substr = srcstr.substr(0, iPOS);
+
+    if (bdelspace) {
+      char str[substr.length() + 1];
+      STRCPY(str, sizeof(str), substr.c_str());
+
+      DeleteLRChar(str, ' ');
+
+      substr = str;
+    }
+
+    m_vCmdStr.push_back(substr);
+
+    iPOS = iPOS + strlen(sepstr);
+
+    srcstr = srcstr.substr(iPOS, srcstr.size() - iPOS);
+  }
+
+  substr = srcstr;
+
+  if (bdelspace) {
+    char str[substr.length() + 1];
+    STRCPY(str, sizeof(str), substr.c_str());
+
+    DeleteLRChar(str, ' ');
+
+    substr = str;
+  }
+
+  m_vCmdStr.push_back(substr);
+
+  return;
+}
+
+int CCmdStr::CmdCount() { return m_vCmdStr.size(); }
+
+bool CCmdStr::GetValue(const int inum, char *value, const int ilen) {
+  if ((inum >= (int)m_vCmdStr.size()) || (value == 0)) {
+    return false;
+  }
+
+  if (ilen > 0) {
+    memset(value, 0, ilen + 1);
+  }
+
+  if ((m_vCmdStr[inum].length() <= (unsigned int)ilen) || (ilen == 0)) {
+    strcpy(value, m_vCmdStr[inum].c_str());
+  } else {
+    strncpy(value, m_vCmdStr[inum].c_str(), ilen);
+    value[ilen] = 0;
+  }
+
+  return true;
+}
+
+bool CCmdStr::GetValue(const int inum, double *value) {
+  if ((inum >= (int)m_vCmdStr.size()) || (value == 0)) {
+    return false;
+  }
+
+  (*value) = 0;
+
+  if (inum >= (int)m_vCmdStr.size()) {
+    return false;
+  }
+
+  (*value) = (double)atof(m_vCmdStr[inum].c_str());
+
+  return true;
+}
+
+CCmdStr::~CCmdStr() { m_vCmdStr.clear(); }
 
 CFile::CFile() {
   m_fp = NULL;
