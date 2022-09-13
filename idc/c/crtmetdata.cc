@@ -6,6 +6,8 @@
 
 #include <_public.h>
 
+#include <cstring>
+
 CLogFile logfile;
 
 struct st_stcode {
@@ -17,22 +19,37 @@ struct st_stcode {
   double height;
 };
 
+struct st_metdata {
+  char obtid[11];
+  char ddatetime[21];
+  int t;
+  int p;
+  int u;
+  int wd;
+  int wf;
+  int r;
+  int vis;
+};
+
 std::vector<struct st_stcode> vstcode;
+
+std::vector<struct st_metdata> vmetdata;
 
 bool LoadSTCode(const char* inifile);
 
+void CrtMetData();
+
 int main(int argc, char* argv[]) {
-  // TBD: argc
-  if (argc != 3) {
+  if (argc != 4) {
     printf("Using: ./crtmetdata inifile outpath logfile\n");
     printf(
-        "Example: ../bin/crtmetdata ../ini/stcode.ini "
+        "Example: ../bin/crtmetdata ../ini/stcode.ini ../../tmp/metdata "
         "../../log/idc/crtmetdata.log\n");
 
     return -1;
   }
 
-  if (!logfile.Open(argv[2])) {
+  if (!logfile.Open(argv[3])) {
     printf("logfile.open(%s) failed!\n", argv[1]);
     return -1;
   }
@@ -43,6 +60,8 @@ int main(int argc, char* argv[]) {
   if (!LoadSTCode(argv[1])) {
     return -1;
   }
+
+  CrtMetData();
 
   logfile.Write("crtmetdata end\n");
 
@@ -88,10 +107,39 @@ bool LoadSTCode(const char* inifile) {
 
   for (size_t ii = 0; ii < vstcode.size(); ++ii) {
     logfile.Write(
-        "provname=%s, obtid=%s, obtname=%s, lat=%.2f, lon=%.2f, height=%.2f\n",
+        "provname=%s, obtid=%s, obtname=%s, lat=%.2f, lon=%.2f, height = "
+        "%.2f\n ",
         vstcode[ii].provname, vstcode[ii].obtid, vstcode[ii].obtname,
         vstcode[ii].lat, vstcode[ii].lon, vstcode[ii].height);
   }
 
   return true;
+}
+
+void CrtMetData() {
+  srand(time(NULL));
+
+  char strddatetime[21];
+  memset(strddatetime, 0, sizeof(strddatetime));
+  LocalTime(strddatetime, "yyyymmddhh24miss");
+
+  struct st_metdata stmetdata;
+
+  for (size_t ii = 0; ii < vstcode.size(); ++ii) {
+    memset(&stmetdata, 0, sizeof(struct st_metdata));
+
+    strncpy(stmetdata.obtid, vstcode[ii].obtid, 10);
+    strncpy(stmetdata.ddatetime, strddatetime, 14);
+    stmetdata.t = rand() % 351;
+    stmetdata.p = rand() % 265 + 10000;
+    stmetdata.u = rand() % 100 + 1;
+    stmetdata.wd = rand() % 360;
+    stmetdata.wf = rand() % 150;
+    stmetdata.r = rand() % 16;
+    stmetdata.vis = rand() % 5001 + 100000;
+
+    vmetdata.push_back(stmetdata);
+  }
+
+  return;
 }
