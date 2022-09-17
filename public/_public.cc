@@ -397,6 +397,64 @@ bool CFile::Open(const char *filename, const char *openmode, bool bEnBuffer) {
   return true;
 }
 
+bool CFile::OpenForRename(const char *filename, const char *openmode,
+                          bool bEnBuffer) {
+  Close();
+
+  memset(m_filename, 0, sizeof(m_filename));
+  STRNCPY(m_filename, sizeof(m_filename), filename, 300);
+
+  memset(m_filenametmp, 0, sizeof(m_filenametmp));
+  SNPRINTF(m_filenametmp, sizeof(m_filenametmp), 300, "%s.tmp", m_filename);
+
+  if ((m_fp = FOPEN(m_filenametmp, openmode)) == NULL) {
+    return false;
+  }
+
+  m_bEnBuffer = bEnBuffer;
+
+  return true;
+}
+
+bool CFile::CloseAndRename() {
+  if (m_fp == NULL) {
+    return false;
+  }
+
+  fclose(m_fp);
+
+  m_fp = NULL;
+
+  if (rename(m_filenametmp, m_filename) != 0) {
+    remove(m_filenametmp);
+    memset(m_filename, 0, sizeof(m_filename));
+    memset(m_filenametmp, 0, sizeof(m_filenametmp));
+    return false;
+  }
+
+  memset(m_filename, 0, sizeof(m_filename));
+  memset(m_filenametmp, 0, sizeof(m_filenametmp));
+
+  return true;
+}
+
+void CFile::Fprintf(const char *fmt, ...) {
+  if (m_fp == NULL) {
+    return;
+  }
+
+  va_list arg;
+  va_start(arg, fmt);
+  vfprintf(m_fp, fmt, arg);
+  va_end(arg);
+
+  if (!m_bEnBuffer) {
+    fflush(m_fp);
+  }
+
+  return;
+}
+
 bool CFile::Fgets(char *buffer, const int readsize, bool bdelcrt) {
   if (m_fp == NULL) {
     return false;

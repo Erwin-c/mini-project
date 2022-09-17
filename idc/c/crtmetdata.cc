@@ -5,6 +5,7 @@
  */
 
 #include <_public.h>
+#include <unistd.h>
 
 #include <cstring>
 
@@ -35,16 +36,20 @@ std::vector<struct st_stcode> vstcode;
 
 std::vector<struct st_metdata> vmetdata;
 
+char strddatetime[21];
+
 bool LoadSTCode(const char* inifile);
 
 void CrtMetData();
 
+bool CrtMetFile(const char* outpath, const char* datafmt);
+
 int main(int argc, char* argv[]) {
-  if (argc != 4) {
+  if (argc != 5) {
     printf("Using: ./crtmetdata inifile outpath logfile\n");
     printf(
         "Example: ../bin/crtmetdata ../ini/stcode.ini ../../tmp/metdata "
-        "../../log/idc/crtmetdata.log\n");
+        "../../log/idc/crtmetdata.log xml,json,csv\n");
 
     return -1;
   }
@@ -62,6 +67,16 @@ int main(int argc, char* argv[]) {
   }
 
   CrtMetData();
+
+  if (strstr(argv[4], "xml") != 0) {
+    CrtMetFile(argv[2], "xml");
+  }
+  if (strstr(argv[4], "json") != 0) {
+    CrtMetFile(argv[2], "json");
+  }
+  if (strstr(argv[4], "csv") != 0) {
+    CrtMetFile(argv[2], "csv");
+  }
 
   logfile.Write("crtmetdata end\n");
 
@@ -142,4 +157,38 @@ void CrtMetData() {
   }
 
   return;
+}
+
+bool CrtMetFile(const char* outpath, const char* datafmt) {
+  CFile File;
+
+  char strFileName[301];
+  sprintf(strFileName, "%s/MET_ZH_%s_%d.%s", outpath, strddatetime, getpid(),
+          datafmt);
+
+  if (!File.OpenForRename(strFileName, "w")) {
+    logfile.Write("File.OpenForRename(%s) failed!\n", strFileName);
+    return false;
+  }
+
+  if (strcmp(datafmt, "csv") == 0) {
+    File.Fprintf("Obtid,Time,TEMP,P,HUM,WDR,WS,R,VIZ\n");
+  }
+
+  for (size_t ii = 0; ii < vmetdata.size(); ++ii) {
+    if (strcmp(datafmt, "csv") == 0) {
+      File.Fprintf("%s,%s,%.1f,%.1f,%d,%d,%.1f,%.1f,%.1f\n", vmetdata[ii].obtid,
+                   vmetdata[ii].ddatetime, vmetdata[ii].t / 10.0,
+                   vmetdata[ii].p / 10.0, vmetdata[ii].u, vmetdata[ii].wd,
+                   vmetdata[ii].wf / 10.0, vmetdata[ii].r / 10.0,
+                   vmetdata[ii].vis / 10.0);
+    }
+  }
+
+  File.CloseAndRename();
+
+  logfile.Write("Create data file %s successfully, time%s, record%d!\n",
+                strFileName, strddatetime, vmetdata.size());
+
+  return true;
 }
