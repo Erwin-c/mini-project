@@ -136,6 +136,7 @@ void CrtMetData() {
 
   char strddatetime[21];
   memset(strddatetime, 0, sizeof(strddatetime));
+  // TBD: problem
   LocalTime(strddatetime, "yyyymmddhh24miss");
 
   struct st_metdata stmetdata;
@@ -173,6 +174,10 @@ bool CrtMetFile(const char* outpath, const char* datafmt) {
 
   if (strcmp(datafmt, "csv") == 0) {
     File.Fprintf("Obtid,Time,TEMP,P,HUM,WDR,WS,R,VIZ\n");
+  } else if (strcmp(datafmt, "xml") == 0) {
+    File.Fprintf("<data>\n");
+  } else if (strcmp(datafmt, "json") == 0) {
+    File.Fprintf("{\"data\":[\n");
   }
 
   for (size_t ii = 0; ii < vmetdata.size(); ++ii) {
@@ -182,7 +187,37 @@ bool CrtMetFile(const char* outpath, const char* datafmt) {
                    vmetdata[ii].p / 10.0, vmetdata[ii].u, vmetdata[ii].wd,
                    vmetdata[ii].wf / 10.0, vmetdata[ii].r / 10.0,
                    vmetdata[ii].vis / 10.0);
+    } else if (strcmp(datafmt, "xml") == 0) {
+      File.Fprintf(
+          "<obtid>%s</obtid><ddatetime>%s</ddatetime><t>%.1f</t><p>%.1f</p>"
+          "<u>%d</u><wd>%d</wd><wf>%.1f</wf><r>%.1f</r><vis>%.1f</vis><endl/"
+          ">\n",
+          vmetdata[ii].obtid, vmetdata[ii].ddatetime, vmetdata[ii].t / 10.0,
+          vmetdata[ii].p / 10.0, vmetdata[ii].u, vmetdata[ii].wd,
+          vmetdata[ii].wf / 10.0, vmetdata[ii].r / 10.0,
+          vmetdata[ii].vis / 10.0);
+    } else if (strcmp(datafmt, "json") == 0) {
+      File.Fprintf(
+          "{\"obtid\":\"%s\",\"ddatetime\":\"%s\",\"t\":\"%.1f\",\"p\":\"%."
+          "1f\",\"u\":\"%d\",\"wd\":\"%d\",\"wf\":\"%.1f\",\"r\":\"%.1f\","
+          "\"vis\":\"%.1f\"}",
+          vmetdata[ii].obtid, vmetdata[ii].ddatetime, vmetdata[ii].t / 10.0,
+          vmetdata[ii].p / 10.0, vmetdata[ii].u, vmetdata[ii].wd,
+          vmetdata[ii].wf / 10.0, vmetdata[ii].r / 10.0,
+          vmetdata[ii].vis / 10.0);
+
+      if (ii < vmetdata.size() - 1) {
+        File.Fprintf(",\n");
+      } else {
+        File.Fprintf("\n");
+      }
     }
+  }
+
+  if (strcmp(datafmt, "xml") == 0) {
+    File.Fprintf("</data>\n");
+  } else if (strcmp(datafmt, "json") == 0) {
+    File.Fprintf("]}\n");
   }
 
   File.CloseAndRename();
