@@ -62,6 +62,14 @@ class CFile {
 
   bool Open(const char *filename, const char *openmode, bool bEnBuffer = true);
 
+  bool OpenForRename(const char *filename, const char *openmode,
+                     bool bEnBuffer = true);
+
+  bool CloseAndRename();
+
+  // int fprintf(FILE *stream, const char *format, ...) without 'FILE *stream'
+  void Fprintf(const char *fmt, ...);
+
   bool Fgets(char *buffer, const int readsize, bool bdelcrt = false);
 
   void Close();
