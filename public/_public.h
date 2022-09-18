@@ -38,12 +38,9 @@ class CCmdStr {
   CCmdStr();
   CCmdStr(const std::string &buffer, const char *sepstr,
           const bool bdelspace = false);
-
   void SplitToCmd(const std::string &buffer, const char *sepstr,
                   const bool bdelspace = false);
-
   int CmdCount();
-
   bool GetValue(const int inum, char *value, const int ilen = 0);
   bool GetValue(const int inum, double *value);
 
@@ -59,21 +56,14 @@ class CFile {
 
  public:
   CFile();
-
   bool Open(const char *filename, const char *openmode, bool bEnBuffer = true);
-
   bool OpenForRename(const char *filename, const char *openmode,
                      bool bEnBuffer = true);
-
   bool CloseAndRename();
-
   // int fprintf(FILE *stream, const char *format, ...) without 'FILE *stream'
   void Fprintf(const char *fmt, ...);
-
   bool Fgets(char *buffer, const int readsize, bool bdelcrt = false);
-
   void Close();
-
   ~CFile();
 };
 
@@ -89,18 +79,34 @@ class CLogFile {
 
  public:
   CLogFile(const long MaxLogSize = 100);
-
   bool Open(const char *filename, const char *openmode = NULL,
             bool bBackup = true, bool bEnBuffer = false);
-
   bool BackupLogFile();
-
   bool Write(const char *fmt, ...);
   bool WriteEx(const char *fmt, ...);
-
   void Close();
-
   ~CLogFile();
+};
+
+class CSEM {
+ private:
+  union semun {
+    int val;
+    struct semid_ds *buf;
+    unsigned short *arry;
+  };
+
+  int m_semid;
+  short m_sem_flg;
+
+ public:
+  CSEM();
+  bool init(key_t key, unsigned short value = 1, short sem_flg = SEM_UNDO);
+  bool P(short sem_op = -1);
+  bool V(short sem_op = 1);
+  int value();
+  bool destroy();
+  ~CSEM();
 };
 
 #endif  // _PUBLIC_H_
