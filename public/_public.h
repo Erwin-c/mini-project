@@ -7,6 +7,8 @@
 #ifndef _PUBILC_H_
 #define _PUBILC_H_
 
+#include <sys/sem.h>
+
 #include <string>
 #include <vector>
 
@@ -22,13 +24,20 @@ void DeleteRChar(char *str, const char chr);
 
 void DeleteLRChar(char *str, const char chr);
 
+void PickNumber(const char *src, char *dest, const bool bsigned,
+                const bool bdot);
+
 bool MKDIR(const char *filename, bool bisfilename = true);
+
+bool UTime(const char *filename, const char *mtime);
 
 FILE *FOPEN(const char *filename, const char *mode);
 
 void LocalTime(char *stime, const char *fmt = NULL, const int timetvl = 0);
 
 void timetostr(const time_t ltime, char *stime, const char *fmt = NULL);
+
+time_t strtotime(const char *stime);
 
 class CCmdStr {
  private:
@@ -43,7 +52,6 @@ class CCmdStr {
   int CmdCount();
   bool GetValue(const int inum, char *value, const int ilen = 0);
   bool GetValue(const int inum, double *value);
-
   ~CCmdStr();
 };
 
@@ -88,6 +96,8 @@ class CLogFile {
   ~CLogFile();
 };
 
+void CloseIOAndSignal(bool bCloseIO = false);
+
 class CSEM {
  private:
   union semun {
@@ -107,6 +117,37 @@ class CSEM {
   int value();
   bool destroy();
   ~CSEM();
+};
+
+struct st_procinfo {
+  int pid;
+  char pname[51];
+  int timeout;
+  time_t atime;
+};
+
+#define MAXNUMP 1000
+#define SHMKEYP 0x5095
+#define SEMKEYP 0x5095
+
+// Write information about active shared memory segments： ipcs -m
+// Remove the shared memory segment identified by shmid：  ipcrm -m shmid
+// Write information about active semaphore sets： ipcs -s
+// Remove the active semaphore sets： ipcrm sem semid
+
+class CPActive {
+ private:
+  CSEM m_sem;
+  int m_shmid;
+  int m_pos;
+  st_procinfo *m_shm;
+
+ public:
+  CPActive();
+  bool AddPInfo(const int timeout, const char *pname = nullptr,
+                CLogFile *logfile = nullptr);
+  bool UptATime();
+  ~CPActive();
 };
 
 #endif  // _PUBLIC_H_
