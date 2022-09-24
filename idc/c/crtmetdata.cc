@@ -5,11 +5,10 @@
  */
 
 #include <_public.h>
+#include <signal.h>
 #include <unistd.h>
 
 #include <cstring>
-
-CLogFile logfile;
 
 struct st_stcode {
   char provname[31];
@@ -32,6 +31,13 @@ struct st_metdata {
   int vis;
 };
 
+CLogFile logfile;
+
+// To delete temporary data file using destructor
+CFile File;
+
+CPActive PActive;
+
 std::vector<struct st_stcode> vstcode;
 
 std::vector<struct st_metdata> vmetdata;
@@ -44,15 +50,22 @@ void CrtMetData();
 
 bool CrtMetFile(const char* outpath, const char* datafmt);
 
+void EXIT(int sig);
+
 int main(int argc, char* argv[]) {
-  if (argc != 5) {
-    printf("Using: ./crtmetdata inifile outpath logfile\n");
+  if (argc != 5 && argc != 6) {
+    printf("Using: ./crtmetdata inifile outpath logfile datafmt [datetime]\n");
     printf(
         "Example: ../bin/crtmetdata ../ini/stcode.ini ../../tmp/metdata "
-        "../../log/idc/crtmetdata.log xml,json,csv\n");
+        "../../log/idc/crtmetdata.log xml,json,csv 20210710123000\n");
 
     return -1;
   }
+
+  // Note: Don't place the function after 'logfile.Open()'
+  CloseIOAndSignal(true);
+  signal(SIGINT, EXIT);
+  signal(SIGTERM, EXIT);
 
   if (!logfile.Open(argv[3])) {
     printf("logfile.open(%s) failed!\n", argv[1]);
@@ -61,9 +74,18 @@ int main(int argc, char* argv[]) {
 
   logfile.Write("crtmetdata start\n");
 
+  PActive.AddPInfo(20, "crtmetdata");
+
   // Service code
   if (!LoadSTCode(argv[1])) {
     return -1;
+  }
+
+  memset(strddatetime, 0, sizeof(strddatetime));
+  if (argc == 5) {
+    LocalTime(strddatetime, "yyyymmddhh24miss");
+  } else {
+    STRCPY(strddatetime, sizeof(strddatetime), argv[5]);
   }
 
   CrtMetData();
@@ -84,8 +106,6 @@ int main(int argc, char* argv[]) {
 }
 
 bool LoadSTCode(const char* inifile) {
-  CFile File;
-
   if (!File.Open(inifile, "r")) {
     logfile.Write("File.Open(%s) failed!\n", inifile);
     return false;
@@ -133,11 +153,6 @@ bool LoadSTCode(const char* inifile) {
 
 void CrtMetData() {
   srand(time(NULL));
-
-  char strddatetime[21];
-  memset(strddatetime, 0, sizeof(strddatetime));
-  // TBD: problem
-  LocalTime(strddatetime, "yyyymmddhh24miss");
 
   struct st_metdata stmetdata;
 
@@ -222,8 +237,16 @@ bool CrtMetFile(const char* outpath, const char* datafmt) {
 
   File.CloseAndRename();
 
+  UTime(strFileName, strddatetime);
+
   logfile.Write("Create data file %s successfully, time%s, record%d!\n",
                 strFileName, strddatetime, vmetdata.size());
 
   return true;
+}
+
+void EXIT(int sig) {
+  logfile.Write("Program exits sig = %d\n", sig);
+
+  exit(0);
 }

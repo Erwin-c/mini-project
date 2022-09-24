@@ -6,9 +6,12 @@
 
 #include "_public.h"
 
+#include <signal.h>
 #include <stdarg.h>
+#include <sys/shm.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <utime.h>
 
 #include <cstring>
 
@@ -135,6 +138,52 @@ void DeleteLRChar(char *str, const char chr) {
   return;
 }
 
+void PickNumber(const char *src, char *dest, const bool bsigned,
+                const bool bdot) {
+  if (dest == 0) {
+    return;
+  }
+  if (src == 0) {
+    strcpy(dest, "");
+    return;
+  }
+
+  char strtemp[strlen(src) + 1];
+  memset(strtemp, 0, sizeof(strtemp));
+  strcpy(strtemp, src);
+  DeleteLRChar(strtemp, ' ');
+
+  int ipossrc, iposdst, ilen;
+  ipossrc = iposdst = ilen = 0;
+
+  ilen = strlen(strtemp);
+
+  for (ipossrc = 0; ipossrc < ilen; ++ipossrc) {
+    if (bsigned && strtemp[ipossrc] == '+') {
+      dest[iposdst++] = strtemp[ipossrc];
+      continue;
+    }
+
+    if (bsigned && strtemp[ipossrc] == '-') {
+      dest[iposdst++] = strtemp[ipossrc];
+      continue;
+    }
+
+    if (bdot && strtemp[ipossrc] == '.') {
+      dest[iposdst++] = strtemp[ipossrc];
+      continue;
+    }
+
+    if (isdigit(strtemp[ipossrc])) {
+      dest[iposdst++] = strtemp[ipossrc];
+    }
+  }
+
+  dest[iposdst] = 0;
+
+  return;
+}
+
 bool MKDIR(const char *filename, bool bisfilename) {
   char strPathName[301];
   int ilen = strlen(filename);
@@ -160,6 +209,18 @@ bool MKDIR(const char *filename, bool bisfilename) {
         return false;
       }
     }
+  }
+
+  return true;
+}
+
+bool UTime(const char *filename, const char *mtime) {
+  struct utimbuf stutimbuf;
+
+  stutimbuf.actime = stutimbuf.modtime = strtotime(mtime);
+
+  if (utime(filename, &stutimbuf) != 0) {
+    return false;
   }
 
   return true;
@@ -280,6 +341,42 @@ void timetostr(const time_t ltime, char *stime, const char *fmt) {
   }
 
   return;
+}
+
+time_t strtotime(const char *stime) {
+  char strtime[21], yyyy[5], mm[3], dd[3], hh[3], mi[3], ss[3];
+  memset(strtime, 0, sizeof(strtime));
+  memset(yyyy, 0, sizeof(yyyy));
+  memset(mm, 0, sizeof(mm));
+  memset(dd, 0, sizeof(dd));
+  memset(hh, 0, sizeof(hh));
+  memset(mi, 0, sizeof(mi));
+  memset(ss, 0, sizeof(ss));
+
+  PickNumber(stime, strtime, false, false);
+
+  if (strlen(strtime) != 14) {
+    return -1;
+  }
+
+  strncpy(yyyy, strtime, 4);
+  strncpy(mm, strtime + 4, 2);
+  strncpy(dd, strtime + 6, 2);
+  strncpy(hh, strtime + 8, 2);
+  strncpy(mi, strtime + 10, 2);
+  strncpy(ss, strtime + 12, 2);
+
+  struct tm time_str;
+
+  time_str.tm_year = atoi(yyyy) - 1900;
+  time_str.tm_mon = atoi(mm) - 1;
+  time_str.tm_mday = atoi(dd);
+  time_str.tm_hour = atoi(hh);
+  time_str.tm_min = atoi(mi);
+  time_str.tm_sec = atoi(ss);
+  time_str.tm_isdst = 0;
+
+  return mktime(&time_str);
 }
 
 CCmdStr::CCmdStr() { m_vCmdStr.clear(); }
@@ -636,6 +733,18 @@ CLogFile::~CLogFile() {
   // pthread_spin_destroy(&spin);
 }
 
+void CloseIOAndSignal(bool bCloseIO) {
+  for (int ii = 0; ii < 64; ++ii) {
+    if (bCloseIO) {
+      close(ii);
+    }
+
+    signal(ii, SIG_IGN);
+  }
+
+  return;
+}
+
 CSEM::CSEM() {
   m_semid = -1;
   m_sem_flg = SEM_UNDO;
@@ -728,3 +837,102 @@ bool CSEM::destroy() {
 }
 
 CSEM::~CSEM() {}
+
+CPActive::CPActive() {
+  m_shmid = 0;
+  m_pos = -1;
+  m_shm = 0;
+}
+
+bool CPActive::AddPInfo(const int timeout, const char *pname,
+                        CLogFile *logfile) {
+  if (m_pos != -1) {
+    return true;
+  }
+
+  if (!m_sem.init(SEMKEYP)) {
+    if (logfile != 0) {
+      logfile->Write("Create/Get semaphore(%x) falied\n", SEMKEYP);
+    } else {
+      printf("Create/Get semaphore(%x) falied\n", SEMKEYP);
+    }
+
+    return false;
+  }
+
+  if ((m_shmid = shmget((key_t)SHMKEYP, MAXNUMP * sizeof(struct st_procinfo),
+                        0666 | IPC_CREAT)) == -1) {
+    if (logfile != 0) {
+      logfile->Write("Create/Get semaphore(%x) falied\n", SHMKEYP);
+    } else {
+      printf("Create/Get semaphore(%x) falied\n", SHMKEYP);
+    }
+
+    return false;
+  }
+
+  m_shm = (struct st_procinfo *)shmat(m_shmid, 0, 0);
+
+  struct st_procinfo stprocinfo;
+  memset(&stprocinfo, 0, sizeof(stprocinfo));
+
+  stprocinfo.pid = getpid();
+  stprocinfo.timeout = timeout;
+  stprocinfo.atime = time(0);
+  STRNCPY(stprocinfo.pname, sizeof(stprocinfo.pname), pname, 50);
+
+  for (int ii = 0; ii < MAXNUMP; ++ii) {
+    if ((m_shm + ii)->pid == stprocinfo.pid) {
+      m_pos = ii;
+      break;
+    }
+  }
+
+  m_sem.P();
+
+  if (m_pos == -1) {
+    for (int ii = 0; ii < MAXNUMP; ++ii)
+      if ((m_shm + ii)->pid == 0) {
+        m_pos = ii;
+        break;
+      }
+  }
+
+  if (m_pos == -1) {
+    if (logfile != 0) {
+      logfile->Write("The shared memory space has been used up\n");
+    } else {
+      printf("The shared memory space has been used up\n");
+    }
+
+    m_sem.V();
+
+    return false;
+  }
+
+  memcpy(m_shm + m_pos, &stprocinfo, sizeof(struct st_procinfo));
+
+  m_sem.V();
+
+  return true;
+}
+
+bool CPActive::UptATime() {
+  if (m_pos == -1) {
+    return false;
+  }
+
+  (m_shm + m_pos)->atime = time(0);
+
+  return true;
+}
+
+CPActive::~CPActive() {
+  if (m_pos != -1) {
+    memset(m_shm + m_pos, 0, sizeof(struct st_procinfo));
+  }
+
+  if (m_shm != 0) {
+    shmdt(m_shm);
+  }
+}
