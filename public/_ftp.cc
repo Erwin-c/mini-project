@@ -1,7 +1,8 @@
-/****************************************************************************************/
-/*   程序名：_ftp.cpp，此程序是开发框架的ftp客户端工具的类的定义文件。 */
-/*   作者：吴从周
-/****************************************************************************************/
+/*
+ * _ftp.cc
+ *
+ *  Author: Erwin
+ */
 
 #include "_ftp.h"
 
@@ -208,7 +209,7 @@ bool Cftp::put(const char *localfilename, const char *remotefilename,
   if (bCheckSize == true) {
     if (size(remotefilename) == false) return false;
 
-    if (m_size != FileSize(localfilename)) return false;
+    if (m_size != (unsigned int)FileSize(localfilename)) return false;
   }
 
   return true;

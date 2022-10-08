@@ -1,35 +1,45 @@
-/****************************************************************************************/
-/*   程序名：_ftp.h，此程序是开发框架的ftp客户端工具的类的声明文件。 */
-/*   作者：吴从周
-/****************************************************************************************/
+/*
+ * _ftp.h
+ *
+ *  Author: Erwin
+ */
 
-#ifndef __FTP_H
-#define __FTP_H
+#ifndef __FTP_H_
+#define __FTP_H_
 
 #include "_public.h"
 #include "ftplib.h"
 
 class Cftp {
  public:
-  netbuf *m_ftpconn;    // ftp连接句柄。
-  unsigned int m_size;  // 文件的大小，单位：字节。
-  char m_mtime[21];     // 文件的修改时间，格式：yyyymmddhh24miss。
+  netbuf *m_ftpconn;    // FTP 连接句柄.
+  unsigned int m_size;  // 文件的大小, 单位: 字节.
+  char m_mtime[21];     // 文件的修改时间, 格式: yyyymmddhh24miss.
 
-  // 以下三个成员变量用于存放login方法登录失败的原因。
-  bool m_connectfailed;  // 连接失败。
-  bool m_loginfailed;  // 登录失败，用户名和密码不正确，或没有登录权限。
-  bool m_optionfailed;  // 设置传输模式失败。
+  // 以下三个成员变量用于存放 login 方法登录失败的原因.
+  bool m_connectfailed;  // 连接失败.
+  bool m_loginfailed;  // 登录失败, 用户名和密码不正确, 或没有登录权限.
+  bool m_optionfailed;  // 设置传输模式失败.
 
-  Cftp();   // 类的构造函数。
-  ~Cftp();  // 类的析构函数。
+  Cftp();   // 类的构造函数.
+  ~Cftp();  // 类的析构函数.
 
-  void initdata();  // 初始化m_size和m_mtime成员变量。
+  /** @brief  初始化 m_size 和 m_mtime 成员变量.
+   *  @param  N/A
+   *  @return  N/A
+   */
+  void initdata();  // 初始化 m_size 和 m_mtime 成员变量.
 
-  // 登录ftp服务器。
-  // host：ftp服务器ip地址和端口，中间用":"分隔，如"192.168.1.1:21"。
-  // username：登录ftp服务器用户名。
-  // password：登录ftp服务器的密码。
-  // imode：传输模式，1-FTPLIB_PASSIVE是被动模式，2-FTPLIB_PORT是主动模式，缺省是被动模式。
+  /** @brief  登录 FTP 服务器.
+   *  @param  host  FTP 服务器 IP 地址和端口, 中间用 ":" 分隔,
+   *                如 "192.168.1.1:21".
+   *  @param  username  登录 FTP 服务器用户名.
+   *  @param  password  登录 FTP 服务器的密码.
+   *  @param  imode  传输模式, 1-FTPLIB_PASSIVE 是被动模式,
+   *                          2-FTPLIB_PORT 是主动模式，
+   *                          缺省是被动模式。
+   *  @return  true-成功; false-失败.
+   */
   bool login(const char *host, const char *username, const char *password,
              const int imode = FTPLIB_PASSIVE);
 
@@ -64,7 +74,7 @@ class Cftp {
   /** @brief  发送 NLST 命令列出 FTP 服务器目录中的子目录名和文件名.
    *  @param  remotedir  FTP 服务器的目录名.
    *  @param  listfilename  保存从 FTP 服务器返回的目录和文件名列表.
-   *  @return  true - 成功; false - 失败.
+   *  @return  true-成功; false-失败.
    *
    *  @note  如果列出的是 FTP 服务器当前目录, remotedir 用 "","*","." 都可以.
    *         但是, 不规范的 FTP 服务器可能有差别.
@@ -117,4 +127,4 @@ class Cftp {
   char *response();
 };
 
-#endif
+#endif  //__FTP_H_
