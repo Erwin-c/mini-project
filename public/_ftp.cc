@@ -67,6 +67,90 @@ bool Cftp::logout() {
   return true;
 }
 
+bool Cftp::mtime(const char *remotefilename) {
+  if (m_ftpconn == nullptr) {
+    return false;
+  }
+
+  memset(m_mtime, 0, sizeof(m_mtime));
+
+  char strmtime[21];
+  memset(strmtime, 0, sizeof(strmtime));
+
+  if (!FtpModDate(remotefilename, strmtime, 14, m_ftpconn)) {
+    return false;
+  }
+
+  AddTime(strmtime, m_mtime, 0 + 8 * 60 * 60, "yyyymmddhh24miss");
+
+  return true;
+}
+
+bool Cftp::size(const char *remotefilename) {
+  if (m_ftpconn == nullptr) {
+    return false;
+  }
+
+  m_size = 0;
+
+  if (!FtpSize(remotefilename, &m_size, FTPLIB_IMAGE, m_ftpconn)) {
+    return false;
+  }
+
+  return true;
+}
+
+bool Cftp::chdir(const char *remotedir) {
+  if (m_ftpconn == nullptr) {
+    return false;
+  }
+
+  if (!FtpChdir(remotedir, m_ftpconn)) {
+    return false;
+  }
+
+  return true;
+}
+
+bool Cftp::mkdir(const char *remotedir) {
+  if (m_ftpconn == nullptr) {
+    return false;
+  }
+
+  if (!FtpMkdir(remotedir, m_ftpconn)) {
+    return false;
+  }
+
+  return true;
+}
+
+bool Cftp::rmdir(const char *remotedir) {
+  if (m_ftpconn == nullptr) {
+    return false;
+  }
+
+  if (!FtpRmdir(remotedir, m_ftpconn)) {
+    return false;
+  }
+
+  return true;
+}
+
+bool Cftp::nlist(const char *remotedir, const char *listfilename) {
+  if (m_ftpconn == nullptr) {
+    return false;
+  }
+
+  // 创建本地文件目录.
+  MKDIR(listfilename);
+
+  if (!FtpNlst(listfilename, remotedir, m_ftpconn)) {
+    return false;
+  }
+
+  return true;
+}
+
 bool Cftp::get(const char *remotefilename, const char *localfilename,
                const bool bCheckMTime) {
   if (m_ftpconn == nullptr) {
@@ -116,110 +200,6 @@ bool Cftp::get(const char *remotefilename, const char *localfilename,
 
   // 获取文件的大小.
   m_size = FileSize(localfilename);
-
-  return true;
-}
-
-bool Cftp::mtime(const char *remotefilename) {
-  if (m_ftpconn == nullptr) {
-    return false;
-  }
-
-  memset(m_mtime, 0, sizeof(m_mtime));
-
-  char strmtime[21];
-  memset(strmtime, 0, sizeof(strmtime));
-
-  if (!FtpModDate(remotefilename, strmtime, 14, m_ftpconn)) {
-    return false;
-  }
-
-  AddTime(strmtime, m_mtime, 0 + 8 * 60 * 60, "yyyymmddhh24miss");
-
-  return true;
-}
-
-bool Cftp::size(const char *remotefilename) {
-  if (m_ftpconn == nullptr) {
-    return false;
-  }
-
-  m_size = 0;
-
-  if (!FtpSize(remotefilename, &m_size, FTPLIB_IMAGE, m_ftpconn)) {
-    return false;
-  }
-
-  return true;
-}
-
-bool Cftp::site(const char *command) {
-  if (m_ftpconn == nullptr) {
-    return false;
-  }
-
-  if (!FtpSite(command, m_ftpconn)) {
-    return false;
-  }
-
-  return true;
-}
-
-bool Cftp::chdir(const char *remotedir) {
-  if (m_ftpconn == nullptr) return false;
-
-  if (FtpChdir(remotedir, m_ftpconn) == false) return false;
-
-  return true;
-}
-
-bool Cftp::mkdir(const char *remotedir) {
-  if (m_ftpconn == nullptr) {
-    return false;
-  }
-
-  if (!FtpMkdir(remotedir, m_ftpconn)) {
-    return false;
-  }
-
-  return true;
-}
-
-bool Cftp::rmdir(const char *remotedir) {
-  if (m_ftpconn == nullptr) {
-    return false;
-  }
-
-  if (!FtpRmdir(remotedir, m_ftpconn)) {
-    return false;
-  }
-
-  return true;
-}
-
-bool Cftp::dir(const char *remotedir, const char *listfilename) {
-  if (m_ftpconn == nullptr) {
-    return false;
-  }
-
-  if (!FtpDir(listfilename, remotedir, m_ftpconn)) {
-    return false;
-  }
-
-  return true;
-}
-
-bool Cftp::nlist(const char *remotedir, const char *listfilename) {
-  if (m_ftpconn == nullptr) {
-    return false;
-  }
-
-  // 创建本地文件目录.
-  MKDIR(listfilename);
-
-  if (!FtpNlst(listfilename, remotedir, m_ftpconn)) {
-    return false;
-  }
 
   return true;
 }
@@ -278,6 +258,30 @@ bool Cftp::ftprename(const char *srcremotefilename,
   }
 
   if (!FtpRename(srcremotefilename, dstremotefilename, m_ftpconn)) {
+    return false;
+  }
+
+  return true;
+}
+
+bool Cftp::dir(const char *remotedir, const char *listfilename) {
+  if (m_ftpconn == nullptr) {
+    return false;
+  }
+
+  if (!FtpDir(listfilename, remotedir, m_ftpconn)) {
+    return false;
+  }
+
+  return true;
+}
+
+bool Cftp::site(const char *command) {
+  if (m_ftpconn == nullptr) {
+    return false;
+  }
+
+  if (!FtpSite(command, m_ftpconn)) {
     return false;
   }
 
