@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 
   // 第 2 步: 向服务器发起连接请求.
   hostent *h;
-  if ((h = gethostbyname(argv[1])) == 0)  // 指定服务端的 IP 地址.
+  if ((h = gethostbyname(argv[1])) == nullptr)  // 指定服务端的 IP 地址.
   {
     printf("gethostbyname() failed.\n");
     close(sockfd);
@@ -67,4 +67,6 @@ int main(int argc, char *argv[]) {
 
   // 第 4 步: 关闭 Socket, 释放资源.
   close(sockfd);
+
+  return 0;
 }
