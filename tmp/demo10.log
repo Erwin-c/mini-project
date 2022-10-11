@@ -1,0 +1,45 @@
+2022-10-12 04:10:41 Client (127.0.0.1) has been connected.
+2022-10-12 04:10:41 Receive: The 1 super girl, id 001.
+2022-10-12 04:10:41 Send: Ok
+2022-10-12 04:10:42 Receive: The 2 super girl, id 002.
+2022-10-12 04:10:42 Send: Ok
+2022-10-12 04:10:43 Receive: The 3 super girl, id 003.
+2022-10-12 04:10:43 Send: Ok
+2022-10-12 04:10:43 Client (127.0.0.1) has been connected.
+2022-10-12 04:10:43 Receive: The 1 super girl, id 001.
+2022-10-12 04:10:43 Send: Ok
+2022-10-12 04:10:44 Receive: The 4 super girl, id 004.
+2022-10-12 04:10:44 Send: Ok
+2022-10-12 04:10:44 Receive: The 2 super girl, id 002.
+2022-10-12 04:10:44 Send: Ok
+2022-10-12 04:10:45 Receive: The 5 super girl, id 005.
+2022-10-12 04:10:45 Send: Ok
+2022-10-12 04:10:45 Receive: The 3 super girl, id 003.
+2022-10-12 04:10:45 Send: Ok
+2022-10-12 04:10:46 Receive: The 6 super girl, id 006.
+2022-10-12 04:10:46 Send: Ok
+2022-10-12 04:10:46 Receive: The 4 super girl, id 004.
+2022-10-12 04:10:46 Send: Ok
+2022-10-12 04:10:47 Receive: The 7 super girl, id 007.
+2022-10-12 04:10:47 Send: Ok
+2022-10-12 04:10:47 Receive: The 5 super girl, id 005.
+2022-10-12 04:10:47 Send: Ok
+2022-10-12 04:10:48 Receive: The 8 super girl, id 008.
+2022-10-12 04:10:48 Send: Ok
+2022-10-12 04:10:48 Receive: The 6 super girl, id 006.
+2022-10-12 04:10:48 Send: Ok
+2022-10-12 04:10:49 Receive: The 9 super girl, id 009.
+2022-10-12 04:10:49 Send: Ok
+2022-10-12 04:10:49 Receive: The 7 super girl, id 007.
+2022-10-12 04:10:49 Send: Ok
+2022-10-12 04:10:50 Receive: The 10 super girl, id 010.
+2022-10-12 04:10:50 Send: Ok
+2022-10-12 04:10:50 Receive: The 8 super girl, id 008.
+2022-10-12 04:10:50 Send: Ok
+2022-10-12 04:10:51 Child process exited, sig = 0.
+2022-10-12 04:10:51 Receive: The 9 super girl, id 009.
+2022-10-12 04:10:51 Send: Ok
+2022-10-12 04:10:52 Receive: The 10 super girl, id 010.
+2022-10-12 04:10:52 Send: Ok
+2022-10-12 04:10:53 Child process exited, sig = 0.
+2022-10-12 04:11:24 Father process exited, sig = 2.
