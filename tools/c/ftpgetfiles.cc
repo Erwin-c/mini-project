@@ -464,7 +464,7 @@ bool CompVector() {
   for (ii = 0; ii < vlistfile2.size(); ++ii) {
     // 在 vlistfile1 中查找 vlistfile2[ii] 的记录.
     for (jj = 0; jj < vlistfile1.size(); ++jj) {
-      // 如果找到了, 把记录放入vlistfile3.
+      // 如果找到了, 把记录放入 vlistfile3.
       if (strcmp(vlistfile2[ii].filename, vlistfile1[jj].filename) == 0 &&
           strcmp(vlistfile2[ii].mtime, vlistfile1[jj].mtime) == 0) {
         vlistfile3.push_back(vlistfile2[ii]);

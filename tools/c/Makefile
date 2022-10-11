@@ -7,7 +7,7 @@ PUBCPP = ../../public/_public.cc
 # General compiler flags
 COMPILE_FLAGS = -std=c++2a -g -Wall -Wextra
 
-all: procctl checkproc gzipfiles deletefiles ftpgetfiles
+all: procctl checkproc gzipfiles deletefiles ftpgetfiles ftpputfiles
 
 procctl: procctl.cc
 	g++ $(COMPILE_FLAGS) -o procctl procctl.cc
@@ -29,6 +29,10 @@ ftpgetfiles: ftpgetfiles.cc
 	g++ $(COMPILE_FLAGS) -o ftpgetfiles ftpgetfiles.cc $(PUBINCL) $(PUBCPP) ../../public/libftp.a ../../public/_ftp.cc -lm -lc
 	cp ftpgetfiles ../bin/.
 
+ftpputfiles: ftpputfiles.cc
+	g++ $(COMPILE_FLAGS) -o ftpputfiles ftpputfiles.cc $(PUBINCL) $(PUBCPP) ../../public/libftp.a ../../public/_ftp.cc -lm -lc
+	cp ftpputfiles ../bin/.
+
 clean:
-	rm procctl checkproc gzipfiles deletefiles ftpgetfiles
-	rm ../bin/procctl ../bin/checkproc ../bin/gzipfiles ../bin/deletefiles ../bin/ftpgetfiles
+	rm procctl checkproc gzipfiles deletefiles ftpgetfiles ftpputfiles
+	rm ../bin/procctl ../bin/checkproc ../bin/gzipfiles ../bin/deletefiles ../bin/ftpgetfiles ../bin/ftpputfiles

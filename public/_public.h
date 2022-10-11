@@ -708,7 +708,7 @@ struct st_procinfo {
 // 查看信号量：    ipcs -s
 // 删除信号量：    ipcrm sem semid
 
-// 进程心跳操作类。
+// 进程心跳操作类.
 class CPActive {
  private:
   CSEM m_sem;          // 用于给共享内存加锁的信号量id。
