@@ -175,7 +175,7 @@ class CCmdStr {
 // 也可以用 ilen 参数限定获取字段内容的长度, ilen 的缺省值为 0, 表示不限长度.
 //
 // 返回值: true-成功; false-失败, 如果 fieldname 参数指定的标签名不存在,
-//        返回失败
+//        返回失败.
 bool GetXMLBuffer(const char *xmlbuffer, const char *fieldname, char *value,
                   const int ilen = 0);
 bool GetXMLBuffer(const char *xmlbuffer, const char *fieldname, bool *value);

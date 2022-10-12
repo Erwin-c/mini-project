@@ -1,5 +1,5 @@
 /*
- * demo11.cc, 此程序用于演示网银 APP 软件的客户端.
+ * demo13.cc, 此程序用于演示网银 APP 软件的客户端, 增加了心跳报文.
  *
  *  Author: Erwin
  */
@@ -8,12 +8,13 @@
 
 CTcpClient TcpClient;
 
+bool srv000();  // 心跳.
 bool srv001();  // 登录业务.
 bool srv002();  // 我的账户 (查询余额).
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
-    printf("Using:. /demo11 ip port\nExample: ./demo11 127.0.0.1 5005\n\n");
+    printf("Using:. /demo13 ip port\nExample: ./demo13 127.0.0.1 5005\n\n");
     return -1;
   }
 
@@ -29,6 +30,24 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
+  sleep(3);
+
+  // 我的账户 (查询余额).
+  if (!srv002()) {
+    printf("srv002() failed.\n");
+    return -1;
+  }
+
+  sleep(10);
+
+  for (int ii = 3; ii < 5; ++ii) {
+    if (!srv000()) {
+      break;
+    }
+
+    sleep(ii);
+  }
+
   // 我的账户 (查询余额).
   if (!srv002()) {
     printf("srv002() failed.\n");
@@ -36,6 +55,26 @@ int main(int argc, char *argv[]) {
   }
 
   return 0;
+}
+
+bool srv000() {
+  char buffer[1024];
+
+  SPRINTF(buffer, sizeof(buffer), "<srvcode>0</srvcode>");
+  printf("Send: %s\n", buffer);
+  // 向服务端发送请求报文.
+  if (!TcpClient.Write(buffer)) {
+    return false;
+  }
+
+  memset(buffer, 0, sizeof(buffer));
+  // 接收服务端的回应报文.
+  if (!TcpClient.Read(buffer)) {
+    return false;
+  }
+  printf("Receive: %s\n", buffer);
+
+  return true;
 }
 
 bool srv001() {
