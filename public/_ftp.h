@@ -94,29 +94,29 @@ class Cftp {
   bool put(const char *localfilename, const char *remotefilename,
            const bool bCheckSize = true);
 
-  // 删除ftp服务器上的文件。
-  // remotefilename：待删除的ftp服务器上的文件名。
-  // 返回值：true-成功；false-失败。
+  // 删除 FTP 服务器上的文件.
+  // remotefilename: 待删除的 FTP 服务器上的文件名.
+  // 返回值: true-成功; false-失败.
   bool ftpdelete(const char *remotefilename);
 
-  // 重命名ftp服务器上的文件。
-  // srcremotefilename：ftp服务器上的原文件名。
-  // dstremotefilename：ftp服务器上的目标文件名。
-  // 返回值：true-成功；false-失败。
+  // 重命名 FTP 服务器上的文件.
+  // srcremotefilename: FTP 服务器上的原文件名.
+  // dstremotefilename: FTP 服务器上的目标文件名.
+  // 返回值: true-成功; false-失败.
   bool ftprename(const char *srcremotefilename, const char *dstremotefilename);
 
-  /* 以下三个方法如果理解不了就算了，可以不启用。 */
-  // 发送LIST命令列出ftp服务器目录中的文件。
-  // 参数和返回值与nlist方法相同。
+  /* 以下三个方法如果理解不了就算了, 可以不启用. */
+  // 发送 LIST 命令列出 FTP 服务器目录中的文件.
+  // 参数和返回值与 nlist() 相同.
   bool dir(const char *remotedir, const char *listfilename);
 
-  // 向ftp服务器发送site命令。
-  // command：命令的内容。
-  // 返回值：true-成功；false-失败。
+  // 向 FTP 服务器发送 site 命令.
+  // command: 命令的内容.
+  // 返回值: true-成功; false-失败.
   bool site(const char *command);
 
-  // 获取服务器返回信息的最后一条(return a pointer to the last response
-  // received)。
+  // 获取服务器返回信息的最后一条
+  // (return a pointer to the last response received).
   char *response();
 };
 
