@@ -1,10 +1,11 @@
-/****************************************************************************************
- *   程序名：_cmpublic.h，此程序是开发框架公用头文件，包含了应用开发常用的头文件。
- *   作者：吴从周
- *****************************************************************************************/
+/*
+ * _ftp.h
+ *
+ *  Author: Erwin
+ */
 
-#ifndef _cmpublic_H
-#define _cmpublic_H
+#ifndef _CMPUBLIC_H_
+#define _CMPUBLIC_H_
 
 #include <arpa/inet.h>
 #include <ctype.h>
@@ -48,7 +49,7 @@
 #include <string>
 #include <vector>
 
-// 采用stl标准库的命名空间std
+// 采用 stl 标准库的命名空间 std
 using namespace std;
 
-#endif
+#endif  // _CMPUBLIC_H_
