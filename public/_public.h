@@ -632,26 +632,27 @@ class CTcpServer {
 bool TcpRead(const int sockfd, char *buffer, int *ibuflen,
              const int itimeout = 0);
 
-// 向socket的对端发送数据。
-// sockfd：可用的socket连接。
-// buffer：待发送数据缓冲区的地址。
-// ibuflen：待发送数据的字节数，如果发送的是ascii字符串，ibuflen填0或字符串的长度，
-//          如果是二进制流数据，ibuflen为二进制数据块的大小。
-// 返回值：true-成功；false-失败，如果失败，表示socket连接已不可用。
+// 向 Socket 的对端发送数据.
+// sockfd: 可用的 Socket 连接.
+// buffer: 待发送数据缓冲区的地址.
+// ibuflen: 待发送数据的字节数,
+//          如果发送的是 ascii 字符串, ibuflen 填 0 或字符串的长度，
+//          如果是二进制流数据, ibuflen 为二进制数据块的大小.
+// 返回值: true-成功: false-失败, 如果失败, 表示 Socket 连接已不可用.
 bool TcpWrite(const int sockfd, const char *buffer, const int ibuflen = 0);
 
-// 从已经准备好的socket中读取数据。
-// sockfd：已经准备好的socket连接。
-// buffer：接收数据缓冲区的地址。
-// n：本次接收数据的字节数。
-// 返回值：成功接收到n字节的数据后返回true，socket连接不可用返回false。
+// 从已经准备好的 Socket 中读取数据.
+// Sockfd: 已经准备好的 Socket 连接.
+// buffer: 接收数据缓冲区的地址.
+// n: 本次接收数据的字节数.
+// 返回值: 成功接收到 n 字节的数据后返回 true, Socket 连接不可用返回 false.
 bool Readn(const int sockfd, char *buffer, const size_t n);
 
-// 向已经准备好的socket中写入数据。
-// sockfd：已经准备好的socket连接。
-// buffer：待发送数据缓冲区的地址。
-// n：待发送数据的字节数。
-// 返回值：成功发送完n字节的数据后返回true，socket连接不可用返回false。
+// 向已经准备好的 Socket 中写入数据.
+// sockfd: 已经准备好的 Socket 连接.
+// buffer: 待发送数据缓冲区的地址.
+// n: 待发送数据的字节数.
+// 返回值: 成功发送完 n 字节的数据后返回 true, Socket 连接不可用返回 false.
 bool Writen(const int sockfd, const char *buffer, const size_t n);
 
 // 以上是socket通讯的函数和类

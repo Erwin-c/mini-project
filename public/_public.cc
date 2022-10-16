@@ -1839,86 +1839,88 @@ CTcpServer::~CTcpServer() {
   CloseClient();
 }
 
-// 接收socket的对端发送过来的数据。
-// sockfd：可用的socket连接。
-// buffer：接收数据缓冲区的地址。
-// ibuflen：本次成功接收数据的字节数。
-// itimeout：接收等待超时的时间，单位：秒，-1-不等待；0-无限等待；>0-等待的秒数。
-// 返回值：true-成功；false-失败，失败有两种情况：1）等待超时；2）socket连接已不可用。
 bool TcpRead(const int sockfd, char *buffer, int *ibuflen, const int itimeout) {
-  if (sockfd == -1) return false;
+  if (sockfd == -1) {
+    return false;
+  }
 
-  // 如果itimeout>0，表示需要等待itimeout秒，如果itimeout秒后还没有数据到达，返回false。
+  // 如果 itimeout > 0, 表示需要等待 itimeout 秒,
+  // 如果 itimeout 秒后还没有数据到达, 返回 false.
   if (itimeout > 0) {
-    struct pollfd fds;
+    pollfd fds;
     fds.fd = sockfd;
     fds.events = POLLIN;
-    if (poll(&fds, 1, itimeout * 1000) <= 0) return false;
+    if (poll(&fds, 1, itimeout * 1000) <= 0) {
+      return false;
+    }
   }
 
-  // 如果itimeout==-1，表示不等待，立即判断socket的缓冲区中是否有数据，如果没有，返回false。
+  // 如果 itimeout == -1, 表示不等待, 立即判断 Socket 的缓冲区中是否有数据,
+  // 如果没有, 返回 false.
   if (itimeout == -1) {
-    struct pollfd fds;
+    pollfd fds;
     fds.fd = sockfd;
     fds.events = POLLIN;
-    if (poll(&fds, 1, 0) <= 0) return false;
+    if (poll(&fds, 1, 0) <= 0) {
+      return false;
+    }
   }
 
-  (*ibuflen) = 0;  // 报文长度变量初始化为0。
+  (*ibuflen) = 0;  // 报文长度变量初始化为 0.
 
-  // 先读取报文长度，4个字节。
-  if (Readn(sockfd, (char *)ibuflen, 4) == false) return false;
+  // 先读取报文长度, 4个字节.
+  if (!Readn(sockfd, (char *)ibuflen, 4)) {
+    return false;
+  }
 
-  (*ibuflen) = ntohl(*ibuflen);  // 把报文长度由网络字节序转换为主机字节序。
+  (*ibuflen) = ntohl(*ibuflen);  // 把报文长度由网络字节序转换为主机字节序.
 
-  // 再读取报文内容。
-  if (Readn(sockfd, buffer, (*ibuflen)) == false) return false;
+  // 再读取报文内容.
+  if (!Readn(sockfd, buffer, (*ibuflen))) {
+    return false;
+  }
 
   return true;
 }
 
-// 向socket的对端发送数据。
-// sockfd：可用的socket连接。
-// buffer：待发送数据缓冲区的地址。
-// ibuflen：待发送数据的字节数，如果发送的是ascii字符串，ibuflen填0或字符串的长度，
-//          如果是二进制流数据，ibuflen为二进制数据块的大小。
-// 返回值：true-成功；false-失败，如果失败，表示socket连接已不可用。
 bool TcpWrite(const int sockfd, const char *buffer, const int ibuflen) {
-  if (sockfd == -1) return false;
+  if (sockfd == -1) {
+    return false;
+  }
 
-  int ilen = 0;  // 报文长度。
+  int ilen = 0;  // 报文长度.
 
-  // 如果ibuflen==0，就认为需要发送的是字符串，报文长度为字符串的长度。
-  if (ibuflen == 0)
+  // 如果 ibuflen == 0, 就认为需要发送的是字符串, 报文长度为字符串的长度.
+  if (ibuflen == 0) {
     ilen = strlen(buffer);
-  else
+  } else {
     ilen = ibuflen;
+  }
 
-  int ilenn = htonl(ilen);  // 把报文长度转换为网络字节序。
+  int ilenn = htonl(ilen);  // 把报文长度转换为网络字节序.
 
-  char TBuffer[ilen + 4];               // 发送缓冲区。
-  memset(TBuffer, 0, sizeof(TBuffer));  // 清区发送缓冲区。
-  memcpy(TBuffer, &ilenn, 4);           // 把报文长度拷贝到缓冲区。
-  memcpy(TBuffer + 4, buffer, ilen);    // 把报文内容拷贝到缓冲区。
+  char TBuffer[ilen + 4];               // 发送缓冲区.
+  memset(TBuffer, 0, sizeof(TBuffer));  // 清除发送缓冲区.
+  memcpy(TBuffer, &ilenn, 4);           // 把报文长度拷贝到缓冲区.
+  memcpy(TBuffer + 4, buffer, ilen);    // 把报文内容拷贝到缓冲区.
 
-  // 发送缓冲区中的数据。
-  if (Writen(sockfd, TBuffer, ilen + 4) == false) return false;
+  // 发送缓冲区中的数据.
+  if (!Writen(sockfd, TBuffer, ilen + 4)) {
+    return false;
+  }
 
   return true;
 }
 
-// 从已经准备好的socket中读取数据。
-// sockfd：已经准备好的socket连接。
-// buffer：接收数据缓冲区的地址。
-// n：本次接收数据的字节数。
-// 返回值：成功接收到n字节的数据后返回true，socket连接不可用返回false。
 bool Readn(const int sockfd, char *buffer, const size_t n) {
-  int nLeft = n;  // 剩余需要读取的字节数。
-  int idx = 0;    // 已成功读取的字节数。
-  int nread;      // 每次调用recv()函数读到的字节数。
+  int nLeft = n;  // 剩余需要读取的字节数.
+  int idx = 0;    // 已成功读取的字节数.
+  int nread;      // 每次调用 recv() 函数读到的字节数.
 
   while (nLeft > 0) {
-    if ((nread = recv(sockfd, buffer + idx, nLeft, 0)) <= 0) return false;
+    if ((nread = recv(sockfd, buffer + idx, nLeft, 0)) <= 0) {
+      return false;
+    }
 
     idx = idx + nread;
     nLeft = nLeft - nread;
@@ -1927,18 +1929,15 @@ bool Readn(const int sockfd, char *buffer, const size_t n) {
   return true;
 }
 
-// 向已经准备好的socket中写入数据。
-// sockfd：已经准备好的socket连接。
-// buffer：待发送数据缓冲区的地址。
-// n：待发送数据的字节数。
-// 返回值：成功发送完n字节的数据后返回true，socket连接不可用返回false。
 bool Writen(const int sockfd, const char *buffer, const size_t n) {
-  int nLeft = n;  // 剩余需要写入的字节数。
-  int idx = 0;    // 已成功写入的字节数。
-  int nwritten;   // 每次调用send()函数写入的字节数。
+  int nLeft = n;  // 剩余需要写入的字节数.
+  int idx = 0;    // 已成功写入的字节数.
+  int nwritten;   // 每次调用 send() 函数写入的字节数.
 
   while (nLeft > 0) {
-    if ((nwritten = send(sockfd, buffer + idx, nLeft, 0)) <= 0) return false;
+    if ((nwritten = send(sockfd, buffer + idx, nLeft, 0)) <= 0) {
+      return false;
+    }
 
     nLeft = nLeft - nwritten;
     idx = idx + nwritten;
