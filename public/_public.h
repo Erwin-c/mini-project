@@ -160,19 +160,22 @@ class CCmdStr {
 ///////////////////////////////////// /////////////////////////////////////
 
 ///////////////////////////////////// /////////////////////////////////////
-// 解析xml格式字符串的函数族。
-// xml格式的字符串的内容如下：
-// <filename>/tmp/_public.h</filename><mtime>2020-01-01
-// 12:20:35</mtime><size>18348</size>
-// <filename>/tmp/_public.cpp</filename><mtime>2020-01-01
-// 10:10:15</mtime><size>50945</size> xmlbuffer：待解析的xml格式字符串。
-// fieldname：字段的标签名。
-// value：传入变量的地址，用于存放字段内容，支持bool、int、insigned int、long、
-//       unsigned long、double和char[]。
-// 注意，当value参数的数据类型为char
-// []时，必须保证value数组的内存足够，否则可能发生
-//       内存溢出的问题，也可以用ilen参数限定获取字段内容的长度，ilen的缺省值为0，表示不限长度。
-// 返回值：true-成功；如果fieldname参数指定的标签名不存在，返回失败。
+// 解析 XML 格式字符串的函数族.
+// XML 格式的字符串的内容如下:
+// <filename>/tmp/_public.h</filename>
+// <mtime>2020-01-01 12:20:35</mtime>
+// <size>18348</size>
+// xmlbuffer: 待解析的 XML 格式字符串.
+// fieldname: 字段的标签名.
+// value: 传入变量的地址, 用于存放字段内容, 支持 bool, int, unsigned int, long,
+//        unsigned long, double 和 char[].
+//
+// 注意, 当 value 参数的数据类型为char[]时, 必须保证value数组的内存足够,
+// 否则可能发生内存溢出的问题,
+// 也可以用 ilen 参数限定获取字段内容的长度, ilen 的缺省值为 0, 表示不限长度.
+//
+// 返回值: true-成功; false-失败, 如果 fieldname 参数指定的标签名不存在,
+//        返回失败
 bool GetXMLBuffer(const char *xmlbuffer, const char *fieldname, char *value,
                   const int ilen = 0);
 bool GetXMLBuffer(const char *xmlbuffer, const char *fieldname, bool *value);
@@ -596,7 +599,7 @@ class CTcpServer {
   bool InitServer(const unsigned int port, const int backlog = 5);
 
   // 阻塞等待客户端的连接请求.
-  // 返回值: true-有新的客户端已连接上来, false-失败, Accept() 被中断，
+  // 返回值: true-有新的客户端已连接上来; false-失败, Accept() 被中断，
   //        如果 Accept() 失败，可以重新 Accept().
   bool Accept();
 
@@ -669,7 +672,7 @@ bool Writen(const int sockfd, const char *buffer, const size_t n);
 // 以上是 Socket 通讯的函数和类
 ///////////////////////////////////// /////////////////////////////////////
 
-// 关闭全部的信号和输入输出，缺省只关闭信号，不关IO。
+// 关闭全部的信号和输入输出, 缺省只关闭信号, 不关 IO.
 void CloseIOAndSignal(bool bCloseIO = false);
 
 // 信号量。

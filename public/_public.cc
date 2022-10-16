@@ -1207,17 +1207,6 @@ bool CIniFile::GetValue(const char *fieldname, double *value) {
   return GetXMLBuffer(m_xmlbuffer.c_str(), fieldname, value);
 }
 
-// 关闭全部的信号和输入输出
-void CloseIOAndSignal(bool bCloseIO) {
-  int ii = 0;
-
-  for (ii = 0; ii < 64; ii++) {
-    if (bCloseIO == true) close(ii);
-
-    signal(ii, SIG_IGN);
-  }
-}
-
 // 根据绝对路径的文件名或目录名逐级的创建目录。
 // pathorfilename：绝对路径的文件名或目录名。
 // bisfilename：说明pathorfilename的类型，true-pathorfilename是文件名，否则是目录名，缺省值为true。
@@ -1974,6 +1963,20 @@ bool Writen(const int sockfd, const char *buffer, const size_t n) {
   }
 
   return true;
+}
+
+void CloseIOAndSignal(bool bCloseIO) {
+  int ii = 0;
+
+  for (ii = 0; ii < 64; ++ii) {
+    if (bCloseIO) {
+      close(ii);
+    }
+
+    signal(ii, SIG_IGN);
+  }
+
+  return;
 }
 
 // 复制文件，类似Linux系统的cp命令。
