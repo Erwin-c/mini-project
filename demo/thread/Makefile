@@ -1,6 +1,6 @@
 COMPILE_FLAGS = -std=c++2a -g -Wall -Wextra
 
-all: demo01 demo02 demo03 demo04 demo05 demo06 demo07 demo08 demo09 demo10 demo11 demo12 demo13
+all: demo01 demo02 demo03 demo04 demo05 demo06 demo07 demo08 demo09 demo10 demo11 demo12 demo13 demo14
 
 demo01: demo01.cc
 	g++ $(COMPILE_FLAGS) -o demo01 demo01.cc -lpthread
@@ -41,5 +41,8 @@ demo12: demo12.cc
 demo13: demo13.cc
 	g++ $(COMPILE_FLAGS) -o demo13 demo13.cc -lpthread
 
+demo14: demo14.cc
+	g++ $(COMPILE_FLAGS) -o demo14 demo14.cc -lpthread
+
 clean:
-	rm -f demo01 demo02 demo03 demo04 demo05 demo06 demo07 demo08 demo09 demo10 demo11 demo12 demo13
+	rm -f demo01 demo02 demo03 demo04 demo05 demo06 demo07 demo08 demo09 demo10 demo11 demo12 demo13 demo14
