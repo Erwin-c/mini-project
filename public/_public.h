@@ -672,7 +672,7 @@ bool Writen(const int sockfd, const char *buffer, const size_t n);
 // 以上是 Socket 通讯的函数和类
 ///////////////////////////////////// /////////////////////////////////////
 
-// 关闭全部的信号和输入输出, 缺省只关闭信号, 不关 IO.
+// 关闭全部的信号和输入输出,, 缺省只关闭信号, 不关 IO.
 void CloseIOAndSignal(bool bCloseIO = false);
 
 // 信号量。
