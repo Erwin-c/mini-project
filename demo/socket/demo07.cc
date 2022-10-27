@@ -4,7 +4,7 @@
  *  Author: Erwin
  */
 
-#include "../../_public.h"
+#include "../../public/_public.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
@@ -41,7 +41,8 @@ int main(int argc, char *argv[]) {
     }
     printf("Receive: %s\n", buffer);
 
-    sleep(1);  // 每隔一秒后再次发送报文.
+    // 每隔一秒后再次发送报文.
+    sleep(1);
   }
 
   return 0;

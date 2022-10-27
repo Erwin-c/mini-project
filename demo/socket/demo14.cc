@@ -4,7 +4,7 @@
  *  Author: Erwin
  */
 
-#include "../../_public.h"
+#include "../../public/_public.h"
 
 CLogFile logfile;      // 服务程序的运行日志.
 CTcpServer TcpServer;  // 创建服务端对象.
