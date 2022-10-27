@@ -1,7 +1,7 @@
 COMPILE_FLAGS = -std=c++2a -g -Wall -Wextra
 
 all: demo01 demo02 demo03 demo04 demo05 demo06 demo07 demo08 demo10 demo11 demo12\
-     demo13 demo14 demo20
+     demo13 demo14 demo20 tcpselect client
 
 demo01: demo01.cc
 	g++ $(COMPILE_FLAGS) -o demo01 demo01.cc -lm -lc
@@ -45,5 +45,11 @@ demo14: demo14.cc
 demo20: demo20.cc
 	g++ $(COMPILE_FLAGS) -o demo20 demo20.cc ../../public/_public.cc -lm -lc
 
+tcpselect: tcpselect.cc
+	g++ $(COMPILE_FLAGS) -o tcpselect tcpselect.cc ../../public/_public.cc -lm -lc
+
+client: client.cc
+	g++ $(COMPILE_FLAGS) -o client client.cc ../../public/_public.cc -lm -lc
+
 clean:
-	rm -f demo01 demo02 demo03 demo04 demo05 demo06 demo07 demo08 demo10 demo11 demo12 demo13 demo14 demo20
+	rm -f demo01 demo02 demo03 demo04 demo05 demo06 demo07 demo08 demo10 demo11 demo12 demo13 demo14 demo20 tcpselect client
