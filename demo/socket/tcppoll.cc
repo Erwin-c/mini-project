@@ -1,5 +1,5 @@
 /*
- * tcppoll.cc, 此程序用于演示采用 Poll 模型的使用方法.
+ * tcppoll.cc, 此程序用于演示采用 poll 模型的使用方法.
  *
  *  Author: Erwin
  */
@@ -21,7 +21,7 @@ int initserver(int port);
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
-    printf("usage: ./tcppoll port\n");
+    printf("Usage: ./tcppoll port\n");
     return -1;
   }
 

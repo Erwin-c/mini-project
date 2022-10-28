@@ -1,7 +1,7 @@
 COMPILE_FLAGS = -std=c++2a -g -Wall -Wextra
 
 all: demo01 demo02 demo03 demo04 demo05 demo06 demo07 demo08 demo10 demo11 demo12\
-     demo13 demo14 demo20 tcpselect client tcppoll
+     demo13 demo14 demo20 client tcpselect tcppoll tcpepoll
 
 demo01: demo01.cc
 	g++ $(COMPILE_FLAGS) -o demo01 demo01.cc -lm -lc
@@ -45,14 +45,17 @@ demo14: demo14.cc
 demo20: demo20.cc
 	g++ $(COMPILE_FLAGS) -o demo20 demo20.cc ../../public/_public.cc -lm -lc
 
-tcpselect: tcpselect.cc
-	g++ $(COMPILE_FLAGS) -o tcpselect tcpselect.cc ../../public/_public.cc -lm -lc
-
 client: client.cc
 	g++ $(COMPILE_FLAGS) -o client client.cc ../../public/_public.cc -lm -lc
+
+tcpselect: tcpselect.cc
+	g++ $(COMPILE_FLAGS) -o tcpselect tcpselect.cc ../../public/_public.cc -lm -lc
 
 tcppoll: tcppoll.cc
 	g++ $(COMPILE_FLAGS) -o tcppoll tcppoll.cc ../../public/_public.cc -lm -lc
 
+tcpepoll: tcpepoll.cc
+	g++ $(COMPILE_FLAGS) -o tcpepoll tcpepoll.cc ../../public/_public.cc -lm -lc
+
 clean:
-	rm -f demo01 demo02 demo03 demo04 demo05 demo06 demo07 demo08 demo10 demo11 demo12 demo13 demo14 demo20 tcpselect client tcppoll
+	rm -f demo01 demo02 demo03 demo04 demo05 demo06 demo07 demo08 demo10 demo11 demo12 demo13 demo14 demo20 client tcpselect tcppoll tcpepoll

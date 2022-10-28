@@ -1,5 +1,5 @@
 /*
- * tcpselect.cc, 此程序用于演示采用 Select 模型的使用方法.
+ * tcpselect.cc, 此程序用于演示采用 select 模型的使用方法.
  *
  *  Author: Erwin
  */
@@ -17,7 +17,7 @@ int initserver(int port);
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
-    printf("usage: ./tcpselect port\n");
+    printf("Usage: ./tcpselect port\n");
     return -1;
   }
 
