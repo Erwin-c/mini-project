@@ -127,7 +127,7 @@ int main(int argc, char *argv[]) {
       ChldEXIT(-1);
     }
 
-    // 如果c lienttype == 1, 调用上传文件的主函数.
+    // 如果clienttype == 1, 调用上传文件的主函数.
     if (starg.clienttype == 1) {
       RecvFilesMain();
     }
