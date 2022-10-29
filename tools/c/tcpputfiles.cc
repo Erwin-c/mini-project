@@ -320,19 +320,17 @@ bool ActiveTest() {
   return true;
 }
 
-// 文件上传的主函数，执行一次文件上传的任务。
 bool _tcpputfiles() {
   CDir Dir;
 
-  // 调用OpenDir()打开starg.clientpath目录。
-  if (Dir.OpenDir(starg.clientpath, starg.matchname, 10000, starg.andchild) ==
-      false) {
-    logfile.Write("Dir.OpenDir(%s) 失败。\n", starg.clientpath);
+  // 调用 OpenDir() 打开 starg.clientpath 目录.
+  if (!Dir.OpenDir(starg.clientpath, starg.matchname, 10000, starg.andchild)) {
+    logfile.Write("Dir.OpenDir(%s) failed\n", starg.clientpath);
     return false;
   }
 
-  int delayed = 0;  // 未收到对端确认报文的文件数量。
-  int buflen = 0;   // 用于存放strrecvbuffer的长度。
+  int delayed = 0;  // 未收到对端确认报文的文件数量.
+  int buflen = 0;   // 用于存放 strrecvbuffer 的长度.
 
   bcontinue = false;
 
@@ -340,28 +338,29 @@ bool _tcpputfiles() {
     memset(strsendbuffer, 0, sizeof(strsendbuffer));
     memset(strrecvbuffer, 0, sizeof(strrecvbuffer));
 
-    // 遍历目录中的每个文件，调用ReadDir()获取一个文件名。
-    if (Dir.ReadDir() == false) break;
+    // 遍历目录中的每个文件, 调用 ReadDir() 获取一个文件名.
+    if (!Dir.ReadDir()) {
+      break;
+    }
 
     bcontinue = true;
 
-    // 把文件名、修改时间、文件大小组成报文，发送给对端。
+    // 把文件名, 修改时间, 文件大小组成报文, 发送给对端.
     SNPRINTF(strsendbuffer, sizeof(strsendbuffer), 1000,
              "<filename>%s</filename><mtime>%s</mtime><size>%d</size>",
              Dir.m_FullFileName, Dir.m_ModifyTime, Dir.m_FileSize);
 
-    // logfile.Write("strsendbuffer=%s\n",strsendbuffer);
-    if (TcpClient.Write(strsendbuffer) == false) {
+    // logfile.Write("strsendbuffer = %s\n", strsendbuffer);
+    if (!TcpClient.Write(strsendbuffer)) {
       logfile.Write("TcpClient.Write() failed.\n");
       return false;
     }
 
-    // 把文件的内容发送给对端。
+    // 把文件的内容发送给对端.
     logfile.Write("send %s(%d) ...", Dir.m_FullFileName, Dir.m_FileSize);
-    if (SendFile(TcpClient.m_connfd, Dir.m_FullFileName, Dir.m_FileSize) ==
-        true) {
+    if (SendFile(TcpClient.m_connfd, Dir.m_FullFileName, Dir.m_FileSize)) {
       logfile.WriteEx("ok.\n");
-      delayed++;
+      ++delayed;
     } else {
       logfile.WriteEx("failed.\n");
       TcpClient.Close();
@@ -370,68 +369,76 @@ bool _tcpputfiles() {
 
     PActive.UptATime();
 
-    // 接收对端的确认报文。
+    // 接收对端的确认报文.
     while (delayed > 0) {
       memset(strrecvbuffer, 0, sizeof(strrecvbuffer));
-      if (TcpRead(TcpClient.m_connfd, strrecvbuffer, &buflen, -1) == false)
+      if (!TcpRead(TcpClient.m_connfd, strrecvbuffer, &buflen, -1)) {
         break;
-      // logfile.Write("strrecvbuffer=%s\n",strrecvbuffer);
+      }
+      // logfile.Write("strrecvbuffer =% s\n", strrecvbuffer);
 
-      // 删除或者转存本地的文件。
-      delayed--;
+      // 删除或者转存本地的文件.
+      --delayed;
       AckMessage(strrecvbuffer);
     }
   }
 
-  // 继续接收对端的确认报文。
+  // 继续接收对端的确认报文.
   while (delayed > 0) {
     memset(strrecvbuffer, 0, sizeof(strrecvbuffer));
-    if (TcpRead(TcpClient.m_connfd, strrecvbuffer, &buflen, 10) == false) break;
-    // logfile.Write("strrecvbuffer=%s\n",strrecvbuffer);
+    if (!TcpRead(TcpClient.m_connfd, strrecvbuffer, &buflen, 10)) {
+      break;
+    }
+    // logfile.Write("strrecvbuffer = %s\n", strrecvbuffer);
 
-    // 删除或者转存本地的文件。
-    delayed--;
+    // 删除或者转存本地的文件.
+    --delayed;
     AckMessage(strrecvbuffer);
   }
 
   return true;
 }
 
-// 把文件的内容发送给对端。
 bool SendFile(const int sockfd, const char *filename, const int filesize) {
-  int onread = 0;      // 每次调用fread时打算读取的字节数。
-  int bytes = 0;       // 调用一次fread从文件中读取的字节数。
-  char buffer[1000];   // 存放读取数据的buffer。
-  int totalbytes = 0;  // 从文件中已读取的字节总数。
+  int onread = 0;      // 每次调用 fread() 时打算读取的字节数.
+  int bytes = 0;       // 调用一次 fread() 从文件中读取的字节数.
+  char buffer[1000];   // 存放读取数据的 buffer.
+  int totalbytes = 0;  // 从文件中已读取的字节总数.
   FILE *fp = NULL;
 
-  // 以"rb"的模式打开文件。
-  if ((fp = fopen(filename, "rb")) == NULL) return false;
+  // 以 "rb" 的模式打开文件.
+  if ((fp = fopen(filename, "rb")) == NULL) {
+    return false;
+  }
 
   while (true) {
     memset(buffer, 0, sizeof(buffer));
 
-    // 计算本次应该读取的字节数，如果剩余的数据超过1000字节，就打算读1000字节。
-    if (filesize - totalbytes > 1000)
+    // 计算本次应该读取的字节数, 如果剩余的数据超过 1000 字节,
+    // 就打算读 1000 字节.
+    if (filesize - totalbytes > 1000) {
       onread = 1000;
-    else
+    } else {
       onread = filesize - totalbytes;
+    }
 
-    // 从文件中读取数据。
+    // 从文件中读取数据.
     bytes = fread(buffer, 1, onread, fp);
 
-    // 把读取到的数据发送给对端。
+    // 把读取到的数据发送给对端.
     if (bytes > 0) {
-      if (Writen(sockfd, buffer, bytes) == false) {
+      if (!Writen(sockfd, buffer, bytes)) {
         fclose(fp);
         return false;
       }
     }
 
-    // 计算文件已读取的字节总数，如果文件已读完，跳出循环。
+    // 计算文件已读取的字节总数, 如果文件已读完, 跳出循环.
     totalbytes = totalbytes + bytes;
 
-    if (totalbytes == filesize) break;
+    if (totalbytes == filesize) {
+      break;
+    }
   }
 
   fclose(fp);
@@ -439,7 +446,6 @@ bool SendFile(const int sockfd, const char *filename, const int filesize) {
   return true;
 }
 
-// 删除或者转存本地的文件。
 bool AckMessage(const char *strrecvbuffer) {
   char filename[301];
   char result[11];
@@ -450,25 +456,27 @@ bool AckMessage(const char *strrecvbuffer) {
   GetXMLBuffer(strrecvbuffer, "filename", filename, 300);
   GetXMLBuffer(strrecvbuffer, "result", result, 10);
 
-  // 如果服务端接收文件不成功，直接返回。
-  if (strcmp(result, "ok") != 0) return true;
+  // 如果服务端接收文件不成功, 直接返回.
+  if (strcmp(result, "ok") != 0) {
+    return true;
+  }
 
-  // ptype==1，删除文件。
+  // ptype == 1, 删除文件.
   if (starg.ptype == 1) {
-    if (REMOVE(filename) == false) {
+    if (!REMOVE(filename)) {
       logfile.Write("REMOVE(%s) failed.\n", filename);
       return false;
     }
   }
 
-  // ptype==2，移动到备份目录。
+  // ptype == 2, 移动到备份目录.
   if (starg.ptype == 2) {
-    // 生成转存后的备份目录文件名。
+    // 生成转存后的备份目录文件名.
     char bakfilename[301];
     STRCPY(bakfilename, sizeof(bakfilename), filename);
     UpdateStr(bakfilename, starg.clientpath, starg.clientpathbak, false);
-    if (RENAME(filename, bakfilename) == false) {
-      logfile.Write("RENAME(%s,%s) failed.\n", filename, bakfilename);
+    if (!RENAME(filename, bakfilename)) {
+      logfile.Write("RENAME(%s, %s) failed.\n", filename, bakfilename);
       return false;
     }
   }
