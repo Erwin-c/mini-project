@@ -1,24 +1,25 @@
 /*
- * demo12.cc, 本程序演示线程同步-互斥锁.
+ * demo16.cc, 本程序演示线程同步-信号量.
  *
  *  Author: Erwin
  */
 
 #include <pthread.h>
+#include <semaphore.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 
 int var;
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;  // 声明互斥锁.
+sem_t sem;  // 声明信号量.
 
 // 线程主函数.
 void *thmain(void *arg);
 
 int main() {
-  // 初始化互斥锁.
-  // pthread_mutex_init(&mutex, NULL);
+  // 初始化信号量.
+  sem_init(&sem, 0, 1);
 
   pthread_t thid1, thid2;
 
@@ -29,20 +30,20 @@ int main() {
   }
 
   if (pthread_create(&thid2, NULL, thmain, NULL) != 0) {
-    printf("(pthread_create() failed.\n");
+    printf("pthread_create() failed.\n");
     exit(-1);
   }
 
   // 等待子线程退出.
-  printf("Join...\n");
+  printf("join...\n");
   pthread_join(thid1, NULL);
   pthread_join(thid2, NULL);
-  printf("Join ok.\n");
+  printf("join ok.\n");
 
   printf("var = %d\n", var);
 
-  // 销毁锁.
-  pthread_mutex_destroy(&mutex);
+  // 销毁信号量.
+  sem_destroy(&sem);
 
   return 0;
 }
@@ -50,15 +51,12 @@ int main() {
 void *thmain(void *arg) {
   for (int ii = 0; ii < 1000000; ++ii) {
     // 加锁.
-    pthread_mutex_lock(&mutex);
+    sem_wait(&sem);
 
     ++var;
-    // printf("thid = %lu\n", pthread_self());
 
     // 解锁.
-    pthread_mutex_unlock(&mutex);
-
-    // sched_yield();
+    sem_post(&sem);
   }
 
   return (void *)1;
