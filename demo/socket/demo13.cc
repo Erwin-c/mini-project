@@ -4,7 +4,7 @@
  *  Author: Erwin
  */
 
-#include "../../_public.h"
+#include "../../public/_public.h"
 
 CTcpClient TcpClient;
 

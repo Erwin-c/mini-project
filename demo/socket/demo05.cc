@@ -4,7 +4,7 @@
  *  Author: Erwin
  */
 
-#include "../../_public.h"
+#include "../../public/_public.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
