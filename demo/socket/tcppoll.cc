@@ -1,10 +1,11 @@
 /*
- * tcpselect.cc, 此程序用于演示采用 Select 模型的使用方法.
+ * tcppoll.cc, 此程序用于演示采用 Poll 模型的使用方法.
  *
  *  Author: Erwin
  */
 
 #include <arpa/inet.h>
+#include <poll.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,12 +13,15 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+// ulimit -a
+#define MAXNFDS 1024
+
 // 初始化服务端的监听端口.
 int initserver(int port);
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
-    printf("usage: ./tcpselect port\n");
+    printf("usage: ./tcppoll port\n");
     return -1;
   }
 
@@ -30,48 +34,49 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  // 读事件 Socket 的集合, 包括监听 Socket 和客户端连接上来的 Socket.
-  fd_set readfds;
-  // 初始化读事件 Socket 的集合.
-  FD_ZERO(&readfds);
-  // 把 listensock 添加到读事件 Socket 的集合中.
-  FD_SET(listensock, &readfds);
+  struct pollfd fds[MAXNFDS];  // fds 存放需要监视的 Socket.
+  for (int ii = 0; ii < MAXNFDS; ++ii) {
+    // 初始化数组, 把全部的 fd 设置为 -1.
+    fds[ii].fd = -1;
+  }
 
-  int maxfd = listensock;  // 记录集合中 Socket 的最大值.
+  // 把 listensock 和读事件添加到数组中.
+  fds[listensock].fd = listensock;
+  fds[listensock].events = POLLIN;
+
+  int maxfd = listensock;  // fds 数组中需要监视的 Socket 的大小.
 
   while (true) {
-    // 事件: 1) 新客户端的连接请求 accept;
-    //      2) 客户端有报文到达 recv, 可以读;
-    //      3) 客户端连接已断开;
-    //      4) 可以向客户端发送报文 send, 可以写.
-    // 可读事件  可写事件
-    // select() 等待事件的发生 (监视哪些 Socket 发生了事件).
-
-    fd_set tmpfds = readfds;
-    timeval timeout;
-    timeout.tv_sec = 10;
-    timeout.tv_usec = 0;
-    int infds = select(maxfd + 1, &tmpfds, NULL, NULL, &timeout);
+    int infds = poll(fds, maxfd + 1, 5000);
 
     // 返回失败.
     if (infds < 0) {
-      perror("select() failed");
+      perror("poll() failed.");
       break;
     }
 
-    // 超时, 在本程序中, select() 函数最后一个参数为空, 不存在超时的情况,
-    // 但以下代码还是留着.
+    // 超时.
     if (infds == 0) {
-      printf("select() timeout.\n");
+      printf("poll() timeout.\n");
       continue;
     }
 
     // 如果 infds > 0, 表示有事件发生的 Socket 的数量.
+    // 这里是客户端的 Socket事件, 每次都要遍历整个数组,
+    // 因为可能有多个 Socket 有事件.
     for (int eventfd = 0; eventfd <= maxfd; ++eventfd) {
-      // 如果没有事件, continue.
-      if (FD_ISSET(eventfd, &tmpfds) <= 0) {
+      if (fds[eventfd].fd < 0) {
+        // 如果 fd 为负, 忽略它.
         continue;
       }
+
+      if ((fds[eventfd].revents & POLLIN) == 0) {
+        // 如果没有事件, continue.
+        continue;
+      }
+
+      // 先把 revents 清空.
+      fds[eventfd].revents = 0;
 
       // 如果发生事件的是 listensock, 表示有新的客户端连上来.
       if (eventfd == listensock) {
@@ -85,32 +90,31 @@ int main(int argc, char *argv[]) {
 
         printf("accept client (socket = %d) ok.\n", clientsock);
 
-        // 把新客户端的 Socket 加入可读 Socket 的集合.
-        FD_SET(clientsock, &readfds);
+        // 修改 fds 数组中 clientsock 的位置的元素.
+        fds[clientsock].fd = clientsock;
+        fds[clientsock].events = POLLIN;
+        fds[clientsock].revents = 0;
         if (maxfd < clientsock) {
           // 更新 maxfd 的值.
           maxfd = clientsock;
         }
-
       } else {
         // 如果是客户端连接的 Socket 有事件, 表示有报文发过来或者连接已断开.
+
         char buffer[1024];  // 存放从客户端读取的数据.
         memset(buffer, 0, sizeof(buffer));
-
         if (recv(eventfd, buffer, sizeof(buffer), 0) <= 0) {
           // 如果客户端的连接已断开.
           printf("client (eventfd = %d) disconnected.\n", eventfd);
-
           // 关闭客户端的 Socket.
           close(eventfd);
-          // 把已关闭客户端的 Socket 从可读 Socket 的集合中删除.
-          FD_CLR(eventfd, &readfds);
+          fds[eventfd].fd = -1;
 
           // 重新计算 maxfd 的值, 注意, 只有当 eventfd == maxfd 时才需要计算.
           if (eventfd == maxfd) {
             // 从后面往前找.
             for (int ii = maxfd; ii > 0; --ii) {
-              if (FD_ISSET(ii, &readfds)) {
+              if (fds[ii].fd != -1) {
                 maxfd = ii;
                 break;
               }
@@ -119,16 +123,7 @@ int main(int argc, char *argv[]) {
         } else {
           // 如果客户端有报文发过来.
           printf("recv (eventfd = %d): %s\n", eventfd, buffer);
-
-          // 把接收到的报文内容原封不动的发回去.
-          fd_set tmpfds;
-          FD_ZERO(&tmpfds);
-          FD_SET(eventfd, &tmpfds);
-          if (select(eventfd + 1, NULL, &tmpfds, NULL, NULL) <= 0) {
-            perror("select() failed");
-          } else {
-            send(eventfd, buffer, strlen(buffer), 0);
-          }
+          send(eventfd, buffer, strlen(buffer), 0);
         }
       }
     }
@@ -140,7 +135,7 @@ int main(int argc, char *argv[]) {
 int initserver(int port) {
   int sock = socket(AF_INET, SOCK_STREAM, 0);
   if (sock < 0) {
-    perror("socket() failed");
+    perror("socket() failed.");
     return -1;
   }
 
