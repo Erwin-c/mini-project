@@ -69,11 +69,11 @@ int main(int argc, char *argv[]) {
 
   // 打开程序的日志文件.
   if (!logfile.Open(argv[3], "a+", false)) {
-    printf("logfile.Open(%s) 失败.\n", argv[3]);
+    printf("logfile.Open(%s) failed.\n", argv[3]);
     return -1;
   }
 
-  logfile.Write("crtsurfdata 开始运行.\n");
+  logfile.Write("crtsurfdata starts.\n");
 
   // 把站点参数文件中加载到 vstcode 容器中.
   if (!LoadSTCode(argv[1])) {
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
     CrtSurfFile(argv[2], "csv");
   }
 
-  logfile.WriteEx("crtsurfdata 运行结束.\n");
+  logfile.WriteEx("crtsurfdata ends.\n");
 
   return 0;
 }
@@ -104,7 +104,7 @@ bool LoadSTCode(const char *inifile) {
 
   // 打开站点参数文件.
   if (!File.Open(inifile, "r")) {
-    logfile.Write("File.Open(%s) 失败.\n", inifile);
+    logfile.Write("File.Open(%s) failed.\n", inifile);
     return false;
   }
 
@@ -189,7 +189,7 @@ bool CrtSurfFile(const char *outpath, const char *datafmt) {
 
   // 打开文件.
   if (!File.OpenForRename(strFileName, "w")) {
-    logfile.Write("File.OpenForRename(%s) 失败.\n", strFileName);
+    logfile.Write("File.OpenForRename(%s) failed.\n", strFileName);
     return false;
   }
 

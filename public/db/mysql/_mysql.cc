@@ -37,7 +37,7 @@ void connection::setdbopt(const char *connstr) {
   // ip
   bpos = (char *)connstr;
   epos = strstr(bpos, ",");
-  if (epos != nullptrptr) {
+  if (epos != nullptr) {
     strncpy(m_env.ip, bpos, epos - bpos);
   } else
     return;
@@ -46,7 +46,7 @@ void connection::setdbopt(const char *connstr) {
   bpos = epos + 1;
   epos = 0;
   epos = strstr(bpos, ",");
-  if (epos != nullptrptr) {
+  if (epos != nullptr) {
     strncpy(m_env.user, bpos, epos - bpos);
   } else
     return;
@@ -55,7 +55,7 @@ void connection::setdbopt(const char *connstr) {
   bpos = epos + 1;
   epos = 0;
   epos = strstr(bpos, ",");
-  if (epos != nullptrptr) {
+  if (epos != nullptr) {
     strncpy(m_env.pass, bpos, epos - bpos);
   } else
     return;
@@ -64,7 +64,7 @@ void connection::setdbopt(const char *connstr) {
   bpos = epos + 1;
   epos = 0;
   epos = strstr(bpos, ",");
-  if (epos != nullptrptr) {
+  if (epos != nullptr) {
     strncpy(m_env.dbname, bpos, epos - bpos);
   } else
     return;
@@ -370,7 +370,7 @@ void MY__UpdateStr(char *str, const char *str1, const char *str2, bool bloop) {
   if ((str1 == 0) || (str2 == 0)) return;
 
   // 如果bloop为true并且str2中包函了str1的内容，直接返回，因为会进入死循环，最终导致内存溢出。
-  if ((bloop == true) && (strstr(str2, str1) != nullptrptr)) return;
+  if ((bloop == true) && (strstr(str2, str1) != nullptr)) return;
 
   // 尽可能分配更多的空间，但仍有可能出现内存溢出的情况，最好优化成string。
   int ilen = strlen(str) * 10;
@@ -568,7 +568,7 @@ int sqlstatement::bindin(unsigned int position, char *value, unsigned int len) {
   params_in[position - 1].buffer_type = MYSQL_TYPE_VAR_STRING;
   params_in[position - 1].buffer = value;
   params_in[position - 1].length = &params_in_length[position - 1];
-  params_in[position - 1].is_nullptr = &params_in_is_nullptr[position - 1];
+  params_in[position - 1].is_null = &params_in_is_null[position - 1];
 
   if (position > maxbindin) maxbindin = position;
 
@@ -592,7 +592,7 @@ int sqlstatement::bindinlob(unsigned int position, void *buffer,
   params_in[position - 1].buffer_type = MYSQL_TYPE_BLOB;
   params_in[position - 1].buffer = buffer;
   params_in[position - 1].length = size;
-  params_in[position - 1].is_nullptr = &params_in_is_nullptr[position - 1];
+  params_in[position - 1].is_null = &params_in_is_null[position - 1];
 
   if (position > maxbindin) maxbindin = position;
 
@@ -826,18 +826,18 @@ int sqlstatement::execute() {
   for (unsigned int ii = 0; ii < maxbindin; ii++) {
     if (params_in[ii].buffer_type == MYSQL_TYPE_VAR_STRING) {
       if (strlen((char *)params_in[ii].buffer) == 0) {
-        params_in_is_nullptr[ii] = true;
+        params_in_is_null[ii] = true;
       } else {
-        params_in_is_nullptr[ii] = false;
+        params_in_is_null[ii] = false;
         params_in_length[ii] = strlen((char *)params_in[ii].buffer);
       }
     }
 
     if (params_in[ii].buffer_type == MYSQL_TYPE_BLOB) {
       if ((*params_in[ii].length) == 0)
-        params_in_is_nullptr[ii] = true;
+        params_in_is_null[ii] = true;
       else
-        params_in_is_nullptr[ii] = false;
+        params_in_is_null[ii] = false;
     }
   }
 
