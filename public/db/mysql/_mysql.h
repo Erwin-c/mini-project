@@ -61,12 +61,14 @@ class connection {
   connection();   // 构造函数。
   ~connection();  // 析构函数。
 
-  // 登录数据库。
-  // connstr：数据库的登录参数，格式："ip,username,password,dbname,port"，
-  // 例如："172.16.0.15,qxidc,qxidcpwd,qxidcdb,3306"。
-  // charset：数据库的字符集，如"utf8"、"gbk"，必须与数据库保持一致，否则会出现中文乱码的情况。
-  // autocommitopt：是否启用自动提交，0-不启用，1-启用，缺省是不启用。
-  // 返回值：0-成功，其它失败，失败的代码在m_cda.rc中，失败的描述在m_cda.message中。
+  // 登录数据库.
+  // connstr: 数据库的登录参数, 格式: "ip,username,password,dbname,port",
+  // 例如: "127.0.0.1,root,rooterwin,mysql,3306".
+  // charset: 数据库的字符集, 如 "utf8", "gbk", 必须与数据库保持一致,
+  //          否则会出现中文乱码的情况.
+  // autocommitopt: 是否启用自动提交, 0-不启用, 1-启用, 缺省是不启用.
+  // 返回值: 0-成功, 其它失败,
+  //        失败的代码在 m_cda.rc 中, 失败的描述在 m_cda.message 中.
   int connecttodb(const char *connstr, const char *charset,
                   unsigned int autocommitopt = 0);
 
@@ -110,7 +112,7 @@ class sqlstatement {
 
   MYSQL_BIND params_in[MAXPARAMS];            // 输入参数。
   unsigned long params_in_length[MAXPARAMS];  // 输入参数的实际长度。
-  my_bool params_in_is_null[MAXPARAMS];       // 输入参数是否为空。
+  bool params_in_is_null[MAXPARAMS];          // 输入参数是否为空。
   unsigned maxbindin;                         // 输入参数最大的编号。
 
   MYSQL_BIND params_out[MAXPARAMS];  // 输出参数。

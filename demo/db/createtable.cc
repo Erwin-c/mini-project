@@ -6,12 +6,12 @@
 
 #include "../../public/db/mysql/_mysql.h"  // 开发框架操作 MySQL 的头文件.
 
-int main(int argc, char *argv[]) {
+int main() {
   connection conn;  // 数据库连接类.
 
   // 登录数据库, 返回值: 0-成功; 其它是失败, 存放了 MySQL 的错误代码.
   // 失败代码在 conn.m_cda.rc 中, 失败描述在 conn.m_cda.message 中.
-  if (conn.connecttodb("127.0.0.1,root,mysqlpwd,mysql,3306", "utf8") != 0) {
+  if (conn.connecttodb("127.0.0.1,root,rooterwin,mysql,3306", "utf8") != 0) {
     printf("conn.connecttodb() 失败.\n%s\n", conn.m_cda.message);
     return -1;
   }

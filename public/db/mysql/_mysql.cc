@@ -7,7 +7,7 @@
 #include "_mysql.h"
 
 connection::connection() {
-  m_conn = NULL;
+  m_conn = nullptr;
 
   m_state = 0;
 
@@ -37,7 +37,7 @@ void connection::setdbopt(const char *connstr) {
   // ip
   bpos = (char *)connstr;
   epos = strstr(bpos, ",");
-  if (epos > 0) {
+  if (epos != nullptrptr) {
     strncpy(m_env.ip, bpos, epos - bpos);
   } else
     return;
@@ -46,7 +46,7 @@ void connection::setdbopt(const char *connstr) {
   bpos = epos + 1;
   epos = 0;
   epos = strstr(bpos, ",");
-  if (epos > 0) {
+  if (epos != nullptrptr) {
     strncpy(m_env.user, bpos, epos - bpos);
   } else
     return;
@@ -55,7 +55,7 @@ void connection::setdbopt(const char *connstr) {
   bpos = epos + 1;
   epos = 0;
   epos = strstr(bpos, ",");
-  if (epos > 0) {
+  if (epos != nullptrptr) {
     strncpy(m_env.pass, bpos, epos - bpos);
   } else
     return;
@@ -64,7 +64,7 @@ void connection::setdbopt(const char *connstr) {
   bpos = epos + 1;
   epos = 0;
   epos = strstr(bpos, ",");
-  if (epos > 0) {
+  if (epos != nullptrptr) {
     strncpy(m_env.dbname, bpos, epos - bpos);
   } else
     return;
@@ -75,48 +75,50 @@ void connection::setdbopt(const char *connstr) {
 
 int connection::connecttodb(const char *connstr, const char *charset,
                             unsigned int autocommitopt) {
-  // 如果已连接上数据库，就不再连接。
-  // 所以，如果想重连数据库，必须显示的调用disconnect()方法后才能重连。
-  if (m_state == 1) return 0;
+  // 如果已连接上数据库, 就不再连接.
+  // 所以, 如果想重连数据库, 必须显示的调用 disconnect() 方法后才能重连.
+  if (m_state == 1) {
+    return 0;
+  }
 
-  // 从connstr中解析username,password,tnsname
+  // 从 connstr 中解析 username, password, tnsname.
   setdbopt(connstr);
 
   memset(&m_cda, 0, sizeof(m_cda));
 
-  if ((m_conn = mysql_init(NULL)) == NULL) {
+  if ((m_conn = mysql_init(nullptr)) == nullptr) {
     m_cda.rc = -1;
     strncpy(m_cda.message, "initialize mysql failed.\n", 128);
     return -1;
   }
 
   if (mysql_real_connect(m_conn, m_env.ip, m_env.user, m_env.pass, m_env.dbname,
-                         m_env.port, NULL, 0) == NULL) {
+                         m_env.port, nullptr, 0) == nullptr) {
     m_cda.rc = mysql_errno(m_conn);
     strncpy(m_cda.message, mysql_error(m_conn), 2000);
     mysql_close(m_conn);
-    m_conn = NULL;
+    m_conn = nullptr;
     return -1;
   }
 
-  // 设置事务模式，0-关闭自动提交，1-开启自动提交
+  // 设置事务模式, 0-关闭自动提交, 1-开启自动提交.
   m_autocommitopt = autocommitopt;
 
   if (mysql_autocommit(m_conn, m_autocommitopt) != 0) {
     m_cda.rc = mysql_errno(m_conn);
     strncpy(m_cda.message, mysql_error(m_conn), 2000);
     mysql_close(m_conn);
-    m_conn = NULL;
+    m_conn = nullptr;
     return -1;
   }
 
-  // 设置字符集
+  // 设置字符集.
   character(charset);
 
   m_state = 1;
 
-  // 设置事务隔离级别为read committed
-  execute("set session transaction isolation level read committed");
+  // 设置事务隔离级别为 read committed.
+  execute("set session transaction isolation level read committed.");
 
   return 0;
 }
@@ -143,7 +145,7 @@ int connection::disconnect() {
 
   mysql_close(m_conn);
 
-  m_conn = NULL;
+  m_conn = nullptr;
 
   m_state = 0;
 
@@ -163,7 +165,7 @@ int connection::rollback() {
     m_cda.rc = mysql_errno(m_conn);
     strncpy(m_cda.message, mysql_error(m_conn), 2000);
     mysql_close(m_conn);
-    m_conn = NULL;
+    m_conn = nullptr;
     return -1;
   }
 
@@ -183,7 +185,7 @@ int connection::commit() {
     m_cda.rc = mysql_errno(m_conn);
     strncpy(m_cda.message, mysql_error(m_conn), 2000);
     mysql_close(m_conn);
-    m_conn = NULL;
+    m_conn = nullptr;
     return -1;
   }
 
@@ -214,7 +216,7 @@ sqlstatement::sqlstatement() { initial(); }
 void sqlstatement::initial() {
   m_state = 0;
 
-  m_handle = NULL;
+  m_handle = nullptr;
 
   memset(&m_cda, 0, sizeof(m_cda));
 
@@ -255,7 +257,7 @@ int sqlstatement::connect(connection *conn) {
     return -1;
   }
 
-  if ((m_handle = mysql_stmt_init(m_conn->m_conn)) == NULL) {
+  if ((m_handle = mysql_stmt_init(m_conn->m_conn)) == nullptr) {
     err_report();
     return m_cda.rc;
   }
@@ -276,7 +278,7 @@ int sqlstatement::disconnect() {
 
   m_state = 0;
 
-  m_handle = NULL;
+  m_handle = nullptr;
 
   memset(&m_cda, 0, sizeof(m_cda));
 
@@ -368,7 +370,7 @@ void MY__UpdateStr(char *str, const char *str1, const char *str2, bool bloop) {
   if ((str1 == 0) || (str2 == 0)) return;
 
   // 如果bloop为true并且str2中包函了str1的内容，直接返回，因为会进入死循环，最终导致内存溢出。
-  if ((bloop == true) && (strstr(str2, str1) > 0)) return;
+  if ((bloop == true) && (strstr(str2, str1) != nullptrptr)) return;
 
   // 尽可能分配更多的空间，但仍有可能出现内存溢出的情况，最好优化成string。
   int ilen = strlen(str) * 10;
@@ -566,7 +568,7 @@ int sqlstatement::bindin(unsigned int position, char *value, unsigned int len) {
   params_in[position - 1].buffer_type = MYSQL_TYPE_VAR_STRING;
   params_in[position - 1].buffer = value;
   params_in[position - 1].length = &params_in_length[position - 1];
-  params_in[position - 1].is_null = &params_in_is_null[position - 1];
+  params_in[position - 1].is_nullptr = &params_in_is_nullptr[position - 1];
 
   if (position > maxbindin) maxbindin = position;
 
@@ -590,7 +592,7 @@ int sqlstatement::bindinlob(unsigned int position, void *buffer,
   params_in[position - 1].buffer_type = MYSQL_TYPE_BLOB;
   params_in[position - 1].buffer = buffer;
   params_in[position - 1].length = size;
-  params_in[position - 1].is_null = &params_in_is_null[position - 1];
+  params_in[position - 1].is_nullptr = &params_in_is_nullptr[position - 1];
 
   if (position > maxbindin) maxbindin = position;
 
@@ -821,21 +823,21 @@ int sqlstatement::execute() {
   }
 
   // 处理字符串字段为空的情况。
-  for (int ii = 0; ii < maxbindin; ii++) {
+  for (unsigned int ii = 0; ii < maxbindin; ii++) {
     if (params_in[ii].buffer_type == MYSQL_TYPE_VAR_STRING) {
       if (strlen((char *)params_in[ii].buffer) == 0) {
-        params_in_is_null[ii] = true;
+        params_in_is_nullptr[ii] = true;
       } else {
-        params_in_is_null[ii] = false;
+        params_in_is_nullptr[ii] = false;
         params_in_length[ii] = strlen((char *)params_in[ii].buffer);
       }
     }
 
     if (params_in[ii].buffer_type == MYSQL_TYPE_BLOB) {
       if ((*params_in[ii].length) == 0)
-        params_in_is_null[ii] = true;
+        params_in_is_nullptr[ii] = true;
       else
-        params_in_is_null[ii] = false;
+        params_in_is_nullptr[ii] = false;
     }
   }
 
