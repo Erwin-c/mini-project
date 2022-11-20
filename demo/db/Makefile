@@ -1,8 +1,8 @@
 # MySQL 头文件存放的目录.
-MYSQLINCL = -I/usr/local/mysql/include
+MYSQLINCL = -I/home/erwin/Coding/mysql/include
 
 # MySQL 库文件存放的目录.
-MYSQLLIB = -L/usr/local/mysql/lib
+MYSQLLIB = -L/home/erwin/Coding/mysql/lib
 
 # 需要链接的 MySQL 库.
 MYSQLLIBS = -lmysqlclient
