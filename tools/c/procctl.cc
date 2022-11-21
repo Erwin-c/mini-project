@@ -4,16 +4,18 @@
  *  Author: Erwin
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/wait.h>
+#include "_public.h"
 
 int main(int argc, char *argv[]) {
   if (argc < 3) {
     printf("Using: ./procctl timetvl program argv ...\n");
     printf(
-        "Example: ~/Coding/mini-project/tools/bin/procctl 5 "
-        "/usr/bin/ls\n\n");
+        "Example: ~Coding/mini-project/tools/bin/procctl 5 "
+        "~/Coding/mini-project/idc/bin/crtmetdata "
+        "~/Coding/mini-project/idc/ini/stcode.ini "
+        "~/Coding/mini-project/tmp/metdata "
+        "~/Coding/mini-project/log/crtmetdata.log "
+        "xml,json,csv\n\n");
 
     printf("本程序是服务程序的调度程序, 周期性启动服务程序或 shell 脚本.\n");
     printf(
@@ -27,11 +29,8 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  // 关闭信号和IO, 本程序不希望被打扰.
-  for (int ii = 0; ii < 64; ++ii) {
-    signal(ii, SIG_IGN);
-    // close(ii);
-  }
+  // 关闭信号和 IO, 本程序不希望被打扰.
+  CloseIOAndSignal(true);
 
   // 生成子进程, 父进程退出, 让程序运行在后台, 由系统 1 号进程托管.
   if (fork() != 0) {

@@ -675,73 +675,85 @@ bool Writen(const int sockfd, const char *buffer, const size_t n);
 // 关闭全部的信号和输入输出,, 缺省只关闭信号, 不关 IO.
 void CloseIOAndSignal(bool bCloseIO = false);
 
-// 信号量。
+#define MAXNUMP 1000    // 最大的进程数量.
+#define SHMKEYP 0x5095  // 共享内存的 key.
+#define SEMKEYP 0x5095  // 信号量的 key.
+
+// 查看共享内存:  ipcs -m
+// 删除共享内存:  ipcrm -m shmid
+// 查看信号量:    ipcs -s
+// 删除信号量:    ipcrm sem semid
+
+// 信号量.
 class CSEM {
+ public:
+  CSEM();
+
+  // 如果信号量已存在, 获取信号量; 如果信号量不存在, 则创建它并初始化为 value.
+  bool init(key_t key, unsigned short value = 1, short sem_flg = SEM_UNDO);
+
+  // 信号量的 P 操作.
+  bool P(short sem_op = -1);
+
+  // 信号量的 V 操作.
+  bool V(short sem_op = 1);
+
+  // 获取信号量的值, 成功返回信号量的值, 失败返回 -1.
+  int value();
+
+  // 销毁信号量.
+  bool destroy();
+
+  ~CSEM();
+
  private:
-  union semun  // 用于信号量操作的共同体。
-  {
+  // 用于信号量操作的共同体.
+  union semun {
     int val;
-    struct semid_ds *buf;
+    semid_ds *buf;
     unsigned short *arry;
   };
 
-  int m_semid;  // 信号量描述符。
+  int m_semid;  // 信号量描述符.
 
-  // 如果把sem_flg设置为SEM_UNDO，操作系统将跟踪进程对信号量的修改情况，
-  // 在全部修改过信号量的进程（正常或异常）终止后，操作系统将把信号量恢
-  // 复为初始值（就像撤消了全部进程对信号的操作）。
-  // 如果信号量用于表示可用资源的数量（不变的），设置为SEM_UNDO更合适。
-  // 如果信号量用于生产消费者模型，设置为0更合适。
-  // 注意，网上查到的关于sem_flg的用法基本上是错的，一定要自己动手多测试。
+  // 如果把 m_sem_flg 设置为 SEM_UNDO, 操作系统将跟踪进程对信号量的修改情况,
+  // 在全部修改过信号量的进程 (正常或异常) 终止后, 操作系统将把信号量恢
+  // 复为初始值 (就像撤消了全部进程对信号的操作).
+  // 如果信号量用于表示可用资源的数量 (不变的), 设置为 SEM_UNDO 更合适.
+  // 如果信号量用于生产消费者模型, 设置为 0 更合适.
+  // 注意, 网上查到的关于 m_sem_flg 的用法基本上是错的, 一定要自己动手多测试.
   short m_sem_flg;
-
- public:
-  CSEM();
-  // 如果信号量已存在，获取信号量；如果信号量不存在，则创建它并初始化为value。
-  bool init(key_t key, unsigned short value = 1, short sem_flg = SEM_UNDO);
-  bool P(short sem_op = -1);  // 信号量的P操作。
-  bool V(short sem_op = 1);   // 信号量的V操作。
-  int value();  // 获取信号量的值，成功返回信号量的值，失败返回-1。
-  bool destroy();  // 销毁信号量。
-  ~CSEM();
 };
 
-// 进程心跳信息的结构体。
+// 进程心跳信息的结构体.
 struct st_procinfo {
-  int pid;         // 进程id。
-  char pname[51];  // 进程名称，可以为空。
-  int timeout;     // 超时时间，单位：秒。
-  time_t atime;    // 最后一次心跳的时间，用整数表示。
+  int pid;         // 进程 id.
+  char pname[51];  // 进程名称, 可以为空.
+  int timeout;     // 超时时间, 单位: 秒.
+  time_t atime;    // 最后一次心跳的时间, 用整数表示.
 };
-
-#define MAXNUMP 1000    // 最大的进程数量。
-#define SHMKEYP 0x5095  // 共享内存的key。
-#define SEMKEYP 0x5095  // 信号量的key。
-
-// 查看共享内存：  ipcs -m
-// 删除共享内存：  ipcrm -m shmid
-// 查看信号量：    ipcs -s
-// 删除信号量：    ipcrm sem semid
 
 // 进程心跳操作类.
 class CPActive {
- private:
-  CSEM m_sem;          // 用于给共享内存加锁的信号量id。
-  int m_shmid;         // 共享内存的id。
-  int m_pos;           // 当前进程在共享内存进程组中的位置。
-  st_procinfo *m_shm;  // 指向共享内存的地址空间。
-
  public:
-  CPActive();  // 初始化成员变量。
+  // 初始化成员变量.
+  CPActive();
 
-  // 把当前进程的心跳信息加入共享内存进程组中。
+  // 把当前进程的心跳信息加入共享内存进程组中.
   bool AddPInfo(const int timeout, const char *pname = 0,
-                CLogFile *logfile = 0);
+                CLogFile *logfile = nullptr);
 
-  // 更新共享内存进程组中当前进程的心跳时间。
+  // 更新共享内存进程组中当前进程的心跳时间.
   bool UptATime();
 
-  ~CPActive();  // 从共享内存中删除当前进程的心跳记录。
+  // 从共享内存中删除当前进程的心跳记录.
+  ~CPActive();
+
+ private:
+  CSEM m_sem;          // 用于给共享内存加锁的信号量 id.
+  int m_shmid;         // 共享内存的 id.
+  int m_pos;           // 当前进程在共享内存进程组中的位置.
+  st_procinfo *m_shm;  // 指向共享内存的地址空间.
 };
 
 #endif  //__PUBLIC_H_
