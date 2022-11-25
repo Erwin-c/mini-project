@@ -3,12 +3,12 @@
 # General compiler flags
 COMPILE_FLAGS = -std=c++2a -g -Wall -Wextra
 
-all: crtmetdata
+all: crtsurfdata
 
-crtmetdata: crtmetdata.cc
-	g++ $(COMPILE_FLAGS) -o crtmetdata crtmetdata.cc ../../public/_public.cc -I../../public
-	cp crtmetdata ../bin/.
+crtsurfdata: crtsurfdata.cc
+	g++ $(COMPILE_FLAGS) -o crtsurfdata crtsurfdata.cc ../../public/_public.cc -I../../public
+	cp crtsurfdata ../bin/.
 
 clean:
-	rm crtmetdata
-	rm ../bin/crtmetdata
+	rm crtsurfdata
+	rm ../bin/crtsurfdata

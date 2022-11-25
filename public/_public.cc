@@ -1966,20 +1966,6 @@ bool Writen(const int sockfd, const char *buffer, const size_t n) {
   return true;
 }
 
-void CloseIOAndSignal(bool bCloseIO) {
-  int ii = 0;
-
-  for (ii = 0; ii < 64; ++ii) {
-    if (bCloseIO) {
-      close(ii);
-    }
-
-    signal(ii, SIG_IGN);
-  }
-
-  return;
-}
-
 // 复制文件，类似Linux系统的cp命令。
 // srcfilename：原文件名，建议采用绝对路径的文件名。
 // dstfilename：目标文件名，建议采用绝对路径的文件名。
@@ -2084,34 +2070,51 @@ double CTimer::Elapsed() {
   return dend - dstart;
 }
 
+void CloseIOAndSignal(bool bCloseIO) {
+  int ii = 0;
+
+  for (ii = 0; ii < 64; ++ii) {
+    if (bCloseIO) {
+      close(ii);
+    }
+
+    signal(ii, SIG_IGN);
+  }
+
+  return;
+}
+
 CSEM::CSEM() {
   m_semid = -1;
   m_sem_flg = SEM_UNDO;
 }
 
-// 如果信号量已存在，获取信号量；如果信号量不存在，则创建它并初始化为value。
 bool CSEM::init(key_t key, unsigned short value, short sem_flg) {
-  if (m_semid != -1) return false;
+  if (m_semid != -1) {
+    return false;
+  }
 
   m_sem_flg = sem_flg;
 
-  // 信号量的初始化不能直接用semget(key,1,0666|IPC_CREAT)，因为信号量创建后，初始值是0。
+  // 信号量的初始化不能直接用 semget(key, 1, 0666 | IPC_CREAT),
+  // 因为信号量创建后, 初始值是 0.
 
-  // 信号量的初始化分三个步骤：
-  // 1）获取信号量，如果成功，函数返回。
-  // 2）如果失败，则创建信号量。
-  // 3) 设置信号量的初始值。
+  // 信号量的初始化分三个步骤:
+  // 1) 获取信号量, 如果成功, 函数返回.
+  // 2) 如果失败, 则创建信号量.
+  // 3) 设置信号量的初始值.
 
-  // 获取信号量。
+  // 获取信号量.
   if ((m_semid = semget(key, 1, 0666)) == -1) {
-    // 如果信号量不存在，创建它。
+    // 如果信号量不存在, 创建它.
     if (errno == 2) {
-      // 用IPC_EXCL标志确保只有一个进程创建并初始化信号量，其它进程只能获取。
+      // 用 IPC_EXCL 标志确保只有一个进程创建并初始化信号量, 其它进程只能获取.
       if ((m_semid = semget(key, 1, 0666 | IPC_CREAT | IPC_EXCL)) == -1) {
         if (errno != EEXIST) {
           perror("init 1 semget()");
           return false;
         }
+
         if ((m_semid = semget(key, 1, 0666)) == -1) {
           perror("init 2 semget()");
           return false;
@@ -2120,9 +2123,9 @@ bool CSEM::init(key_t key, unsigned short value, short sem_flg) {
         return true;
       }
 
-      // 信号量创建成功后，还需要把它初始化成value。
-      union semun sem_union;
-      sem_union.val = value;  // 设置信号量的初始值。
+      // 信号量创建成功后, 还需要把它初始化成 value.
+      semun sem_union;
+      sem_union.val = value;  // 设置信号量的初始值.
       if (semctl(m_semid, 0, SETVAL, sem_union) < 0) {
         perror("init semctl()");
         return false;
@@ -2137,11 +2140,13 @@ bool CSEM::init(key_t key, unsigned short value, short sem_flg) {
 }
 
 bool CSEM::P(short sem_op) {
-  if (m_semid == -1) return false;
+  if (m_semid == -1) {
+    return false;
+  }
 
-  struct sembuf sem_b;
-  sem_b.sem_num = 0;      // 信号量编号，0代表第一个信号量。
-  sem_b.sem_op = sem_op;  // P操作的sem_op必须小于0。
+  sembuf sem_b;
+  sem_b.sem_num = 0;      // 信号量编号, 0 代表第一个信号量.
+  sem_b.sem_op = sem_op;  // P 操作的 sem_op 必须小于0.
   sem_b.sem_flg = m_sem_flg;
   if (semop(m_semid, &sem_b, 1) == -1) {
     perror("p semop()");
@@ -2152,11 +2157,13 @@ bool CSEM::P(short sem_op) {
 }
 
 bool CSEM::V(short sem_op) {
-  if (m_semid == -1) return false;
+  if (m_semid == -1) {
+    return false;
+  }
 
-  struct sembuf sem_b;
-  sem_b.sem_num = 0;      // 信号量编号，0代表第一个信号量。
-  sem_b.sem_op = sem_op;  // V操作的sem_op必须大于0。
+  sembuf sem_b;
+  sem_b.sem_num = 0;      // 信号量编号, 0 代表第一个信号量.
+  sem_b.sem_op = sem_op;  // V 操作的 sem_op 必须大于 0.
   sem_b.sem_flg = m_sem_flg;
   if (semop(m_semid, &sem_b, 1) == -1) {
     perror("V semop()");
@@ -2166,11 +2173,12 @@ bool CSEM::V(short sem_op) {
   return true;
 }
 
-// 获取信号量的值，成功返回信号量的值，失败返回-1。
 int CSEM::value() { return semctl(m_semid, 0, GETVAL); }
 
 bool CSEM::destroy() {
-  if (m_semid == -1) return false;
+  if (m_semid == -1) {
+    return false;
+  }
 
   if (semctl(m_semid, 0, IPC_RMID) == -1) {
     perror("destroy semctl()");
@@ -2188,61 +2196,66 @@ CPActive::CPActive() {
   m_shm = 0;
 }
 
-// 把当前进程的心跳信息加入共享内存进程组中。
 bool CPActive::AddPInfo(const int timeout, const char *pname,
                         CLogFile *logfile) {
-  if (m_pos != -1) return true;
+  if (m_pos != -1) {
+    return true;
+  }
 
-  if (m_sem.init(SEMKEYP) == false)  // 初始化信号量。
-  {
-    if (logfile != 0)
-      logfile->Write("创建/获取信号量(%x)失败。\n", SEMKEYP);
-    else
-      printf("创建/获取信号量(%x)失败。\n", SEMKEYP);
-
+  // 初始化信号量.
+  if (!m_sem.init(SEMKEYP)) {
+    if (logfile != nullptr) {
+      logfile->Write("创建/获取信号量 (%x) 失败.\n", SEMKEYP);
+    } else {
+      printf("创建/获取信号量 (%x) 失败.\n", SEMKEYP);
+    }
     return false;
   }
 
-  // 创建/获取共享内存，键值为SHMKEYP，大小为MAXNUMP个st_procinfo结构体的大小。
-  if ((m_shmid = shmget((key_t)SHMKEYP, MAXNUMP * sizeof(struct st_procinfo),
+  // 创建/获取共享内存, 键值为 SHMKEYP, 大小为 MAXNUMP 个 st_procinfo
+  // 结构体的大小.
+  if ((m_shmid = shmget((key_t)SHMKEYP, MAXNUMP * sizeof(st_procinfo),
                         0666 | IPC_CREAT)) == -1) {
-    if (logfile != 0)
-      logfile->Write("创建/获取共享内存(%x)失败。\n", SHMKEYP);
-    else
-      printf("创建/获取共享内存(%x)失败。\n", SHMKEYP);
+    if (logfile != nullptr) {
+      logfile->Write("创建/获取共享内存 (%x) 失败.\n", SHMKEYP);
+    } else {
+      printf("创建/获取共享内存 (%x) 失败.\n", SHMKEYP);
+    }
 
     return false;
   }
 
-  // 将共享内存连接到当前进程的地址空间。
-  m_shm = (struct st_procinfo *)shmat(m_shmid, 0, 0);
+  // 将共享内存连接到当前进程的地址空间.
+  m_shm = (st_procinfo *)shmat(m_shmid, 0, 0);
 
-  struct st_procinfo stprocinfo;  // 当前进程心跳信息的结构体。
+  st_procinfo stprocinfo;  // 当前进程心跳信息的结构体.
   memset(&stprocinfo, 0, sizeof(stprocinfo));
 
-  stprocinfo.pid = getpid();     // 当前进程号。
-  stprocinfo.timeout = timeout;  // 超时时间。
-  stprocinfo.atime = time(0);    // 当前时间。
-  STRNCPY(stprocinfo.pname, sizeof(stprocinfo.pname), pname, 50);  // 进程名。
+  stprocinfo.pid = getpid();     // 当前进程号.
+  stprocinfo.timeout = timeout;  // 超时时间.
+  stprocinfo.atime = time(0);    // 当前时间.
+  STRNCPY(stprocinfo.pname, sizeof(stprocinfo.pname), pname, 50);  // 进程名.
 
-  // 进程id是循环使用的，如果曾经有一个进程异常退出，没有清理自己的心跳信息，
-  // 它的进程信息将残留在共享内存中，不巧的是，当前进程重用了上述进程的id，
-  // 这样就会在共享内存中存在两个进程id相同的记录，守护进程检查到残留进程的
-  // 心跳时，会向进程id发送退出信号，这个信号将误杀当前进程。
+  // 进程 id 是循环使用的, 如果曾经有一个进程异常退出, 没有清理自己的心跳信息,
+  // 它的进程信息将残留在共享内存中, 不巧的是, 当前进程重用了上述进程的 id,
+  // 这样就会在共享内存中存在两个进程 id 相同的记录, 守护进程检查到残留进程的
+  // 心跳时, 会向进程 id 发送退出信号, 这个信号将误杀当前进程.
 
-  // 如果共享内存中存在当前进程编号，一定是其它进程残留的数据，当前进程就重用该位置。
-  for (int ii = 0; ii < MAXNUMP; ii++) {
+  // 如果共享内存中存在当前进程编号, 一定是其它进程残留的数据,
+  // 当前进程就重用该位置.
+  for (int ii = 0; ii < MAXNUMP; ++ii) {
     if ((m_shm + ii)->pid == stprocinfo.pid) {
       m_pos = ii;
       break;
     }
   }
 
-  m_sem.P();  // 给共享内存上锁。
+  // 给共享内存上锁.
+  m_sem.P();
 
   if (m_pos == -1) {
-    // 如果m_pos==-1，共享内存的进程组中不存在当前进程编号，找一个空位置。
-    for (int ii = 0; ii < MAXNUMP; ii++)
+    // 如果 m_pos == -1, 共享内存的进程组中不存在当前进程编号, 找一个空位置.
+    for (int ii = 0; ii < MAXNUMP; ++ii)
       if ((m_shm + ii)->pid == 0) {
         m_pos = ii;
         break;
@@ -2250,27 +2263,31 @@ bool CPActive::AddPInfo(const int timeout, const char *pname,
   }
 
   if (m_pos == -1) {
-    if (logfile != 0)
-      logfile->Write("共享内存空间已用完。\n");
-    else
-      printf("共享内存空间已用完。\n");
+    if (logfile != nullptr) {
+      logfile->Write("共享内存空间已用完.\n");
+    } else {
+      printf("共享内存空间已用完.\n");
+    }
 
-    m_sem.V();  // 解锁。
+    // 解锁.
+    m_sem.V();
 
     return false;
   }
 
-  // 把当前进程的心跳信息存入共享内存的进程组中。
-  memcpy(m_shm + m_pos, &stprocinfo, sizeof(struct st_procinfo));
+  // 把当前进程的心跳信息存入共享内存的进程组中.
+  memcpy(m_shm + m_pos, &stprocinfo, sizeof(st_procinfo));
 
-  m_sem.V();  // 解锁。
+  // 解锁.
+  m_sem.V();
 
   return true;
 }
 
-// 更新共享内存进程组中当前进程的心跳时间。
 bool CPActive::UptATime() {
-  if (m_pos == -1) return false;
+  if (m_pos == -1) {
+    return false;
+  }
 
   (m_shm + m_pos)->atime = time(0);
 
@@ -2278,9 +2295,13 @@ bool CPActive::UptATime() {
 }
 
 CPActive::~CPActive() {
-  // 把当前进程从共享内存的进程组中移去。
-  if (m_pos != -1) memset(m_shm + m_pos, 0, sizeof(struct st_procinfo));
+  // 把当前进程从共享内存的进程组中移去.
+  if (m_pos != -1) {
+    memset(m_shm + m_pos, 0, sizeof(st_procinfo));
+  }
 
-  // 把共享内存从当前进程中分离。
-  if (m_shm != 0) shmdt(m_shm);
+  // 把共享内存从当前进程中分离.
+  if (m_shm != 0) {
+    shmdt(m_shm);
+  }
 }

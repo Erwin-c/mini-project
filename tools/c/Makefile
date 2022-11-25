@@ -10,7 +10,7 @@ COMPILE_FLAGS = -std=c++2a -g -Wall -Wextra
 all: procctl checkproc gzipfiles deletefiles ftpgetfiles ftpputfiles tcpgetfiles tcpputfiles fileserver
 
 procctl: procctl.cc
-	g++ $(COMPILE_FLAGS) -o procctl procctl.cc
+	g++ $(COMPILE_FLAGS) -o procctl procctl.cc $(PUBINCL) $(PUBCPP)
 	cp procctl ../bin/.
 
 checkproc: checkproc.cc
