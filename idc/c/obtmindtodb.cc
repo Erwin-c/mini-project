@@ -7,11 +7,11 @@
 
 #include "idcapp.h"
 
-CLogFile logfile;
+CLogFile logfile;  // 日志类.
 
-CPActive PActive;
+CPActive PActive;  // 进程心跳类.
 
-connection conn;
+connection conn;  // 数据库连接类.
 
 // 业务处理主函数.
 bool _obtmindtodb(char *pathname, char *connstr, char *charset);
@@ -51,37 +51,6 @@ int main(int argc, char *argv[]) {
   _obtmindtodb(argv[1], argv[2], argv[3]);
 
   return 0;
-}
-
-void _help() {
-  printf("\n");
-  printf("Using:./obtmindtodb pathname connstr charset logfile\n");
-
-  printf(
-      "Example: ~/Coding/mini-project/tools/bin/procctl 10 "
-      "~/Coding/mini-project/idc/bin/obtmindtodb "
-      "~/Coding/mini-project/idcdata/surfdata "
-      "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
-      "~/Coding/mini-project/log/idc/obtmindtodb.log\n\n");
-
-  printf(
-      "本程序用于把全国站点分钟观测数据保存到数据库的 T_ZHOBTMIND 表中,"
-      "数据只插入, 不更新.\n");
-  printf("pathname 全国站点分钟观测数据文件存放的目录.\n");
-  printf("connstr  数据库连接参数: ip,username,password,dbname,port.\n");
-  printf("charset  数据库的字符集.\n");
-  printf("logfile  本程序运行的日志文件名.\n");
-  printf("程序每 10 秒运行一次, 由 procctl 调度.\n\n\n");
-
-  return;
-}
-
-void EXIT(int sig) {
-  logfile.Write("程序退出, sig = %d\n", sig);
-
-  conn.disconnect();
-
-  exit(0);
 }
 
 bool _obtmindtodb(char *pathname, char *connstr, char *charset) {
@@ -166,4 +135,40 @@ bool _obtmindtodb(char *pathname, char *connstr, char *charset) {
   }
 
   return true;
+}
+
+void _help() {
+  printf("\n");
+  printf("Using:./obtmindtodb pathname connstr charset logfile\n");
+
+  printf(
+      "Example: ~/Coding/mini-project/tools/bin/procctl 10 "
+      "~/Coding/mini-project/idc/bin/obtmindtodb "
+      "~/Coding/mini-project/idcdata/surfdata "
+      "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
+      "~/Coding/mini-project/log/idc/obtmindtodb.log\n");
+  printf(
+      "        ~/Coding/mini-project/idc/bin/obtmindtodb "
+      "~/Coding/mini-project/idcdata/surfdata "
+      "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
+      "~/Coding/mini-project/log/idc/obtmindtodb.log\n\n");
+
+  printf(
+      "本程序用于把全国站点分钟观测数据保存到数据库的 T_ZHOBTMIND 表中,"
+      "数据只插入, 不更新.\n");
+  printf("pathname 全国站点分钟观测数据文件存放的目录.\n");
+  printf("connstr  数据库连接参数: ip,username,password,dbname,port.\n");
+  printf("charset  数据库的字符集.\n");
+  printf("logfile  本程序运行的日志文件名.\n");
+  printf("程序每 10 秒运行一次, 由 procctl 调度.\n\n\n");
+
+  return;
+}
+
+void EXIT(int sig) {
+  logfile.Write("程序退出, sig = %d\n", sig);
+
+  conn.disconnect();
+
+  exit(0);
 }

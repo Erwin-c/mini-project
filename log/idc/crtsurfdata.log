@@ -1,47 +1,5 @@
-2022-10-29 08:45:42 crtsurfdata starts.
-2022-10-29 08:45:42 生成数据文件 /home/erwin/Coding/mini-project/tmp/idc/surfdata/SURF_ZH_20221029084542_188037.xml 成功, 数据时间 20221029084542, 记录数 839.
-2022-10-29 08:45:42 生成数据文件 /home/erwin/Coding/mini-project/tmp/idc/surfdata/SURF_ZH_20221029084542_188037.json 成功, 数据时间 20221029084542, 记录数 839.
-2022-10-29 08:45:42 生成数据文件 /home/erwin/Coding/mini-project/tmp/idc/surfdata/SURF_ZH_20221029084542_188037.csv 成功, 数据时间 20221029084542, 记录数 839.
-crtsurfdata ends.
-2022-11-21 16:52:48 crtsurfdata 开始.
-2022-11-21 16:52:48 生成数据文件 /home/erwin/Coding/mini-project/tmp/idc/surfdata/SURF_ZH_20220523065472_81811.xml 成功, 数据时间 20220523065472, 记录数 839.
-2022-11-21 16:52:48 生成数据文件 /home/erwin/Coding/mini-project/tmp/idc/surfdata/SURF_ZH_20220523065472_81811.json 成功, 数据时间 20220523065472, 记录数 839.
-2022-11-21 16:52:48 生成数据文件 /home/erwin/Coding/mini-project/tmp/idc/surfdata/SURF_ZH_20220523065472_81811.csv 成功, 数据时间 20220523065472, 记录数 839.
-crtsurfdata 结束.
-2022-11-21 17:05:30 crtsurfdata 开始.
-2022-11-21 17:05:37 程序退出, sig = 2
-2022-11-26 18:09:29 crtsurfdata 开始运行.
-2022-11-26 18:09:29 生成数据文件 /home/erwin/Coding/mini-project/tmp/idc/surfdata/SURF_ZH_20220523065472_29506.xml 成功, 数据时间 20220523065472, 记录数 839.
-2022-11-26 18:09:29 生成数据文件 /home/erwin/Coding/mini-project/tmp/idc/surfdata/SURF_ZH_20220523065472_29506.json 成功, 数据时间 20220523065472, 记录数 839.
-2022-11-26 18:09:29 生成数据文件 /home/erwin/Coding/mini-project/tmp/idc/surfdata/SURF_ZH_20220523065472_29506.csv 成功, 数据时间 20220523065472, 记录数 839.
-crtsurfdata 运行结束.
-2022-11-26 18:11:16 crtsurfdata 开始运行.
-2022-11-26 18:11:16 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20220523065472_29761.xml 成功, 数据时间 20220523065472, 记录数 839.
-2022-11-26 18:11:16 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20220523065472_29761.json 成功, 数据时间 20220523065472, 记录数 839.
-2022-11-26 18:11:16 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20220523065472_29761.csv 成功, 数据时间 20220523065472, 记录数 839.
-crtsurfdata 运行结束.
-2022-11-26 18:12:14 crtsurfdata 开始运行.
-2022-11-26 18:12:14 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20220523065472_29848.xml 成功, 数据时间 20220523065472, 记录数 839.
-2022-11-26 18:12:14 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20220523065472_29848.json 成功, 数据时间 20220523065472, 记录数 839.
-2022-11-26 18:12:14 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20220523065472_29848.csv 成功, 数据时间 20220523065472, 记录数 839.
-crtsurfdata 运行结束.
-2022-11-26 18:15:26 crtsurfdata 开始运行.
-2022-11-26 18:15:26 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126181526_30161.xml 成功, 数据时间 20221126181526, 记录数 839.
-2022-11-26 18:15:26 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126181526_30161.json 成功, 数据时间 20221126181526, 记录数 839.
-2022-11-26 18:15:26 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126181526_30161.csv 成功, 数据时间 20221126181526, 记录数 839.
-crtsurfdata 运行结束.
-2022-11-26 18:16:10 crtsurfdata 开始运行.
-2022-11-26 18:16:10 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126181610_30240.xml 成功, 数据时间 20221126181610, 记录数 839.
-2022-11-26 18:16:10 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126181610_30240.json 成功, 数据时间 20221126181610, 记录数 839.
-2022-11-26 18:16:10 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126181610_30240.csv 成功, 数据时间 20221126181610, 记录数 839.
-crtsurfdata 运行结束.
-2022-11-26 18:18:03 crtsurfdata 开始运行.
-2022-11-26 18:18:03 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126181803_30315.xml 成功, 数据时间 20221126181803, 记录数 839.
-2022-11-26 18:18:03 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126181803_30315.json 成功, 数据时间 20221126181803, 记录数 839.
-2022-11-26 18:18:03 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126181803_30315.csv 成功, 数据时间 20221126181803, 记录数 839.
-crtsurfdata 运行结束.
-2022-11-26 18:22:31 crtsurfdata 开始运行.
-2022-11-26 18:22:31 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126182231_30780.xml 成功, 数据时间 20221126182231, 记录数 839.
-2022-11-26 18:22:31 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126182231_30780.json 成功, 数据时间 20221126182231, 记录数 839.
-2022-11-26 18:22:31 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20221126182231_30780.csv 成功, 数据时间 20221126182231, 记录数 839.
+2022-11-26 20:42:15 crtsurfdata 开始运行.
+2022-11-26 20:42:15 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20220523065432_37681.xml 成功, 数据时间 20220523065432, 记录数 839.
+2022-11-26 20:42:15 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20220523065432_37681.json 成功, 数据时间 20220523065432, 记录数 839.
+2022-11-26 20:42:15 生成数据文件 /home/erwin/Coding/mini-project/idcdata/surfdata/SURF_ZH_20220523065432_37681.csv 成功, 数据时间 20220523065432, 记录数 839.
 crtsurfdata 运行结束.

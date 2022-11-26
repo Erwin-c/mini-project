@@ -1,0 +1,10 @@
+2022-11-26 21:45:12 connect database(127.0.0.1,root,rooterwin,mysql,3306) 成功.
+2022-11-26 21:45:12 delete from T_ZHOBTMIND   where ddatetime<timestampadd(minute,-120,now())
+2022-11-26 21:45:12 exec 成功 (rpc = 839).
+2022-11-26 21:45:12 delete from T_ZHOBTMIND1  where ddatetime<timestampadd(minute,-120,now())
+2022-11-26 21:45:12 exec 失败 (Table 'mysql.T_ZHOBTMIND1' doesn't exist).
+2022-11-26 21:45:12 delete from T_ZHOBTMIND2  where ddatetime<timestampadd(minute,-120,now())
+2022-11-26 21:45:12 exec 失败 (Table 'mysql.T_ZHOBTMIND2' doesn't exist).
+2022-11-26 21:45:12 delete from T_ZHOBTMIND3  where ddatetime<timestampadd(minute,-120,now())
+2022-11-26 21:45:12 exec 失败 (Table 'mysql.T_ZHOBTMIND3' doesn't exist).
+
