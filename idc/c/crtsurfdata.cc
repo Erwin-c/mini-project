@@ -33,7 +33,7 @@ CLogFile logfile;  // 日志类.
 
 CFile File;  // 文件类.
 
-CPActive PActive;  //进程心跳类.
+CPActive PActive;  // 进程心跳类.
 
 vector<st_stcode> vstcode;  // 存放全国气象站点参数的容器.
 
@@ -53,7 +53,7 @@ bool CrtSurfFile(const char *outpath, const char *datafmt);
 // 程序帮助文档.
 void _help();
 
-// 程序退出和信号 2, 15 的处理函数。
+// 程序退出和信号 2, 15 的处理函数.
 void EXIT(int sig);
 
 int main(int argc, char *argv[]) {
@@ -118,13 +118,13 @@ void _help() {
   printf(
       "Example:  ~/Coding/mini-project/idc/bin/crtsurfdata "
       "~/Coding/mini-project/idc/ini/stcode.ini "
-      "~/Coding/mini-project/tmp/idc/surfdata "
+      "~/Coding/mini-project/idcdata/surfdata "
       "~/Coding/mini-project/log/idc/crtsurfdata.log "
       "xml,json,csv\n\n");
   printf(
       "         ~/Coding/mini-project/idc/bin/crtsurfdata "
       "~/Coding/mini-project/idc/ini/stcode.ini "
-      "~/Coding/mini-project/tmp/idc/surfdata "
+      "~/Coding/mini-project/idcdata/surfdata "
       "~/Coding/mini-project/log/idc/crtsurfdata.log "
       "xml,json,csv "
       "20220523065472\n\n");
@@ -220,8 +220,6 @@ void CrtSurfData() {
 }
 
 bool CrtSurfFile(const char *outpath, const char *datafmt) {
-  CFile File;
-
   // 拼接生成数据的文件名, 例如:
   // ~/mini-project/tmp/idc/surfdata/SURF_ZH_20210629092200_2254.csv
   char strFileName[301];
