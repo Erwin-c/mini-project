@@ -4,8 +4,8 @@
  *  Author: Erwin
  */
 
-#ifndef __MYSQL_H_
-#define __MYSQL_H_
+#ifndef _MYSQL_H_
+#define _MYSQL_H_
 
 #include <ctype.h>
 #include <mysql.h>  // MySQL 数据库接口函数的头文件.
@@ -211,4 +211,4 @@ class sqlstatement {
   int next();
 };
 
-#endif  // __MYSQL_H_
+#endif  // _MYSQL_H_

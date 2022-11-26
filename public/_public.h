@@ -4,8 +4,8 @@
  *  Author: Erwin
  */
 
-#ifndef __PUBLIC_H_
-#define __PUBLIC_H_
+#ifndef _PUBLIC_H_
+#define _PUBLIC_H_
 
 #include "_cmpublic.h"
 
@@ -756,4 +756,4 @@ class CPActive {
   st_procinfo *m_shm;  // 指向共享内存的地址空间.
 };
 
-#endif  //__PUBLIC_H_
+#endif  //_PUBLIC_H_
