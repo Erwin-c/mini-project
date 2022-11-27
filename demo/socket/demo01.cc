@@ -4,13 +4,10 @@
  *  Author: Erwin
  */
 
-// #include <arpa/inet.h>
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <sys/socket.h>
-// #include <sys/types.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
@@ -30,7 +27,7 @@ int main(int argc, char *argv[]) {
   hostent *h;
   if ((h = gethostbyname(argv[1])) == nullptr)  // 指定服务端的 IP 地址.
   {
-    printf("gethostbyname() failed.\n");
+    printf("gethostbyname() 失败.\n");
     close(sockfd);
     return -1;
   }
@@ -54,13 +51,13 @@ int main(int argc, char *argv[]) {
   // 第 3 步: 与服务端通讯, 发送一个报文后等待回复, 然后再发下一个报文.
   for (int ii = 0; ii < 10; ++ii) {
     memset(buffer, 0, sizeof(buffer));
-    sprintf(buffer, "The %d super girl, id %03d.", ii + 1, ii + 1);
+    sprintf(buffer, "这是第 %d 个超级女生, 编号 %03d.", ii + 1, ii + 1);
     // 向服务端发送请求报文.
     if ((iret = send(sockfd, buffer, strlen(buffer), 0)) <= 0) {
       perror("send()");
       break;
     }
-    printf("Send: %s\n", buffer);
+    printf("发送: %s\n", buffer);
 
     memset(buffer, 0, sizeof(buffer));
     // 接收服务端的回应报文.
@@ -68,7 +65,7 @@ int main(int argc, char *argv[]) {
       printf("iret = %d\n", iret);
       break;
     }
-    printf("Receive: %s\n", buffer);
+    printf("接收: %s\n", buffer);
 
     sleep(1);  // 每隔一秒后再次发送报文.
   }

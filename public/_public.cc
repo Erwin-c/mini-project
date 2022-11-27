@@ -1705,7 +1705,7 @@ bool CTcpClient::Read(char *buffer, const int itimeout) {
   }
 
   m_buflen = 0;
-  return (TcpRead(m_connfd, buffer, &m_buflen));
+  return TcpRead(m_connfd, buffer, &m_buflen);
 }
 
 bool CTcpClient::Write(const char *buffer, const int ibuflen) {
@@ -1719,7 +1719,7 @@ bool CTcpClient::Write(const char *buffer, const int ibuflen) {
     ilen = strlen(buffer);
   }
 
-  return (TcpWrite(m_connfd, buffer, ilen));
+  return TcpWrite(m_connfd, buffer, ilen);
 }
 
 void CTcpClient::Close() {
@@ -1761,7 +1761,7 @@ bool CTcpServer::InitServer(const unsigned int port, const int backlog) {
   // 忽略 SIGPIPE 信号, 防止程序异常退出.
   signal(SIGPIPE, SIG_IGN);
 
-  // 打开 SO_REUSEADDR 选项, 当服务端连接处于 TIME_WAIT 状态时
+  // 打开 SO_REUSEADDR 选项, 当服务端连接处于 TIME_WAIT 状态时,
   // 可以再次启动服务器, 否则 bind() 可能会不成功, 报： Address already in use.
   // char opt = 1; unsigned int len = sizeof(opt);
   int opt = 1;
@@ -1800,7 +1800,7 @@ bool CTcpServer::Accept() {
   return true;
 }
 
-char *CTcpServer::GetIP() { return (inet_ntoa(m_clientaddr.sin_addr)); }
+char *CTcpServer::GetIP() { return inet_ntoa(m_clientaddr.sin_addr); }
 
 bool CTcpServer::Read(char *buffer, const int itimeout) {
   if (m_connfd == -1) {
@@ -1825,7 +1825,7 @@ bool CTcpServer::Read(char *buffer, const int itimeout) {
   }
 
   m_buflen = 0;
-  return (TcpRead(m_connfd, buffer, &m_buflen));
+  return TcpRead(m_connfd, buffer, &m_buflen);
 }
 
 bool CTcpServer::Write(const char *buffer, const int ibuflen) {
@@ -1888,7 +1888,7 @@ bool TcpRead(const int sockfd, char *buffer, int *ibuflen, const int itimeout) {
 
   (*ibuflen) = 0;  // 报文长度变量初始化为 0.
 
-  // 先读取报文长度, 4个字节.
+  // 先读取报文长度, 4 个字节.
   if (!Readn(sockfd, (char *)ibuflen, 4)) {
     return false;
   }
