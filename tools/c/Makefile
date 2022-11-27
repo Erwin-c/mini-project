@@ -19,7 +19,7 @@ MYSQLCPP = /home/erwin/Coding/mini-project/public/db/mysql/_mysql.cc
 # 编译参数.
 COMPILE_FLAGS = -std=c++2a -g -Wall -Wextra
 
-all: procctl checkproc gzipfiles deletefiles tcpgetfiles tcpputfiles fileserver execsql
+all: procctl checkproc gzipfiles deletefiles tcpgetfiles tcpputfiles fileserver execsql dminingmysql
 
 procctl: procctl.cc
 	g++ $(COMPILE_FLAGS) -o procctl procctl.cc $(PUBINCL) $(PUBCPP)
@@ -50,8 +50,12 @@ fileserver: fileserver.cc
 	cp fileserver ../bin/.
 
 execsql: execsql.cc
-	g++ $(CFLAGS) -o execsql execsql.cc $(PUBINCL) $(PUBCPP) $(MYSQLINCL) $(MYSQLLIB) $(MYSQLLIBS) $(MYSQLCPP) -lm -lc
+	g++ $(COMPILE_FLAGS) -o execsql execsql.cc $(PUBINCL) $(PUBCPP) $(MYSQLINCL) $(MYSQLLIB) $(MYSQLLIBS) $(MYSQLCPP) -lm -lc
 	cp execsql ../bin/.
 
+dminingmysql: dminingmysql.cc
+	g++ $(COMPILE_FLAGS) -o dminingmysql dminingmysql.cc $(PUBINCL) $(PUBCPP) $(MYSQLINCL) $(MYSQLLIB) $(MYSQLLIBS) $(MYSQLCPP) -lm -lc
+	cp dminingmysql ../bin/.
+
 clean:
-	rm procctl checkproc gzipfiles deletefiles tcpgetfiles tcpputfiles fileserver execsql
+	rm procctl checkproc gzipfiles deletefiles tcpgetfiles tcpputfiles fileserver execsql dminingmysql

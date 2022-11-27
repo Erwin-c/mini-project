@@ -7,11 +7,11 @@
 #include "_mysql.h"
 #include "_public.h"
 
-CLogFile logfile;
+CLogFile logfile;  // 日志类.
 
-CPActive PActive;
+CPActive PActive;  // 进程心跳类.
 
-connection conn;
+connection conn;  // 数据库连接类.
 
 // 程序帮助文档.
 void _help();
@@ -108,8 +108,13 @@ void _help() {
   printf("Using:./execsql sqlfile connstr charset logfile\n");
 
   printf(
-      "Example:~/Coding/mini-project/tools/bin/procctl 120 "
+      "Example: ~/Coding/mini-project/tools/bin/procctl 120 "
       "~/Coding/mini-project/tools/bin/execsql "
+      "~/Coding/mini-project/idc/sql/cleardata.sql "
+      "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
+      "~/Coding/mini-project/log/idc/execsql.log\n\n");
+  printf(
+      "        ~/Coding/mini-project/tools/bin/execsql "
       "~/Coding/mini-project/idc/sql/cleardata.sql "
       "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
       "~/Coding/mini-project/log/idc/execsql.log\n\n");
@@ -121,7 +126,8 @@ void _help() {
       "不支持注释.\n");
   printf("connstr 数据库连接参数: ip,username,password,dbname,port.\n");
   printf("charset 数据库的字符集.\n");
-  printf("logfile 本程序运行的日志文件名\n\n");
+  printf("logfile 本程序运行的日志文件名.\n");
+  printf("程序每 120 秒运行一次, 由 procctl 调度.\n\n\n");
 
   return;
 }
