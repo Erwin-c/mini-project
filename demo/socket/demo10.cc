@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
   if (argc != 3) {
     printf(
         "Using: ./demo10 port logfile\nExample: ./demo10 5005 "
-        "~/Coding/mini-project/tmp/demo10.log\n\n");
+        "/home/erwin/Coding/mini-project/tmp/demo10.log\n\n");
     return -1;
   }
 

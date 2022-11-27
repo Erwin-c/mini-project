@@ -108,16 +108,16 @@ void _help() {
   printf("Using:./execsql sqlfile connstr charset logfile\n");
 
   printf(
-      "Example: ~/Coding/mini-project/tools/bin/procctl 120 "
-      "~/Coding/mini-project/tools/bin/execsql "
-      "~/Coding/mini-project/idc/sql/cleardata.sql "
+      "Example: /home/erwin/Coding/mini-project/tools/bin/procctl 120 "
+      "/home/erwin/Coding/mini-project/tools/bin/execsql "
+      "/home/erwin/Coding/mini-project/idc/sql/cleardata.sql "
       "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
-      "~/Coding/mini-project/log/idc/execsql.log\n\n");
+      "/home/erwin/Coding/mini-project/log/idc/execsql.log\n\n");
   printf(
-      "        ~/Coding/mini-project/tools/bin/execsql "
-      "~/Coding/mini-project/idc/sql/cleardata.sql "
+      "        /home/erwin/Coding/mini-project/tools/bin/execsql "
+      "/home/erwin/Coding/mini-project/idc/sql/cleardata.sql "
       "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
-      "~/Coding/mini-project/log/idc/execsql.log\n\n");
+      "/home/erwin/Coding/mini-project/log/idc/execsql.log\n\n");
 
   printf("这是一个工具程序, 用于执行一个 SQL 脚本文件.\n");
   printf(

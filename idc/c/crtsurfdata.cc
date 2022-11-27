@@ -273,17 +273,17 @@ void _help() {
 
   printf("Using: ./crtsurfdata inifile outpath logfile datafmt [datetime]\n");
   printf(
-      "Example:  ~/Coding/mini-project/tools/bin/procctl 60 "
-      "~/Coding/mini-project/idc/bin/crtsurfdata "
-      "~/Coding/mini-project/idc/ini/stcode.ini "
-      "~/Coding/mini-project/idcdata/surfdata "
-      "~/Coding/mini-project/log/idc/crtsurfdata.log "
+      "Example:  /home/erwin/Coding/mini-project/tools/bin/procctl 60 "
+      "/home/erwin/Coding/mini-project/idc/bin/crtsurfdata "
+      "/home/erwin/Coding/mini-project/idc/ini/stcode.ini "
+      "/home/erwin/Coding/mini-project/idcdata/surfdata "
+      "/home/erwin/Coding/mini-project/log/idc/crtsurfdata.log "
       "xml,json,csv\n");
   printf(
-      "         ~/Coding/mini-project/idc/bin/crtsurfdata "
-      "~/Coding/mini-project/idc/ini/stcode.ini "
-      "~/Coding/mini-project/idcdata/surfdata "
-      "~/Coding/mini-project/log/idc/crtsurfdata.log "
+      "         /home/erwin/Coding/mini-project/idc/bin/crtsurfdata "
+      "/home/erwin/Coding/mini-project/idc/ini/stcode.ini "
+      "/home/erwin/Coding/mini-project/idcdata/surfdata "
+      "/home/erwin/Coding/mini-project/log/idc/crtsurfdata.log "
       "xml,json,csv "
       "20220523065432\n\n");
 

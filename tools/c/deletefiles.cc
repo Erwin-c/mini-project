@@ -63,22 +63,25 @@ void _help() {
   printf("\n");
 
   printf(
-      "Using: ~/Coding/mini-project/tools/bin/deletefiles pathname matchstr "
+      "Using: /home/erwin/Coding/mini-project/tools/bin/deletefiles pathname "
+      "matchstr "
       "timeout\n\n");
   printf(
-      "Example: ~/Coding/mini-project/tools/bin/procctl 300 "
-      "~/Coding/mini-project/tools/bin/deletefiles "
-      "~/Coding/mini-project/log/idc \"*.log*\" 0.02\n");
+      "Example: /home/erwin/Coding/mini-project/tools/bin/procctl 300 "
+      "/home/erwin/Coding/mini-project/tools/bin/deletefiles "
+      "/home/erwin/Coding/mini-project/log/idc \"*.log*\" 0.02\n");
   printf(
-      "         ~/Coding/mini-project/tools/bin/procctl 300 "
-      "~/Coding/mini-project/tools/bin/deletefiles "
-      "~/Coding/mini-project/idcdata/surfdata \"*.xml,*.json,*.csv\" 0.01\n");
+      "         /home/erwin/Coding/mini-project/tools/bin/procctl 300 "
+      "/home/erwin/Coding/mini-project/tools/bin/deletefiles "
+      "/home/erwin/Coding/mini-project/idcdata/surfdata \"*.xml,*.json,*.csv\" "
+      "0.01\n");
   printf(
-      "         ~/Coding/mini-project/tools/bin/deletefiles "
-      "~/Coding/mini-project/log/idc \"*.log*\" 0.02\n");
+      "         /home/erwin/Coding/mini-project/tools/bin/deletefiles "
+      "/home/erwin/Coding/mini-project/log/idc \"*.log*\" 0.02\n");
   printf(
-      "         ~/Coding/mini-project/tools/bin/deletefiles "
-      "~/Coding/mini-project/idcdata/surfdata \"*.xml,*.json,*.csv\" 0.01\n\n");
+      "         /home/erwin/Coding/mini-project/tools/bin/deletefiles "
+      "/home/erwin/Coding/mini-project/idcdata/surfdata \"*.xml,*.json,*.csv\" "
+      "0.01\n\n");
 
   printf("这是一个工具程序, 用于删除历史的数据文件或日志文件.\n");
   printf(

@@ -15,8 +15,8 @@ int main(int argc, char *argv[]) {
     printf("Using: ./checkproc logfilename\n");
 
     printf(
-        "Example: ~/Coding/mini-project/tools/bin/procctl 10 "
-        "~/Coding/mini-project/tools/bin/checkproc "
+        "Example: /home/erwin/Coding/mini-project/tools/bin/procctl 10 "
+        "/home/erwin/Coding/mini-project/tools/bin/checkproc "
         "~Coding/mini-project/log/checkproc.log\n\n");
 
     printf("本程序用于检查后台服务程序是否超时, 如果已超时, 就终止它.\n");

@@ -194,16 +194,16 @@ void _help() {
   printf("Using: ./obtcodetodb inifile connstr charset logfile\n");
 
   printf(
-      "Example: ~/Coding/mini-project/tools/bin/procctl 120 "
-      "~/Coding/mini-project/idc/bin/obtcodetodb "
-      "~/Coding/mini-project/idc/ini/stcode.ini "
+      "Example: /home/erwin/Coding/mini-project/tools/bin/procctl 120 "
+      "/home/erwin/Coding/mini-project/idc/bin/obtcodetodb "
+      "/home/erwin/Coding/mini-project/idc/ini/stcode.ini "
       "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
-      "~/Coding/mini-project/log/idc/obtcodetodb.log\n");
+      "/home/erwin/Coding/mini-project/log/idc/obtcodetodb.log\n");
   printf(
-      "        ~/Coding/mini-project/idc/bin/obtcodetodb "
-      "~/Coding/mini-project/idc/ini/stcode.ini "
+      "        /home/erwin/Coding/mini-project/idc/bin/obtcodetodb "
+      "/home/erwin/Coding/mini-project/idc/ini/stcode.ini "
       "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
-      "~/Coding/mini-project/log/idc/obtcodetodb.log\n\n");
+      "/home/erwin/Coding/mini-project/log/idc/obtcodetodb.log\n\n");
 
   printf(
       "本程序用于把全国站点参数数据保存到数据库表中, 如果站点不存在则插入, "
