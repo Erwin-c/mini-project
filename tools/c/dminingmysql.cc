@@ -254,13 +254,14 @@ bool _xmltoarg(char *strxmlbuffer) {
 
 void _help() {
   printf(
-      "Using: ~/Coding/mini-project/tools/bin/dminingmysql logfilename "
+      "Using: /home/erwin/Coding/mini-project/tools/bin/dminingmysql "
+      "logfilename "
       "xmlbuffer\n\n");
 
   printf(
-      "Example: ~/Coding/mini-project/tools/bin/procctl 3600 "
-      "~/Coding/mini-project/tools/bin/dminingmysql "
-      "~/Coding/mini-project/log/idc/dminingmysql_ZHOBTCODE.log "
+      "Example: /home/erwin/Coding/mini-project/tools/bin/procctl 3600 "
+      "/home/erwin/Coding/mini-project/tools/bin/dminingmysql "
+      "/home/erwin/Coding/mini-project/log/idc/dminingmysql_ZHOBTCODE.log "
       "\"<connstr>127.0.0.1,root,mysqlpwd,mysql,3306</connstr>"
       "<charset>utf8</charset>"
       "<selectsql>select obtid,cityname,provname,lat,lon,height from "
@@ -269,12 +270,12 @@ void _help() {
       "<fieldlen>10,30,30,10,10,10</fieldlen>"
       "<bfilename>ZHOBTCODE</bfilename>"
       "<efilename>HYCZ</efilename>"
-      "<outpath>~/Coding/mini-project/idcdata/dmindata</outpath>"
+      "<outpath>/home/erwin/Coding/mini-project/idcdata/dmindata</outpath>"
       "<timeout>30</timeout><pname>dminingmysql_ZHOBTCODE</pname>\"\n\n");
   printf(
-      "       ~/Coding/mini-project/tools/bin/procctl   30 "
-      "~/Coding/mini-project/tools/bin/dminingmysql "
-      "~/Coding/mini-project/log/idc/dminingmysql_ZHOBTMIND.log "
+      "       /home/erwin/Coding/mini-project/tools/bin/procctl   30 "
+      "/home/erwin/Coding/mini-project/tools/bin/dminingmysql "
+      "/home/erwin/Coding/mini-project/log/idc/dminingmysql_ZHOBTMIND.log "
       "\"<connstr>127.0.0.1,root,mysqlpwd,mysql,3306</connstr>"
       "<charset>utf8</charset>"
       "<selectsql>select obtid,date_format(ddatetime,'%%%%Y-%%%%m-%%%%d "
@@ -284,16 +285,16 @@ void _help() {
       "<fieldlen>10,19,8,8,8,8,8,8,8,15</fieldlen>"
       "<bfilename>ZHOBTMIND</bfilename>"
       "<efilename>HYCZ</efilename>"
-      "<outpath>~/Coding/mini-project/idcdata/dmindata</outpath>"
+      "<outpath>/home/erwin/Coding/mini-project/idcdata/dmindata</outpath>"
       "<starttime></starttime>"
       "<incfield>keyid</incfield>"
-      "<incfilename>~/Coding/mini-project/idcdata/dmining/"
+      "<incfilename>/home/erwin/Coding/mini-project/idcdata/dmining/"
       "dminingmysql_ZHOBTMIND_HYCZ.list</incfilename>"
       "<timeout>30</timeout>"
       "<pname>dminingmysql_ZHOBTMIND_HYCZ</pname>\"\n\n");
   printf(
-      "       ~/Coding/mini-project/tools/bin/dminingmysql "
-      "~/Coding/mini-project/log/idc/dminingmysql_ZHOBTCODE.log "
+      "       /home/erwin/Coding/mini-project/tools/bin/dminingmysql "
+      "/home/erwin/Coding/mini-project/log/idc/dminingmysql_ZHOBTCODE.log "
       "\"<connstr>127.0.0.1,root,mysqlpwd,mysql,3306</connstr>"
       "<charset>utf8</charset>"
       "<selectsql>select obtid,cityname,provname,lat,lon,height from "
@@ -302,11 +303,11 @@ void _help() {
       "<fieldlen>10,30,30,10,10,10</fieldlen>"
       "<bfilename>ZHOBTCODE</bfilename>"
       "<efilename>HYCZ</efilename>"
-      "<outpath>~/Coding/mini-project/idcdata/dmindata</outpath>"
+      "<outpath>/home/erwin/Coding/mini-project/idcdata/dmindata</outpath>"
       "<timeout>30</timeout><pname>dminingmysql_ZHOBTCODE</pname>\"\n\n");
   printf(
-      "       ~/Coding/mini-project/tools/bin/dminingmysql "
-      "~/Coding/mini-project/log/idc/dminingmysql_ZHOBTMIND.log "
+      "       /home/erwin/Coding/mini-project/tools/bin/dminingmysql "
+      "/home/erwin/Coding/mini-project/log/idc/dminingmysql_ZHOBTMIND.log "
       "\"<connstr>127.0.0.1,root,mysqlpwd,mysql,3306</connstr>"
       "<charset>utf8</charset>"
       "<selectsql>select obtid,date_format(ddatetime,'%%%%Y-%%%%m-%%%%d "
@@ -316,10 +317,10 @@ void _help() {
       "<fieldlen>10,19,8,8,8,8,8,8,8,15</fieldlen>"
       "<bfilename>ZHOBTMIND</bfilename>"
       "<efilename>HYCZ</efilename>"
-      "<outpath>~/Coding/mini-project/idcdata/dmindata</outpath>"
+      "<outpath>/home/erwin/Coding/mini-project/idcdata/dmindata</outpath>"
       "<starttime></starttime>"
       "<incfield>keyid</incfield>"
-      "<incfilename>~/Coding/mini-project/idcdata/dmining/"
+      "<incfilename>/home/erwin/Coding/mini-project/idcdata/dmining/"
       "dminingmysql_ZHOBTMIND_HYCZ.list</incfilename>"
       "<timeout>30</timeout>"
       "<pname>dminingmysql_ZHOBTMIND_HYCZ</pname>\"\n\n");

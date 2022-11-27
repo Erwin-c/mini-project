@@ -104,35 +104,39 @@ void EXIT(int sig) {
 void _help() {
   printf("\n");
   printf(
-      "Using: ~/Coding/mini-project/tools/bin/tcpgetfiles logfilename "
+      "Using: /home/erwin/Coding/mini-project/tools/bin/tcpgetfiles "
+      "logfilename "
       "xmlbuffer\n\n");
 
   printf(
-      "Sample: ~/Coding/mini-project/tools/bin/procctl 20 "
-      "~/Coding/mini-project/tools/bin/tcpgetfiles "
-      "~/Coding/mini-project/log/idc/tcpgetfiles_metdata.log "
+      "Sample: /home/erwin/Coding/mini-project/tools/bin/procctl 20 "
+      "/home/erwin/Coding/mini-project/tools/bin/tcpgetfiles "
+      "/home/erwin/Coding/mini-project/log/idc/tcpgetfiles_metdata.log "
       "\"<ip>127.0.0.1</ip>"
       "<port>5005</port>"
       "<ptype>1</ptype>"
-      "<srvpath>~/Coding/mini-project/tmp/tcp/metdata2</srvpath>"
+      "<srvpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata2</srvpath>"
       "<andchild>true</andchild>"
       "<matchname>*.XML,*.CSV,*.JSON</matchname>"
-      "<clientpath>~/Coding/mini-project/tmp/tcp/metdata3</clientpath>"
+      "<clientpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata3</"
+      "clientpath>"
       "<timetvl>10</timetvl>"
       "<timeout>50</timeout>"
       "<pname>tcpgetfiles_metdata</pname>\"\n");
   printf(
-      "~/Coding/mini-project/tools/bin/procctl 20 "
-      "~/Coding/mini-project/tools/bin/tcpgetfiles "
-      "~/Coding/mini-project/log/idc/tcpgetfiles_metdata.log "
+      "/home/erwin/Coding/mini-project/tools/bin/procctl 20 "
+      "/home/erwin/Coding/mini-project/tools/bin/tcpgetfiles "
+      "/home/erwin/Coding/mini-project/log/idc/tcpgetfiles_metdata.log "
       "\"<ip>127.0.0.1</ip>"
       "<port>5005</port>"
       "<ptype>2</ptype>"
-      "<srvpath>~/Coding/mini-project/tmp/tcp/metdata2</srvpath>"
-      "<srvpathbak>~/Coding/mini-project/tmp/tcp/metdata2bak</srvpathbak>"
+      "<srvpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata2</srvpath>"
+      "<srvpathbak>/home/erwin/Coding/mini-project/tmp/tcp/metdata2bak</"
+      "srvpathbak>"
       "<andchild>true</andchild>"
       "<matchname>*.XML,*.CSV,*.JSON</matchname>"
-      "<clientpath>~/Coding/mini-project/tmp/tcp/metdata3</clientpath>"
+      "<clientpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata3</"
+      "clientpath>"
       "<timetvl>10</timetvl>"
       "<timeout>50</timeout>"
       "<pname>tcpgetfiles_metdata</pname>\"\n\n\n");

@@ -73,11 +73,11 @@ int main(int argc, char *argv[]) {
     printf("Using: ./fileserver port logfile\n");
     printf(
         "Example: ./fileserver 5005 "
-        "~/Coding/mini-project/log/idc/fileserver.log\n");
+        "/home/erwin/Coding/mini-project/log/idc/fileserver.log\n");
     printf(
-        "~/Coding/mini-project/tools/bin/procctl 10 "
-        "~/Coding/mini-project/tools/bin/fileserver 5005 "
-        "~/Coding/mini-project/log/idc/fileserver.log\n\n\n");
+        "/home/erwin/Coding/mini-project/tools/bin/procctl 10 "
+        "/home/erwin/Coding/mini-project/tools/bin/fileserver 5005 "
+        "/home/erwin/Coding/mini-project/log/idc/fileserver.log\n\n\n");
     return -1;
   }
 

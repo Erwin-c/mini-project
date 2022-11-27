@@ -129,36 +129,39 @@ void EXIT(int sig) {
 void _help() {
   printf("\n");
   printf(
-      "Using: ~/Coding/mini-project/tools/bin/tcpputfiles logfilename "
+      "Using: /home/erwin/Coding/mini-project/tools/bin/tcpputfiles "
+      "logfilename "
       "xmlbuffer\n\n");
 
   printf(
-      "Sample: ~/Coding/mini-project/tools/bin/procctl 20 "
-      "~/Coding/mini-project/tools/bin/tcpputfiles "
-      "~/Coding/mini-project/log/idc/tcpputfiles_metdata.log "
+      "Sample: /home/erwin/Coding/mini-project/tools/bin/procctl 20 "
+      "/home/erwin/Coding/mini-project/tools/bin/tcpputfiles "
+      "/home/erwin/Coding/mini-project/log/idc/tcpputfiles_metdata.log "
       "\"<ip>127.0.0.1</ip>"
       "<port>5005</port>"
       "<ptype>1</ptype>"
-      "<clientpath>~/Coding/mini-project/tmp/tcp/metdata1</clientpath>"
+      "<clientpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata1</"
+      "clientpath>"
       "<andchild>true</andchild>"
       "<matchname>*.XML,*.CSV,*.JSON</matchname>"
-      "<srvpath>~/Coding/mini-project/tmp/tcp/metdata2</srvpath>"
+      "<srvpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata2</srvpath>"
       "<timetvl>10</timetvl>"
       "<timeout>50</timeout>"
       "<pname>tcpputfiles_metdata</pname>\"\n");
   printf(
-      "~/Coding/mini-project/tools/bin/procctl 20 "
-      "~/Coding/mini-project/tools/bin/tcpputfiles "
-      "~/Coding/mini-project/log/idc/tcpputfiles_metdata.log "
+      "/home/erwin/Coding/mini-project/tools/bin/procctl 20 "
+      "/home/erwin/Coding/mini-project/tools/bin/tcpputfiles "
+      "/home/erwin/Coding/mini-project/log/idc/tcpputfiles_metdata.log "
       "\"<ip>127.0.0.1</ip>"
       "<port>5005</port>"
       "<ptype>2</ptype>"
-      "<clientpath>~/Coding/mini-project/tmp/tcp/metdata1</clientpath>"
-      "<clientpathbak>~/Coding/mini-project/tmp/tcp/metdata1bak</"
+      "<clientpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata1</"
+      "clientpath>"
+      "<clientpathbak>/home/erwin/Coding/mini-project/tmp/tcp/metdata1bak</"
       "clientpathbak>"
       "<andchild>true</andchild>"
       "<matchname>*.XML,*.CSV,*.JSON</matchname>"
-      "<srvpath>~/Coding/mini-project/tmp/tcp/metdata2</srvpath>"
+      "<srvpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata2</srvpath>"
       "<timetvl>10</timetvl>"
       "<timeout>50</timeout>"
       "<pname>tcpputfiles_metdata</pname>\"\n\n\n");

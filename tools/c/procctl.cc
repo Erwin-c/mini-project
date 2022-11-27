@@ -11,10 +11,10 @@ int main(int argc, char *argv[]) {
     printf("Using: ./procctl timetvl program argv ...\n");
     printf(
         "Example: ~Coding/mini-project/tools/bin/procctl 5 "
-        "~/Coding/mini-project/idc/bin/crtmetdata "
-        "~/Coding/mini-project/idc/ini/stcode.ini "
-        "~/Coding/mini-project/tmp/metdata "
-        "~/Coding/mini-project/log/crtmetdata.log "
+        "/home/erwin/Coding/mini-project/idc/bin/crtmetdata "
+        "/home/erwin/Coding/mini-project/idc/ini/stcode.ini "
+        "/home/erwin/Coding/mini-project/tmp/metdata "
+        "/home/erwin/Coding/mini-project/log/crtmetdata.log "
         "xml,json,csv\n\n");
 
     printf("本程序是服务程序的调度程序, 周期性启动服务程序或 shell 脚本.\n");

@@ -142,16 +142,16 @@ void _help() {
   printf("Using:./obtmindtodb pathname connstr charset logfile\n");
 
   printf(
-      "Example: ~/Coding/mini-project/tools/bin/procctl 10 "
-      "~/Coding/mini-project/idc/bin/obtmindtodb "
-      "~/Coding/mini-project/idcdata/surfdata "
+      "Example: /home/erwin/Coding/mini-project/tools/bin/procctl 10 "
+      "/home/erwin/Coding/mini-project/idc/bin/obtmindtodb "
+      "/home/erwin/Coding/mini-project/idcdata/surfdata "
       "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
-      "~/Coding/mini-project/log/idc/obtmindtodb.log\n");
+      "/home/erwin/Coding/mini-project/log/idc/obtmindtodb.log\n");
   printf(
-      "        ~/Coding/mini-project/idc/bin/obtmindtodb "
-      "~/Coding/mini-project/idcdata/surfdata "
+      "        /home/erwin/Coding/mini-project/idc/bin/obtmindtodb "
+      "/home/erwin/Coding/mini-project/idcdata/surfdata "
       "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
-      "~/Coding/mini-project/log/idc/obtmindtodb.log\n\n");
+      "/home/erwin/Coding/mini-project/log/idc/obtmindtodb.log\n\n");
 
   printf(
       "本程序用于把全国站点分钟观测数据保存到数据库的 T_ZHOBTMIND 表中,"

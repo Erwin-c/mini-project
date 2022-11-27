@@ -34,7 +34,7 @@ int main(int argc, char *argv[]) {
   if (argc != 4) {
     printf(
         "Using: ./demo14 port logfile timeout\nExample: ./demo14 5005 "
-        "~/Coding/mini-project/tmp/demo14.log 35\n\n");
+        "/home/erwin/Coding/mini-project/tmp/demo14.log 35\n\n");
     return -1;
   }
 

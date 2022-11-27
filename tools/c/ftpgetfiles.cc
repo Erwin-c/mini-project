@@ -258,12 +258,12 @@ void _help() {
       "文件下载成功后, 远程服务端文件的处理方式: 1-什么也不做; 2-删除; 3-备份, "
       "如果为 3, 还要指定备份的目录.\n");
   printf(
-      "<remotepathbak>~/Coding/mini-project/tmp/idc/surfdatabak</"
+      "<remotepathbak>/home/erwin/Coding/mini-project/tmp/idc/surfdatabak</"
       "remotepathbak> "
       "文件下载成功后, 服务端文件的备份目录, 此参数只有当 ptype = 3 "
       "时才有效.\n");
   printf(
-      "<okfilename>~/Coding/mini-project/idcdata/ftplist/"
+      "<okfilename>/home/erwin/Coding/mini-project/idcdata/ftplist/"
       "ftpgetfiles_surfdata.xml</okfilename> "
       "已下载成功文件名清单, 此参数只有当 ptype=1 时才有效.\n");
   printf(
