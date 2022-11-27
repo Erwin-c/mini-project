@@ -9,21 +9,21 @@
 
 // 全国气象站点参数结构体.
 struct st_stcode {
-  char provname[31];  // 省.
   char obtid[11];     // 站号.
   char cityname[31];  // 站名.
+  char provname[31];  // 省.
   char lat[11];       // 纬度.
   char lon[11];       // 经度.
   char height[11];    // 海拔高度.
 };
 
-CLogFile logfile;
+vector<st_stcode> vstcode;  // 存放全国气象站点参数的容器.
 
-CPActive PActive;
+CLogFile logfile;  // 日志类.
 
-connection conn;
+CPActive PActive;  // 进程心跳类.
 
-vector<struct st_stcode> vstcode;  // 存放全国气象站点参数的容器.
+connection conn;  // 数据库连接类.
 
 // 把站点参数文件中加载到 vstcode 容器中.
 bool LoadSTCode(const char *inifile);
@@ -144,37 +144,6 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-void _help() {
-  printf("\n");
-  printf("Using: ./obtcodetodb inifile connstr charset logfile\n");
-
-  printf(
-      "Example: ~/Coding/mini-project/tools/bin/procctl 120 "
-      "~/Coding/mini-project/idc/bin/obtcodetodb "
-      "~/Coding/mini-project/idc/ini/stcode.ini "
-      "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
-      "~/Coding/mini-project/log/idc/obtcodetodb.log\n\n");
-
-  printf(
-      "本程序用于把全国站点参数数据保存到数据库表中, 如果站点不存在则插入, "
-      "站点已存在则更新.\n");
-  printf("inifile 站点参数文件名 (全路径).\n");
-  printf("connstr 数据库连接参数: ip,username,password,dbname,port.\n");
-  printf("charset 数据库的字符集.\n");
-  printf("logfile 本程序运行的日志文件名.\n");
-  printf("程序每 120 秒运行一次, 由 procctl 调度.\n\n\n");
-
-  return;
-}
-
-void EXIT(int sig) {
-  logfile.Write("程序退出, sig = %d\n", sig);
-
-  conn.disconnect();
-
-  exit(0);
-}
-
 bool LoadSTCode(const char *inifile) {
   CFile File;
 
@@ -218,4 +187,40 @@ bool LoadSTCode(const char *inifile) {
   }
 
   return true;
+}
+
+void _help() {
+  printf("\n");
+  printf("Using: ./obtcodetodb inifile connstr charset logfile\n");
+
+  printf(
+      "Example: ~/Coding/mini-project/tools/bin/procctl 120 "
+      "~/Coding/mini-project/idc/bin/obtcodetodb "
+      "~/Coding/mini-project/idc/ini/stcode.ini "
+      "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
+      "~/Coding/mini-project/log/idc/obtcodetodb.log\n");
+  printf(
+      "        ~/Coding/mini-project/idc/bin/obtcodetodb "
+      "~/Coding/mini-project/idc/ini/stcode.ini "
+      "\"127.0.0.1,root,rooterwin,mysql,3306\" utf8 "
+      "~/Coding/mini-project/log/idc/obtcodetodb.log\n\n");
+
+  printf(
+      "本程序用于把全国站点参数数据保存到数据库表中, 如果站点不存在则插入, "
+      "站点已存在则更新.\n");
+  printf("inifile 站点参数文件名 (全路径).\n");
+  printf("connstr 数据库连接参数: ip,username,password,dbname,port.\n");
+  printf("charset 数据库的字符集.\n");
+  printf("logfile 本程序运行的日志文件名.\n");
+  printf("程序每 120 秒运行一次, 由 procctl 调度.\n\n\n");
+
+  return;
+}
+
+void EXIT(int sig) {
+  logfile.Write("程序退出, sig = %d\n", sig);
+
+  conn.disconnect();
+
+  exit(0);
 }
