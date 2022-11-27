@@ -7,9 +7,6 @@
 # 生成用于测试的全国气象站点观测的分钟数据.
 ~/Coding/mini-project/tools/bin/procctl 60 ~/Coding/mini-project/idc/bin/crtsurfdata ~/Coding/mini-project/idc/ini/stcode.ini ~/Coding/mini-project/tmp/surfdata ~/Coding/mini-project/log/crtsurfdata.log xml,json,csv
 
-# 压缩数据中心后台服务程序的备份日志.
-~/Coding/mini-project/tools/bin/procctl 300 ~/Coding/mini-project/tools/bin/gzipfiles ~/Coding/mini-project/log "*.log.20*" 0.02
-
 # 清理原始的全国气象站点观测的分钟数据目录 ~/Coding/mini-project/tmp/surfdata/. 中的历史数据文件.
 ~/Coding/mini-project/tools/bin/procctl 300 ~/Coding/mini-project/tools/bin/deletefiles ~/Coding/mini-project/tmp/surfdate "*" 0.02
 

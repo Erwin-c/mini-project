@@ -29,17 +29,17 @@ struct st_surfdata {
   int vis;             // 能见度: 0.1米.
 };
 
-CLogFile logfile;  // 日志类.
-
-CFile File;  // 文件类.
-
-CPActive PActive;  // 进程心跳类.
+char strddatetime[21];  // 观测数据的时间.
 
 vector<st_stcode> vstcode;  // 存放全国气象站点参数的容器.
 
 vector<st_surfdata> vsurfdata;  // 存放全国气象站点分钟观测数据的容器.
 
-char strddatetime[21];  // 观测数据的时间.
+CLogFile logfile;  // 日志类.
+
+CFile File;  // 文件类.
+
+CPActive PActive;  // 进程心跳类.
 
 // 把站点参数文件中加载到 vstcode 容器中.
 bool LoadSTCode(const char *inifile);
@@ -59,11 +59,12 @@ void EXIT(int sig);
 int main(int argc, char *argv[]) {
   if (argc != 5 && argc != 6) {
     _help();
-
     return -1;
   }
 
-  // 忽略全部的信号和 IO, 不希望程序被干扰.
+  // 关闭全部的信号和输入输出.
+  // 设置信号, 在 shell 状态下可用 "kill + 进程号" 正常终止些进程.
+  // 但请不要用 "kill -9 + 进程号" 强行终止.
   CloseIOAndSignal(true);
 
   signal(SIGINT, EXIT);
@@ -109,41 +110,6 @@ int main(int argc, char *argv[]) {
   logfile.WriteEx("crtsurfdata 运行结束.\n");
 
   return 0;
-}
-
-void _help() {
-  printf("\n");
-
-  printf("Using: ./crtsurfdata inifile outpath logfile datafmt [datetime]\n");
-  printf(
-      "Example:  ~/Coding/mini-project/idc/bin/crtsurfdata "
-      "~/Coding/mini-project/idc/ini/stcode.ini "
-      "~/Coding/mini-project/idcdata/surfdata "
-      "~/Coding/mini-project/log/idc/crtsurfdata.log "
-      "xml,json,csv\n\n");
-  printf(
-      "         ~/Coding/mini-project/idc/bin/crtsurfdata "
-      "~/Coding/mini-project/idc/ini/stcode.ini "
-      "~/Coding/mini-project/idcdata/surfdata "
-      "~/Coding/mini-project/log/idc/crtsurfdata.log "
-      "xml,json,csv "
-      "20220523065472\n\n");
-
-  printf("inifile 全国气象站点参数文件名.\n");
-  printf("outpath 全国气象站点数据文件存放的目录.\n");
-  printf("logfile 本程序运行的日志文件名.\n");
-  printf(
-      "datafmt 生成数据文件的格式, 支持xml, json 和 csv 三种格式, "
-      "中间用逗号分隔.\n");
-  printf("datetime 这是一个可选参数, 表示生成指定时间的数据和文件.\n\n");
-
-  return;
-}
-
-void EXIT(int sig) {
-  logfile.Write("程序退出, sig = %d\n", sig);
-
-  exit(0);
 }
 
 bool LoadSTCode(const char *inifile) {
@@ -300,4 +266,41 @@ bool CrtSurfFile(const char *outpath, const char *datafmt) {
                 strddatetime, vsurfdata.size());
 
   return true;
+}
+
+void _help() {
+  printf("\n");
+
+  printf("Using: ./crtsurfdata inifile outpath logfile datafmt [datetime]\n");
+  printf(
+      "Example:  ~/Coding/mini-project/tools/bin/procctl 60 "
+      "~/Coding/mini-project/idc/bin/crtsurfdata "
+      "~/Coding/mini-project/idc/ini/stcode.ini "
+      "~/Coding/mini-project/idcdata/surfdata "
+      "~/Coding/mini-project/log/idc/crtsurfdata.log "
+      "xml,json,csv\n");
+  printf(
+      "         ~/Coding/mini-project/idc/bin/crtsurfdata "
+      "~/Coding/mini-project/idc/ini/stcode.ini "
+      "~/Coding/mini-project/idcdata/surfdata "
+      "~/Coding/mini-project/log/idc/crtsurfdata.log "
+      "xml,json,csv "
+      "20220523065432\n\n");
+
+  printf("inifile 全国气象站点参数文件名.\n");
+  printf("outpath 全国气象站点数据文件存放的目录.\n");
+  printf("logfile 本程序运行的日志文件名.\n");
+  printf(
+      "datafmt 生成数据文件的格式, 支持xml, json 和 csv 三种格式, "
+      "中间用逗号分隔.\n");
+  printf("[datetime] 这是一个可选参数, 表示生成指定时间的数据和文件.\n");
+  printf("程序每 60 秒运行一次, 由 procctl 调度.\n\n\n");
+
+  return;
+}
+
+void EXIT(int sig) {
+  logfile.Write("程序退出, sig = %d\n", sig);
+
+  exit(0);
 }
