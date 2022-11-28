@@ -4,7 +4,7 @@
  *  Author: Erwin
  */
 
-#include "../../public/_public.h"
+#include "_public.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     return -1;
   }
 
-  // 第 1 步: 创建客户端的 Socket。
+  // 第 1 步: 创建客户端的 Socket.
   int sockfd;
   if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) == -1) {
     perror("socket()");
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
   hostent *h;
   if ((h = gethostbyname(argv[1])) == nullptr)  // 指定服务端的 IP 地址.
   {
-    printf("gethostbyname() failed.\n");
+    printf("gethostbyname() 失败.\n");
     close(sockfd);
     return -1;
   }
@@ -34,8 +34,8 @@ int main(int argc, char *argv[]) {
   memcpy(&servaddr.sin_addr, h->h_addr, h->h_length);
 
   // 向服务端发起连接清求.
-  if (connect(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) != 0) {
-    perror("connect");
+  if (connect(sockfd, (sockaddr *)&servaddr, sizeof(servaddr)) != 0) {
+    perror("connect()");
     close(sockfd);
     return -1;
   }
@@ -45,14 +45,14 @@ int main(int argc, char *argv[]) {
   // 第 3 步: 与服务端通讯, 连续发送 1000 个报文.
   for (int ii = 0; ii < 1000; ++ii) {
     memset(buffer, 0, sizeof(buffer));
-    sprintf(buffer, "The %d super girl, id %03d.", ii + 1, ii + 1);
+    sprintf(buffer, "这是第 %d 个超级女生, 编号 %03d.", ii + 1, ii + 1);
 
     // 向服务端发送请求报文.
     if (!TcpWrite(sockfd, buffer, strlen(buffer))) {
       break;
     }
 
-    printf("Send: %s\n", buffer);
+    printf("发送: %s\n", buffer);
   }
 
   // 第 4 步: 关闭 Socket, 释放资源.

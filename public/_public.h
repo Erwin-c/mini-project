@@ -652,7 +652,7 @@ bool TcpRead(const int sockfd, char *buffer, int *ibuflen,
 // ibuflen: 待发送数据的字节数,
 //          如果发送的是 ascii 字符串, ibuflen 填 0 或字符串的长度，
 //          如果是二进制流数据, ibuflen 为二进制数据块的大小.
-// 返回值: true-成功: false-失败, 如果失败, 表示 Socket 连接已不可用.
+// 返回值: true-成功; false-失败, 如果失败, 表示 Socket 连接已不可用.
 bool TcpWrite(const int sockfd, const char *buffer, const int ibuflen = 0);
 
 // 从已经准备好的 Socket 中读取数据.

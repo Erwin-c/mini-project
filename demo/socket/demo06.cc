@@ -4,7 +4,7 @@
  *  Author: Erwin
  */
 
-#include "../../public/_public.h"
+#include "_public.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
   int socklen = sizeof(sockaddr_in);  // Sockaddr_in的大小.
   sockaddr_in clientaddr;             // 客户端的地址信息.
   clientfd = accept(listenfd, (sockaddr *)&clientaddr, (socklen_t *)&socklen);
-  printf("Client (%s) has been connected.\n", inet_ntoa(clientaddr.sin_addr));
+  printf("客户端 (%s) 已连接.\n", inet_ntoa(clientaddr.sin_addr));
 
   char buffer[1024];
 
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
       break;
     }
 
-    printf("Receive: %s\n", buffer);
+    printf("接收: %s\n", buffer);
   }
 
   // 第 6 步: 关闭 Socket, 释放资源.

@@ -5,12 +5,9 @@
  */
 
 #include <arpa/inet.h>
-#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <sys/socket.h>
-// #include <sys/types.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
@@ -46,11 +43,11 @@ int main(int argc, char *argv[]) {
   }
 
   // 第 4 步: 接受客户端的连接.
-  int clientfd;                       // 客户端的 Socket。
-  int socklen = sizeof(sockaddr_in);  // sockaddr_in 的大小
+  int clientfd;                       // 客户端的 Socket.
+  int socklen = sizeof(sockaddr_in);  // sockaddr_in 的大小.
   sockaddr_in clientaddr;             // 客户端的地址信息.
   clientfd = accept(listenfd, (sockaddr *)&clientaddr, (socklen_t *)&socklen);
-  printf("Client (%s) has been connected.\n", inet_ntoa(clientaddr.sin_addr));
+  printf("客户端 (%s) 已连接.\n", inet_ntoa(clientaddr.sin_addr));
 
   int iret;
   char buffer[1024];
@@ -65,7 +62,7 @@ int main(int argc, char *argv[]) {
       break;
     }
 
-    printf("Receive: %s\n", buffer);
+    printf("接收: %s\n", buffer);
   }
 
   // 第 6 步: 关闭 Socket, 释放资源.

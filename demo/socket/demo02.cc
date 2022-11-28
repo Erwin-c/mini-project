@@ -5,12 +5,9 @@
  */
 
 #include <arpa/inet.h>
-#include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <sys/socket.h>
-// #include <sys/types.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
@@ -29,7 +26,7 @@ int main(int argc, char *argv[]) {
   // 第 2 步: 把服务端用于通讯的地址和端口绑定到socket上.
   sockaddr_in servaddr;  // 服务端地址信息的数据结构.
   memset(&servaddr, 0, sizeof(servaddr));
-  servaddr.sin_family = AF_INET;  // 协议族, 在socket编程中只能是 AF_INET.
+  servaddr.sin_family = AF_INET;  // 协议族, 在 Socket 编程中只能是 AF_INET.
   servaddr.sin_addr.s_addr = htonl(INADDR_ANY);  // 任意 IP 地址.
   servaddr.sin_port = htons(atoi(argv[1]));      // 指定通讯端口.
   if (bind(listenfd, (sockaddr *)&servaddr, sizeof(servaddr)) != 0) {
@@ -54,7 +51,7 @@ int main(int argc, char *argv[]) {
   int socklen = sizeof(sockaddr_in);  // sockaddr_in 的大小.
   sockaddr_in clientaddr;             // 客户端的地址信息.
   clientfd = accept(listenfd, (sockaddr *)&clientaddr, (socklen_t *)&socklen);
-  printf("Client (%s) has been connected.\n", inet_ntoa(clientaddr.sin_addr));
+  printf("客户端 (%s) 已连接.\n", inet_ntoa(clientaddr.sin_addr));
 
   int iret;
   char buffer[102400];
@@ -67,7 +64,7 @@ int main(int argc, char *argv[]) {
       printf("iret = %d\n", iret);
       break;
     }
-    printf("Receive: %s\n", buffer);
+    printf("接收: %s\n", buffer);
 
     strcpy(buffer, "Ok");
     // 向客户端发送响应结果.
@@ -75,7 +72,7 @@ int main(int argc, char *argv[]) {
       perror("send()");
       break;
     }
-    printf("Send: %s\n", buffer);
+    printf("发送: %s\n", buffer);
   }
 
   // 第 6 步: 关闭 Socket, 释放资源.

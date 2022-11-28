@@ -4,7 +4,7 @@
  *  Author: Erwin
  */
 
-#include "../../public/_public.h"
+#include "_public.h"
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -16,17 +16,17 @@ int main(int argc, char *argv[]) {
 
   // 服务端初始化.
   if (!TcpServer.InitServer(atoi(argv[1]))) {
-    printf("TcpServer.InitServer(%s) failed.\n", argv[1]);
+    printf("TcpServer.InitServer(%s) 失败.\n", argv[1]);
     return -1;
   }
 
   // 等待客户端的连接请求.
   if (!TcpServer.Accept()) {
-    printf("TcpServer.Accept() failed.\n");
+    printf("TcpServer.Accept() 失败.\n");
     return -1;
   }
 
-  printf("Client (%s) has been connected.\n", TcpServer.GetIP());
+  printf("客户端 (%s) 已连接.\n", TcpServer.GetIP());
 
   char buffer[102400];
 
@@ -37,14 +37,14 @@ int main(int argc, char *argv[]) {
     if (!TcpServer.Read(buffer)) {
       break;
     }
-    printf("Receive: %s\n", buffer);
+    printf("接收: %s\n", buffer);
 
     strcpy(buffer, "OK");
     // 向客户端发送响应结果.
     if (!TcpServer.Write(buffer)) {
       break;
     }
-    printf("Send: %s\n", buffer);
+    printf("发送: %s\n", buffer);
   }
 
   return 0;

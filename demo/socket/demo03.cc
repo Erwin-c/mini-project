@@ -4,13 +4,10 @@
  *  Author: Erwin
  */
 
-// #include <arpa/inet.h>
 #include <netdb.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include <sys/socket.h>
-// #include <sys/types.h>
 #include <unistd.h>
 
 int main(int argc, char *argv[]) {
@@ -30,7 +27,7 @@ int main(int argc, char *argv[]) {
   hostent *h;
   if ((h = gethostbyname(argv[1])) == nullptr)  // 指定服务端的 IP 地址.
   {
-    printf("gethostbyname() failed.\n");
+    printf("gethostbyname() 失败.\n");
     close(sockfd);
     return -1;
   }
@@ -54,7 +51,7 @@ int main(int argc, char *argv[]) {
   // 第 3 步: 与服务端通讯, 连续发送 1000 个报文.
   for (int ii = 0; ii < 1000; ++ii) {
     memset(buffer, 0, sizeof(buffer));
-    sprintf(buffer, "The %d super girl, id %03d.", ii + 1, ii + 1);
+    sprintf(buffer, "这是第 %d 个超级女生, 编号 %03d.", ii + 1, ii + 1);
 
     // 向服务端发送请求报文.
     if ((iret = send(sockfd, buffer, strlen(buffer), 0)) <= 0) {
@@ -62,7 +59,7 @@ int main(int argc, char *argv[]) {
       break;
     }
 
-    printf("Send: %s\n", buffer);
+    printf("发送: %s\n", buffer);
   }
 
   // 第 4 步: 关闭 Socket, 释放资源.
