@@ -4,29 +4,34 @@
  *  Author: Erwin
  */
 
-#include "../../public/_public.h"
+#include "_public.h"
 
 CTcpClient TcpClient;
 
-bool srv000();  // 心跳.
-bool srv001();  // 登录业务.
-bool srv002();  // 我的账户 (查询余额).
+// 心跳.
+bool srv000();
+
+// 登录业务
+bool srv001();
+
+// 我的账户 (查询余额).
+bool srv002();
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
-    printf("Using:. /demo13 ip port\nExample: ./demo13 127.0.0.1 5005\n\n");
+    printf("Using: ./demo13 ip port\nExample: ./demo13 127.0.0.1 5005\n\n");
     return -1;
   }
 
   // 向服务端发起连接请求.
   if (!TcpClient.ConnectToServer(argv[1], atoi(argv[2]))) {
-    printf("TcpClient.ConnectToServer(%s, %s) failed.\n", argv[1], argv[2]);
+    printf("TcpClient.ConnectToServer(%s, %s) 失败.\n", argv[1], argv[2]);
     return -1;
   }
 
   // 登录业务.
   if (!srv001()) {
-    printf("srv001() failed.\n");
+    printf("srv001() 失败.\n");
     return -1;
   }
 
@@ -34,7 +39,7 @@ int main(int argc, char *argv[]) {
 
   // 我的账户 (查询余额).
   if (!srv002()) {
-    printf("srv002() failed.\n");
+    printf("srv002() 失败.\n");
     return -1;
   }
 
@@ -50,7 +55,7 @@ int main(int argc, char *argv[]) {
 
   // 我的账户 (查询余额).
   if (!srv002()) {
-    printf("srv002() failed.\n");
+    printf("srv002() 失败.\n");
     return -1;
   }
 
@@ -61,7 +66,7 @@ bool srv000() {
   char buffer[1024];
 
   SPRINTF(buffer, sizeof(buffer), "<srvcode>0</srvcode>");
-  printf("Send: %s\n", buffer);
+  printf("发送: %s\n", buffer);
   // 向服务端发送请求报文.
   if (!TcpClient.Write(buffer)) {
     return false;
@@ -72,7 +77,7 @@ bool srv000() {
   if (!TcpClient.Read(buffer)) {
     return false;
   }
-  printf("Receive: %s\n", buffer);
+  printf("接收: %s\n", buffer);
 
   return true;
 }
@@ -83,7 +88,7 @@ bool srv001() {
   SPRINTF(
       buffer, sizeof(buffer),
       "<srvcode>1</srvcode><tel>1392220000</tel><password>123456</password>");
-  printf("Send: %s\n", buffer);
+  printf("发送: %s\n", buffer);
   // 向服务端发送请求报文.
   if (!TcpClient.Write(buffer)) {
     return false;
@@ -94,17 +99,17 @@ bool srv001() {
   if (!TcpClient.Read(buffer)) {
     return false;
   }
-  printf("Receive: %s\n", buffer);
+  printf("接收: %s\n", buffer);
 
   // 解析服务端返回的 XML.
   int iretcode = -1;
   GetXMLBuffer(buffer, "retcode", &iretcode);
   if (iretcode != 0) {
-    printf("Login failed.\n");
+    printf("登录失败.\n");
     return false;
   }
 
-  printf("Login succeeded.\n");
+  printf("登录成功.\n");
 
   return true;
 }
@@ -114,7 +119,7 @@ bool srv002() {
 
   SPRINTF(buffer, sizeof(buffer),
           "<srvcode>2</srvcode><cardid>62620000000001</cardid>");
-  printf("Send: %s\n", buffer);
+  printf("发送: %s\n", buffer);
   // 向服务端发送请求报文.
   if (!TcpClient.Write(buffer)) {
     return false;
@@ -125,20 +130,20 @@ bool srv002() {
   if (!TcpClient.Read(buffer)) {
     return false;
   }
-  printf("Receive: %s\n", buffer);
+  printf("接收: %s\n", buffer);
 
   // 解析服务端返回的 XML.
   int iretcode = -1;
   GetXMLBuffer(buffer, "retcode", &iretcode);
   if (iretcode != 0) {
-    printf("To query balance failed.\n");
+    printf("查询余额失败.\n");
     return false;
   }
 
   double ye = 0;
   GetXMLBuffer(buffer, "ye", &ye);
 
-  printf("To query balance succeeded(%.2f).\n", ye);
+  printf("查询余额成功 (%.2f).\n", ye);
 
   return true;
 }

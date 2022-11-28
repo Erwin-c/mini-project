@@ -141,7 +141,7 @@ bool srv002(const char *strrecvbuffer, char *strsendbuffer) {
     strcpy(strsendbuffer,
            "<retcode>0</retcode><message>成功.</message><ye>100.58</ye>");
   } else {
-    strcpy(strsendbuffer, "<retcode>-1</retcode><message>成功.</message>");
+    strcpy(strsendbuffer, "<retcode>-1</retcode><message>失败.</message>");
   }
 
   return true;
