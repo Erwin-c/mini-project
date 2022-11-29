@@ -6,26 +6,12 @@
 
 #include "_public.h"
 
+// 程序帮助文档.
+void _help();
+
 int main(int argc, char *argv[]) {
   if (argc < 3) {
-    printf("Using: ./procctl timetvl program argv ...\n");
-    printf(
-        "Example: ~Coding/mini-project/tools/bin/procctl 5 "
-        "/home/erwin/Coding/mini-project/idc/bin/crtmetdata "
-        "/home/erwin/Coding/mini-project/idc/ini/stcode.ini "
-        "/home/erwin/Coding/mini-project/tmp/metdata "
-        "/home/erwin/Coding/mini-project/log/crtmetdata.log "
-        "xml,json,csv\n\n");
-
-    printf("本程序是服务程序的调度程序, 周期性启动服务程序或 shell 脚本.\n");
-    printf(
-        "timetvl 运行周期, 单位: 秒. "
-        "被调度的程序运行结束后, 在 timetvl 秒后会被 procctl 重新启动.\n");
-    printf("program 被调度的程序名, 必须使用全路径.\n");
-    printf("argvs   被调度的程序的参数.\n");
-
-    printf("注意, 本程序不会被 kill 杀死, 但可以用 kill -9 强行杀死.\n\n\n");
-
+    _help();
     return -1;
   }
 
@@ -59,4 +45,28 @@ int main(int argc, char *argv[]) {
   }
 
   return 0;
+}
+
+void _help() {
+  printf("\n");
+
+  printf("Using: ./procctl timetvl program argv ...\n");
+  printf(
+      "Example: ~Coding/mini-project/tools/bin/procctl 5 "
+      "/home/erwin/Coding/mini-project/idc/bin/crtmetdata "
+      "/home/erwin/Coding/mini-project/idc/ini/stcode.ini "
+      "/home/erwin/Coding/mini-project/tmp/metdata "
+      "/home/erwin/Coding/mini-project/log/crtmetdata.log "
+      "xml,json,csv\n\n");
+
+  printf("本程序是服务程序的调度程序, 周期性启动服务程序或 shell 脚本.\n");
+  printf(
+      "timetvl 运行周期, 单位: 秒. "
+      "被调度的程序运行结束后, 在 timetvl 秒后会被 procctl 重新启动.\n");
+  printf("program 被调度的程序名, 必须使用全路径.\n");
+  printf("argvs   被调度的程序的参数.\n");
+
+  printf("注意, 本程序不会被 kill 杀死, 但可以用 kill -9 强行杀死.\n\n\n");
+
+  return;
 }
