@@ -41,27 +41,30 @@ bool ClientLogin();
 // 心跳.
 bool ActiveTest();
 
-// 上传文件的主函数.
-void RecvFilesMain();
-
 // 接收文件的内容.
 bool RecvFile(const int sockfd, const char *filename, const char *mtime,
               int filesize);
 
+// 上传文件的主函数.
+void RecvFilesMain();
+
 // 下载文件的主函数.
 void SendFilesMain();
-
-// 文件下载的主函数, 执行一次文件下载的任务.
-bool _tcpputfiles();
-
-// 把文件的内容发送给对端.
-bool SendFile(const int sockfd, const char *filename, const int filesize);
 
 // 删除或者转存本地的文件.
 bool AckMessage(const char *strrecvbuffer);
 
+// 把文件的内容发送给对端.
+bool SendFile(const int sockfd, const char *filename, const int filesize);
+
+// 文件下载的主函数, 执行一次文件下载的任务.
+bool _tcpputfiles();
+
 // 把 XML 解析到参数 starg 结构中.
 bool _xmltoarg(char *strxmlbuffer);
+
+// 程序帮助文档.
+void _help();
 
 // 父进程退出函数.
 void FathEXIT(int sig);
@@ -71,14 +74,7 @@ void ChldEXIT(int sig);
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
-    printf("Using: ./fileserver port logfile\n");
-    printf(
-        "Example: ./fileserver 5005 "
-        "/home/erwin/Coding/mini-project/log/idc/fileserver.log\n");
-    printf(
-        "/home/erwin/Coding/mini-project/tools/bin/procctl 10 "
-        "/home/erwin/Coding/mini-project/tools/bin/fileserver 5005 "
-        "/home/erwin/Coding/mini-project/log/idc/fileserver.log\n\n\n");
+    _help();
     return -1;
   }
 
@@ -129,7 +125,7 @@ int main(int argc, char *argv[]) {
       ChldEXIT(-1);
     }
 
-    // 如果clienttype == 1, 调用上传文件的主函数.
+    // 如果 clienttype == 1, 调用上传文件的主函数.
     if (starg.clienttype == 1) {
       RecvFilesMain();
     }
@@ -196,79 +192,6 @@ bool ActiveTest() {
   return true;
 }
 
-void RecvFilesMain() {
-  PActive.AddPInfo(starg.timeout, starg.pname);
-
-  while (true) {
-    memset(strsendbuffer, 0, sizeof(strsendbuffer));
-    memset(strrecvbuffer, 0, sizeof(strrecvbuffer));
-
-    PActive.UptATime();
-
-    // 接收客户端的报文.
-    // 第二个参数的取值必须大于 starg.timetvl, 小于starg.timeout.
-    if (!TcpServer.Read(strrecvbuffer, starg.timetvl + 10)) {
-      logfile.Write("TcpServer.Read() 失败.\n");
-      return;
-    }
-    logfile.Write("strrecvbuffer = %s\n", strrecvbuffer);
-
-    // 处理心跳报文.
-    if (strcmp(strrecvbuffer, "<activetest>ok</activetest>") == 0) {
-      strcpy(strsendbuffer, "ok");
-      logfile.Write("strsendbuffer = %s\n", strsendbuffer);
-
-      if (!TcpServer.Write(strsendbuffer)) {
-        logfile.Write("TcpServer.Write() 失败.\n");
-        return;
-      }
-    }
-
-    // 处理上传文件的请求报文.
-    if (strncmp(strrecvbuffer, "<filename>", 10) == 0) {
-      // 解析上传文件请求报文的 XML.
-      char clientfilename[301];
-      memset(clientfilename, 0, sizeof(clientfilename));
-      char mtime[21];
-      memset(mtime, 0, sizeof(mtime));
-      int filesize = 0;
-      GetXMLBuffer(strrecvbuffer, "filename", clientfilename, 300);
-      GetXMLBuffer(strrecvbuffer, "mtime", mtime, 19);
-      GetXMLBuffer(strrecvbuffer, "size", &filesize);
-
-      // 客户端和服务端文件的目录是不一样的, 以下代码生成服务端的文件名.
-      // 把文件名中的 clientpath 替换成 srvpath, 要小心第三个参数.
-      char serverfilename[301];
-      memset(serverfilename, 0, sizeof(serverfilename));
-      strcpy(serverfilename, clientfilename);
-      UpdateStr(serverfilename, starg.clientpath, starg.srvpath, false);
-
-      // 接收文件的内容.
-      logfile.Write("接收 %s (%d) ...", serverfilename, filesize);
-      if (RecvFile(TcpServer.m_connfd, serverfilename, mtime, filesize)) {
-        logfile.WriteEx("成功.\n");
-        SNPRINTF(strsendbuffer, sizeof(strsendbuffer), 1000,
-                 "<filename>%s</filename><result>成功.</result>",
-                 clientfilename);
-      } else {
-        logfile.WriteEx("失败.\n");
-        SNPRINTF(strsendbuffer, sizeof(strsendbuffer), 1000,
-                 "<filename>%s</filename><result>失败.</result>",
-                 clientfilename);
-      }
-
-      // 把接收结果返回给对端.
-      logfile.Write("strsendbuffer = %s\n", strsendbuffer);
-      if (!TcpServer.Write(strsendbuffer)) {
-        logfile.Write("TcpServer.Write() 失败.\n");
-        return;
-      }
-    }
-  }
-
-  return;
-}
-
 bool RecvFile(const int sockfd, const char *filename, const char *mtime,
               int filesize) {
   // 生成临时文件名.
@@ -326,6 +249,78 @@ bool RecvFile(const int sockfd, const char *filename, const char *mtime,
   return true;
 }
 
+void RecvFilesMain() {
+  PActive.AddPInfo(starg.timeout, starg.pname);
+
+  while (true) {
+    memset(strsendbuffer, 0, sizeof(strsendbuffer));
+    memset(strrecvbuffer, 0, sizeof(strrecvbuffer));
+
+    PActive.UptATime();
+
+    // 接收客户端的报文.
+    // 第二个参数的取值必须大于 starg.timetvl, 小于starg.timeout.
+    if (!TcpServer.Read(strrecvbuffer, starg.timetvl + 10)) {
+      logfile.Write("TcpServer.Read() 失败.\n");
+      return;
+    }
+    logfile.Write("strrecvbuffer = %s\n", strrecvbuffer);
+
+    // 处理心跳报文.
+    if (strcmp(strrecvbuffer, "<activetest>ok</activetest>") == 0) {
+      strcpy(strsendbuffer, "ok");
+      logfile.Write("strsendbuffer = %s\n", strsendbuffer);
+
+      if (!TcpServer.Write(strsendbuffer)) {
+        logfile.Write("TcpServer.Write() 失败.\n");
+        return;
+      }
+    }
+
+    // 处理上传文件的请求报文.
+    if (strncmp(strrecvbuffer, "<filename>", 10) == 0) {
+      // 解析上传文件请求报文的 XML.
+      char clientfilename[301];
+      memset(clientfilename, 0, sizeof(clientfilename));
+      char mtime[21];
+      memset(mtime, 0, sizeof(mtime));
+      int filesize = 0;
+      GetXMLBuffer(strrecvbuffer, "filename", clientfilename, 300);
+      GetXMLBuffer(strrecvbuffer, "mtime", mtime, 19);
+      GetXMLBuffer(strrecvbuffer, "size", &filesize);
+
+      // 客户端和服务端文件的目录是不一样的, 以下代码生成服务端的文件名.
+      // 把文件名中的 clientpath 替换成 srvpath, 要小心第三个参数.
+      char serverfilename[301];
+      memset(serverfilename, 0, sizeof(serverfilename));
+      strcpy(serverfilename, clientfilename);
+      UpdateStr(serverfilename, starg.clientpath, starg.srvpath, false);
+
+      // 接收文件的内容.
+      logfile.Write("接收 %s (%d) ...", serverfilename, filesize);
+      if (RecvFile(TcpServer.m_connfd, serverfilename, mtime, filesize)) {
+        logfile.WriteEx("成功.\n");
+        SNPRINTF(strsendbuffer, sizeof(strsendbuffer), 1000,
+                 "<filename>%s</filename><result>ok</result>", clientfilename);
+      } else {
+        logfile.WriteEx("失败.\n");
+        SNPRINTF(strsendbuffer, sizeof(strsendbuffer), 1000,
+                 "<filename>%s</filename><result>failed</result>",
+                 clientfilename);
+      }
+
+      // 把接收结果返回给对端.
+      logfile.Write("strsendbuffer = %s\n", strsendbuffer);
+      if (!TcpServer.Write(strsendbuffer)) {
+        logfile.Write("TcpServer.Write() 失败.\n");
+        return;
+      }
+    }
+  }
+
+  return;
+}
+
 void SendFilesMain() {
   PActive.AddPInfo(starg.timeout, starg.pname);
 
@@ -348,6 +343,92 @@ void SendFilesMain() {
   }
 
   return;
+}
+
+// 删除或者转存本地的文件。
+bool AckMessage(const char *strrecvbuffer) {
+  char filename[301];
+  char result[11];
+
+  memset(filename, 0, sizeof(filename));
+  memset(result, 0, sizeof(result));
+
+  GetXMLBuffer(strrecvbuffer, "filename", filename, 300);
+  GetXMLBuffer(strrecvbuffer, "result", result, 10);
+
+  // 如果服务端接收文件不成功, 直接返回.
+  if (strcmp(result, "ok") != 0) {
+    return true;
+  }
+
+  // ptype == 1, 删除文件.
+  if (starg.ptype == 1) {
+    if (!REMOVE(filename)) {
+      logfile.Write("REMOVE(%s) failed.\n", filename);
+      return false;
+    }
+  }
+
+  // ptype == 2, 移动到备份目录.
+  if (starg.ptype == 2) {
+    // 生成转存后的备份目录文件名.
+    char bakfilename[301];
+    STRCPY(bakfilename, sizeof(bakfilename), filename);
+    UpdateStr(bakfilename, starg.srvpath, starg.srvpathbak, false);
+    if (!RENAME(filename, bakfilename)) {
+      logfile.Write("RENAME(%s, %s) failed.\n", filename, bakfilename);
+      return false;
+    }
+  }
+
+  return true;
+}
+
+bool SendFile(const int sockfd, const char *filename, const int filesize) {
+  int onread = 0;      // 每次调用 fread() 时打算读取的字节数.
+  int bytes = 0;       // 调用一次 fread() 从文件中读取的字节数.
+  char buffer[1000];   // 存放读取数据的 buffer.
+  int totalbytes = 0;  // 从文件中已读取的字节总数.
+  FILE *fp = NULL;
+
+  // 以 "rb" 的模式打开文件.
+  if ((fp = fopen(filename, "rb")) == NULL) {
+    return false;
+  }
+
+  while (true) {
+    memset(buffer, 0, sizeof(buffer));
+
+    // 计算本次应该读取的字节数, 如果剩余的数据超过 1000 字节,
+    // 就打算读 1000 字节.
+    if (filesize - totalbytes > 1000) {
+      onread = 1000;
+    } else {
+      onread = filesize - totalbytes;
+    }
+
+    // 从文件中读取数据.
+    bytes = fread(buffer, 1, onread, fp);
+
+    // 把读取到的数据发送给对端.
+    if (bytes > 0) {
+      if (!Writen(sockfd, buffer, bytes)) {
+        fclose(fp);
+        return false;
+      }
+    }
+
+    // 计算文件已读取的字节总数, 如果文件已读完, 跳出循环.
+    totalbytes = totalbytes + bytes;
+
+    if (totalbytes == filesize) {
+      break;
+    }
+  }
+
+  fclose(fp);
+
+  return true;
 }
 
 bool _tcpputfiles() {
@@ -429,92 +510,6 @@ bool _tcpputfiles() {
   return true;
 }
 
-bool SendFile(const int sockfd, const char *filename, const int filesize) {
-  int onread = 0;      // 每次调用 fread() 时打算读取的字节数.
-  int bytes = 0;       // 调用一次 fread() 从文件中读取的字节数.
-  char buffer[1000];   // 存放读取数据的 buffer.
-  int totalbytes = 0;  // 从文件中已读取的字节总数.
-  FILE *fp = NULL;
-
-  // 以 "rb" 的模式打开文件.
-  if ((fp = fopen(filename, "rb")) == NULL) {
-    return false;
-  }
-
-  while (true) {
-    memset(buffer, 0, sizeof(buffer));
-
-    // 计算本次应该读取的字节数, 如果剩余的数据超过 1000 字节,
-    // 就打算读 1000 字节.
-    if (filesize - totalbytes > 1000) {
-      onread = 1000;
-    } else {
-      onread = filesize - totalbytes;
-    }
-
-    // 从文件中读取数据.
-    bytes = fread(buffer, 1, onread, fp);
-
-    // 把读取到的数据发送给对端.
-    if (bytes > 0) {
-      if (!Writen(sockfd, buffer, bytes)) {
-        fclose(fp);
-        return false;
-      }
-    }
-
-    // 计算文件已读取的字节总数, 如果文件已读完, 跳出循环.
-    totalbytes = totalbytes + bytes;
-
-    if (totalbytes == filesize) {
-      break;
-    }
-  }
-
-  fclose(fp);
-
-  return true;
-}
-
-// 删除或者转存本地的文件。
-bool AckMessage(const char *strrecvbuffer) {
-  char filename[301];
-  char result[11];
-
-  memset(filename, 0, sizeof(filename));
-  memset(result, 0, sizeof(result));
-
-  GetXMLBuffer(strrecvbuffer, "filename", filename, 300);
-  GetXMLBuffer(strrecvbuffer, "result", result, 10);
-
-  // 如果服务端接收文件不成功, 直接返回.
-  if (strcmp(result, "ok") != 0) {
-    return true;
-  }
-
-  // ptype == 1, 删除文件.
-  if (starg.ptype == 1) {
-    if (!REMOVE(filename)) {
-      logfile.Write("REMOVE(%s) failed.\n", filename);
-      return false;
-    }
-  }
-
-  // ptype == 2, 移动到备份目录.
-  if (starg.ptype == 2) {
-    // 生成转存后的备份目录文件名.
-    char bakfilename[301];
-    STRCPY(bakfilename, sizeof(bakfilename), filename);
-    UpdateStr(bakfilename, starg.srvpath, starg.srvpathbak, false);
-    if (!RENAME(filename, bakfilename)) {
-      logfile.Write("RENAME(%s, %s) failed.\n", filename, bakfilename);
-      return false;
-    }
-  }
-
-  return true;
-}
-
 bool _xmltoarg(char *strxmlbuffer) {
   memset(&starg, 0, sizeof(st_arg));
 
@@ -541,6 +536,23 @@ bool _xmltoarg(char *strxmlbuffer) {
   strcat(starg.pname, "_srv");
 
   return true;
+}
+
+void _help() {
+  printf("\n");
+
+  printf(
+      "Using: /home/erwin/Coding/mini-project/tools/bin/fileserver port "
+      "logfile\n");
+  printf(
+      "Example: /home/erwin/Coding/mini-project/tools/bin/procctl 10 "
+      "/home/erwin/Coding/mini-project/tools/bin/fileserver 5005 "
+      "/home/erwin/Coding/mini-project/log/idc/fileserver.log\n");
+  printf(
+      "         /home/erwin/Coding/mini-project/tools/bin/fileserver 5005 "
+      "/home/erwin/Coding/mini-project/log/idc/fileserver.log\n\n\n");
+
+  return;
 }
 
 void FathEXIT(int sig) {
