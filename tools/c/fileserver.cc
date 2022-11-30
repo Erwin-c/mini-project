@@ -22,26 +22,18 @@ struct st_arg {
   char pname[51];        // 进程名, 建议用 "tcpgetfiles_后缀" 的方式.
 } starg;
 
+// 如果调用 _tcpputfiles() 发送了文件, bcontinue 为 true, 初始化为 true.
+bool bcontinue = true;
+
+char strrecvbuffer[1024];  // 发送报文的 buffer.
+
+char strsendbuffer[1024];  // 接收报文的 buffer.
+
 CLogFile logfile;  // 服务程序的运行日志.
 
-CTcpServer TcpServer;  // 创建服务端对象.
+CTcpServer TcpServer;  // Socket 通讯的服务端类.
 
 CPActive PActive;  // 进程心跳。
-
-char strrecvbuffer[1024];  // 发送报文的buffer.
-char strsendbuffer[1024];  // 接收报文的buffer.
-
-bool bcontinue = true;  // 如果调用 _tcpputfiles() 发送了文件,
-                        // bcontinue 为 true, 初始化为 true.
-
-// 父进程退出函数.
-void FathEXIT(int sig);
-
-// 子进程退出函数.
-void ChldEXIT(int sig);
-
-// 把 XML 解析到参数 starg 结构中.
-bool _xmltoarg(char *strxmlbuffer);
 
 // 登录业务处理函数.
 bool ClientLogin();
@@ -68,6 +60,15 @@ bool SendFile(const int sockfd, const char *filename, const int filesize);
 // 删除或者转存本地的文件.
 bool AckMessage(const char *strrecvbuffer);
 
+// 把 XML 解析到参数 starg 结构中.
+bool _xmltoarg(char *strxmlbuffer);
+
+// 父进程退出函数.
+void FathEXIT(int sig);
+
+// 子进程退出函数.
+void ChldEXIT(int sig);
+
 int main(int argc, char *argv[]) {
   if (argc != 3) {
     printf("Using: ./fileserver port logfile\n");
@@ -90,24 +91,24 @@ int main(int argc, char *argv[]) {
   signal(SIGTERM, FathEXIT);
 
   if (!logfile.Open(argv[2], "a+")) {
-    printf("logfile.Open(%s) failed.\n", argv[2]);
+    printf("logfile.Open(%s) 失败.\n", argv[2]);
     return -1;
   }
 
   // 服务端初始化.
   if (!TcpServer.InitServer(atoi(argv[1]))) {
-    logfile.Write("TcpServer.InitServer(%s) failed.\n", argv[1]);
+    logfile.Write("TcpServer.InitServer(%s) 失败.\n", argv[1]);
     return -1;
   }
 
   while (true) {
     // 等待客户端的连接请求.
     if (!TcpServer.Accept()) {
-      logfile.Write("TcpServer.Accept() failed.\n");
+      logfile.Write("TcpServer.Accept() 失败.\n");
       FathEXIT(-1);
     }
 
-    logfile.Write("Client(%s) has been connected.\n", TcpServer.GetIP());
+    logfile.Write("客户端 (%s) 已连接.\n", TcpServer.GetIP());
 
     // 父进程继续回到 Accept().
     if (fork() > 0) {
@@ -140,63 +141,8 @@ int main(int argc, char *argv[]) {
 
     ChldEXIT(0);
   }
-}
 
-void FathEXIT(int sig) {
-  // 以下代码是为了防止信号处理函数在执行的过程中被信号中断.
-  signal(SIGINT, SIG_IGN);
-  signal(SIGTERM, SIG_IGN);
-
-  logfile.Write("Father program exited, sig = %d.\n", sig);
-
-  // 关闭监听的 Socket.
-  TcpServer.CloseListen();
-
-  // 通知全部的子进程退出.
-  kill(0, 15);
-
-  exit(0);
-}
-
-void ChldEXIT(int sig) {
-  // 以下代码是为了防止信号处理函数在执行的过程中被信号中断.
-  signal(SIGINT, SIG_IGN);
-  signal(SIGTERM, SIG_IGN);
-
-  logfile.Write("Child program exited, sig = %d.\n", sig);
-
-  // 关闭客户端的 Socket.
-  TcpServer.CloseClient();
-
-  exit(0);
-}
-
-bool _xmltoarg(char *strxmlbuffer) {
-  memset(&starg, 0, sizeof(st_arg));
-
-  // 不需要对参数做合法性判断, 客户端已经判断过了.
-  GetXMLBuffer(strxmlbuffer, "clienttype", &starg.clienttype);
-  GetXMLBuffer(strxmlbuffer, "ptype", &starg.ptype);
-  GetXMLBuffer(strxmlbuffer, "clientpath", starg.clientpath);
-  GetXMLBuffer(strxmlbuffer, "andchild", &starg.andchild);
-  GetXMLBuffer(strxmlbuffer, "matchname", starg.matchname);
-  GetXMLBuffer(strxmlbuffer, "srvpath", starg.srvpath);
-  GetXMLBuffer(strxmlbuffer, "srvpathbak", starg.srvpathbak);
-
-  GetXMLBuffer(strxmlbuffer, "timetvl", &starg.timetvl);
-  if (starg.timetvl > 30) {
-    starg.timetvl = 30;
-  }
-
-  GetXMLBuffer(strxmlbuffer, "timeout", &starg.timeout);
-  if (starg.timeout < 50) {
-    starg.timeout = 50;
-  }
-
-  GetXMLBuffer(strxmlbuffer, "pname", starg.pname, 50);
-  strcat(starg.pname, "_srv");
-
-  return true;
+  return 0;
 }
 
 bool ClientLogin() {
@@ -204,7 +150,7 @@ bool ClientLogin() {
   memset(strsendbuffer, 0, sizeof(strsendbuffer));
 
   if (!TcpServer.Read(strrecvbuffer, 20)) {
-    logfile.Write("TcpServer.Read() failed.\n");
+    logfile.Write("TcpServer.Read() 失败.\n");
     return false;
   }
   logfile.Write("strrecvbuffer = %s\n", strrecvbuffer);
@@ -213,17 +159,17 @@ bool ClientLogin() {
   _xmltoarg(strrecvbuffer);
 
   if (starg.clienttype != 1 && starg.clienttype != 2) {
-    strcpy(strsendbuffer, "failed");
+    strcpy(strsendbuffer, "失败.");
   } else {
-    strcpy(strsendbuffer, "ok");
+    strcpy(strsendbuffer, "成功.");
   }
 
   if (!TcpServer.Write(strsendbuffer)) {
-    logfile.Write("TcpServer.Write() failed.\n");
+    logfile.Write("TcpServer.Write() 失败.\n");
     return false;
   }
 
-  logfile.Write("%s login %s.\n", TcpServer.GetIP(), strsendbuffer);
+  logfile.Write("%s 登录 %s.\n", TcpServer.GetIP(), strsendbuffer);
 
   return true;
 }
@@ -233,7 +179,8 @@ bool ActiveTest() {
   memset(strrecvbuffer, 0, sizeof(strrecvbuffer));
 
   SPRINTF(strsendbuffer, sizeof(strsendbuffer), "<activetest>ok</activetest>");
-  // logfile.Write("Send: %s\n", strsendbuffer);
+  logfile.Write("发送: %s\n", strsendbuffer);
+
   // 向服务端发送请求报文.
   if (!TcpServer.Write(strsendbuffer)) {
     return false;
@@ -243,7 +190,8 @@ bool ActiveTest() {
   if (!TcpServer.Read(strrecvbuffer, 20)) {
     return false;
   }
-  // logfile.Write("Receive: %s\n", strrecvbuffer);
+
+  logfile.Write("接收: %s\n", strrecvbuffer);
 
   return true;
 }
@@ -260,17 +208,18 @@ void RecvFilesMain() {
     // 接收客户端的报文.
     // 第二个参数的取值必须大于 starg.timetvl, 小于starg.timeout.
     if (!TcpServer.Read(strrecvbuffer, starg.timetvl + 10)) {
-      logfile.Write("TcpServer.Read() failed.\n");
+      logfile.Write("TcpServer.Read() 失败.\n");
       return;
     }
-    // logfile.Write("strrecvbuffer = %s\n", strrecvbuffer);
+    logfile.Write("strrecvbuffer = %s\n", strrecvbuffer);
 
     // 处理心跳报文.
     if (strcmp(strrecvbuffer, "<activetest>ok</activetest>") == 0) {
       strcpy(strsendbuffer, "ok");
-      // logfile.Write("strsendbuffer = %s\n", strsendbuffer);
+      logfile.Write("strsendbuffer = %s\n", strsendbuffer);
+
       if (!TcpServer.Write(strsendbuffer)) {
-        logfile.Write("TcpServer.Write() failed.\n");
+        logfile.Write("TcpServer.Write() 失败.\n");
         return;
       }
     }
@@ -295,22 +244,23 @@ void RecvFilesMain() {
       UpdateStr(serverfilename, starg.clientpath, starg.srvpath, false);
 
       // 接收文件的内容.
-      logfile.Write("recv %s(%d) ...", serverfilename, filesize);
+      logfile.Write("接收 %s (%d) ...", serverfilename, filesize);
       if (RecvFile(TcpServer.m_connfd, serverfilename, mtime, filesize)) {
-        logfile.WriteEx("ok.\n");
+        logfile.WriteEx("成功.\n");
         SNPRINTF(strsendbuffer, sizeof(strsendbuffer), 1000,
-                 "<filename>%s</filename><result>ok</result>", clientfilename);
+                 "<filename>%s</filename><result>成功.</result>",
+                 clientfilename);
       } else {
-        logfile.WriteEx("failed.\n");
+        logfile.WriteEx("失败.\n");
         SNPRINTF(strsendbuffer, sizeof(strsendbuffer), 1000,
-                 "<filename>%s</filename><result>failed</result>",
+                 "<filename>%s</filename><result>失败.</result>",
                  clientfilename);
       }
 
       // 把接收结果返回给对端.
-      // logfile.Write("strsendbuffer = %s\n", strsendbuffer);
+      logfile.Write("strsendbuffer = %s\n", strsendbuffer);
       if (!TcpServer.Write(strsendbuffer)) {
-        logfile.Write("TcpServer.Write() failed.\n");
+        logfile.Write("TcpServer.Write() 失败.\n");
         return;
       }
     }
@@ -563,4 +513,61 @@ bool AckMessage(const char *strrecvbuffer) {
   }
 
   return true;
+}
+
+bool _xmltoarg(char *strxmlbuffer) {
+  memset(&starg, 0, sizeof(st_arg));
+
+  // 不需要对参数做合法性判断, 客户端已经判断过了.
+  GetXMLBuffer(strxmlbuffer, "clienttype", &starg.clienttype);
+  GetXMLBuffer(strxmlbuffer, "ptype", &starg.ptype);
+  GetXMLBuffer(strxmlbuffer, "clientpath", starg.clientpath);
+  GetXMLBuffer(strxmlbuffer, "andchild", &starg.andchild);
+  GetXMLBuffer(strxmlbuffer, "matchname", starg.matchname);
+  GetXMLBuffer(strxmlbuffer, "srvpath", starg.srvpath);
+  GetXMLBuffer(strxmlbuffer, "srvpathbak", starg.srvpathbak);
+
+  GetXMLBuffer(strxmlbuffer, "timetvl", &starg.timetvl);
+  if (starg.timetvl > 30) {
+    starg.timetvl = 30;
+  }
+
+  GetXMLBuffer(strxmlbuffer, "timeout", &starg.timeout);
+  if (starg.timeout < 50) {
+    starg.timeout = 50;
+  }
+
+  GetXMLBuffer(strxmlbuffer, "pname", starg.pname, 50);
+  strcat(starg.pname, "_srv");
+
+  return true;
+}
+
+void FathEXIT(int sig) {
+  // 以下代码是为了防止信号处理函数在执行的过程中被信号中断.
+  signal(SIGINT, SIG_IGN);
+  signal(SIGTERM, SIG_IGN);
+
+  logfile.Write("父进程退出, sig = %d.\n", sig);
+
+  // 关闭监听的 Socket.
+  TcpServer.CloseListen();
+
+  // 通知全部的子进程退出.
+  kill(0, 15);
+
+  exit(0);
+}
+
+void ChldEXIT(int sig) {
+  // 以下代码是为了防止信号处理函数在执行的过程中被信号中断.
+  signal(SIGINT, SIG_IGN);
+  signal(SIGTERM, SIG_IGN);
+
+  logfile.Write("子进程退出, sig = %d.\n", sig);
+
+  // 关闭客户端的 Socket.
+  TcpServer.CloseClient();
+
+  exit(0);
 }

@@ -14,7 +14,7 @@ bool srv002();  // 我的账户 (查询余额).
 
 int main(int argc, char *argv[]) {
   if (argc != 3) {
-    printf("Using:. /demo11 ip port\nExample: ./demo11 127.0.0.1 5005\n\n");
+    printf("Using: ./demo11 ip port\nExample: ./demo11 127.0.0.1 5005\n\n");
     return -1;
   }
 
