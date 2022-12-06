@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 
   // 打开日志文件.
   if (!logfile.Open(argv[1], "a+")) {
-    printf("loggile.Open(%s) 失败.\n", argv[1]);
+    printf("logfile.Open(%s) 失败.\n", argv[1]);
     return -1;
   }
 
@@ -369,7 +369,7 @@ void _help() {
       "<ptype>2</ptype>"
       "<clientpath>/home/erwin/Coding/mini-project/tmp/client</"
       "clientpath>"
-      "<clientpathbak>/home/erwin/Coding/mini-project/tmp/metdatabak</"
+      "<clientpathbak>/home/erwin/Coding/mini-project/tmp/clientbak</"
       "clientpathbak>"
       "<andchild>true</andchild>"
       "<matchname>*.XML,*.CSV,*.JSON</matchname>"
@@ -399,7 +399,7 @@ void _help() {
       "<ptype>2</ptype>"
       "<clientpath>/home/erwin/Coding/mini-project/tmp/client</"
       "clientpath>"
-      "<clientpathbak>/home/erwin/Coding/mini-project/tmp/metdatabak</"
+      "<clientpathbak>/home/erwin/Coding/mini-project/tmp/clientbak</"
       "clientpathbak>"
       "<andchild>true</andchild>"
       "<matchname>*.XML,*.CSV,*.JSON</matchname>"
