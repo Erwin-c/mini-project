@@ -175,10 +175,10 @@ bool SendFile(const int sockfd, const char *filename, const int filesize) {
   int bytes = 0;       // 调用一次 fread() 从文件中读取的字节数.
   char buffer[1000];   // 存放读取数据的 buffer.
   int totalbytes = 0;  // 从文件中已读取的字节总数.
-  FILE *fp = NULL;
+  FILE *fp = nullptr;
 
   // 以 "rb" 的模式打开文件.
-  if ((fp = fopen(filename, "rb")) == NULL) {
+  if ((fp = fopen(filename, "rb")) == nullptr) {
     return false;
   }
 
@@ -352,28 +352,58 @@ void _help() {
       "\"<ip>127.0.0.1</ip>"
       "<port>5005</port>"
       "<ptype>1</ptype>"
-      "<clientpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata1</"
+      "<clientpath>/home/erwin/Coding/mini-project/tmp/client</"
       "clientpath>"
       "<andchild>true</andchild>"
       "<matchname>*.XML,*.CSV,*.JSON</matchname>"
-      "<srvpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata2</srvpath>"
+      "<srvpath>/home/erwin/Coding/mini-project/tmp/server</srvpath>"
       "<timetvl>10</timetvl>"
       "<timeout>50</timeout>"
       "<pname>tcpputfiles_metdata</pname>\"\n");
   printf(
-      "/home/erwin/Coding/mini-project/tools/bin/procctl 20 "
+      "         /home/erwin/Coding/mini-project/tools/bin/procctl 20 "
       "/home/erwin/Coding/mini-project/tools/bin/tcpputfiles "
       "/home/erwin/Coding/mini-project/log/idc/tcpputfiles_metdata.log "
       "\"<ip>127.0.0.1</ip>"
       "<port>5005</port>"
       "<ptype>2</ptype>"
-      "<clientpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata1</"
+      "<clientpath>/home/erwin/Coding/mini-project/tmp/client</"
       "clientpath>"
-      "<clientpathbak>/home/erwin/Coding/mini-project/tmp/tcp/metdata1bak</"
+      "<clientpathbak>/home/erwin/Coding/mini-project/tmp/metdatabak</"
       "clientpathbak>"
       "<andchild>true</andchild>"
       "<matchname>*.XML,*.CSV,*.JSON</matchname>"
-      "<srvpath>/home/erwin/Coding/mini-project/tmp/tcp/metdata2</srvpath>"
+      "<srvpath>/home/erwin/Coding/mini-project/tmp/server</srvpath>"
+      "<timetvl>10</timetvl>"
+      "<timeout>50</timeout>"
+      "<pname>tcpputfiles_metdata</pname>\"\n");
+  printf(
+      "         /home/erwin/Coding/mini-project/tools/bin/tcpputfiles "
+      "/home/erwin/Coding/mini-project/log/idc/tcpputfiles_metdata.log "
+      "\"<ip>127.0.0.1</ip>"
+      "<port>5005</port>"
+      "<ptype>1</ptype>"
+      "<clientpath>/home/erwin/Coding/mini-project/tmp/client</"
+      "clientpath>"
+      "<andchild>true</andchild>"
+      "<matchname>*.XML,*.CSV,*.JSON</matchname>"
+      "<srvpath>/home/erwin/Coding/mini-project/tmp/server</srvpath>"
+      "<timetvl>10</timetvl>"
+      "<timeout>50</timeout>"
+      "<pname>tcpputfiles_metdata</pname>\"\n");
+  printf(
+      "         /home/erwin/Coding/mini-project/tools/bin/tcpputfiles "
+      "/home/erwin/Coding/mini-project/log/idc/tcpputfiles_metdata.log "
+      "\"<ip>127.0.0.1</ip>"
+      "<port>5005</port>"
+      "<ptype>2</ptype>"
+      "<clientpath>/home/erwin/Coding/mini-project/tmp/client</"
+      "clientpath>"
+      "<clientpathbak>/home/erwin/Coding/mini-project/tmp/metdatabak</"
+      "clientpathbak>"
+      "<andchild>true</andchild>"
+      "<matchname>*.XML,*.CSV,*.JSON</matchname>"
+      "<srvpath>/home/erwin/Coding/mini-project/tmp/server</srvpath>"
       "<timetvl>10</timetvl>"
       "<timeout>50</timeout>"
       "<pname>tcpputfiles_metdata</pname>\"\n\n\n");
@@ -402,7 +432,7 @@ void _help() {
   printf(
       "timeout       "
       "本程序的超时时间, 单位: 秒, 视文件大小和网络带宽而定, "
-      "建议设置50以上.\n");
+      "建议设置 50 以上.\n");
   printf(
       "pname         "
       "进程名, 尽可能采用易懂的, 与其它进程不同的名称, 方便故障排查.\n\n");
