@@ -1,0 +1,50 @@
+2022-12-06 21:18:13 发送: <ip>127.0.0.1</ip><port>5005</port><ptype>2</ptype><srvpath>/home/erwin/Coding/mini-project/tmp/server</srvpath><srvpathbak>/home/erwin/Coding/mini-project/tmp/serverbak</srvpathbak><andchild>true</andchild><matchname>*.XML,*.CSV,*.JSON</matchname><clientpath>/home/erwin/Coding/mini-project/tmp/client</clientpath><timetvl>10</timetvl><timeout>50</timeout><pname>tcpgetfiles_metdata</pname><clienttype>2</clienttype>
+2022-12-06 21:18:13 接收: 成功.
+2022-12-06 21:18:13 登录 (127.0.0.1 : 5005) 成功.
+2022-12-06 21:18:13 strrecvbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.csv</filename><mtime>2022-12-06 20:46:46</mtime><size>46768</size>
+2022-12-06 21:18:13 接收 /home/erwin/Coding/mini-project/tmp/client/SURF_ZH_20221126182231_30780.csv(46768) ...成功.
+2022-12-06 21:18:13 strsendbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.csv</filename><result>ok</result>
+2022-12-06 21:18:13 strrecvbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.json</filename><mtime>2022-12-06 20:46:46</mtime><size>107932</size>
+2022-12-06 21:18:13 接收 /home/erwin/Coding/mini-project/tmp/client/SURF_ZH_20221126182231_30780.json(107932) ...成功.
+2022-12-06 21:18:13 strsendbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.json</filename><result>ok</result>
+2022-12-06 21:18:13 strrecvbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.xml</filename><mtime>2022-12-06 20:46:46</mtime><size>125554</size>
+2022-12-06 21:18:13 接收 /home/erwin/Coding/mini-project/tmp/client/SURF_ZH_20221126182231_30780.xml(125554) ...成功.
+2022-12-06 21:18:13 strsendbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.xml</filename><result>ok</result>
+2022-12-06 21:18:23 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:18:23 strsendbuffer = ok
+2022-12-06 21:18:33 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:18:33 strsendbuffer = ok
+2022-12-06 21:18:43 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:18:43 strsendbuffer = ok
+2022-12-06 21:18:53 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:18:53 strsendbuffer = ok
+2022-12-06 21:19:03 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:19:03 strsendbuffer = ok
+2022-12-06 21:19:13 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:19:13 strsendbuffer = ok
+2022-12-06 21:19:23 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:19:23 strsendbuffer = ok
+2022-12-06 21:19:33 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:19:33 strsendbuffer = ok
+2022-12-06 21:19:43 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:19:43 strsendbuffer = ok
+2022-12-06 21:19:53 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:19:53 strsendbuffer = ok
+2022-12-06 21:20:03 strrecvbuffer = <activetest>ok</activetest>
+2022-12-06 21:20:03 strsendbuffer = ok
+2022-12-06 21:20:06 程序退出, sig = 2
+
+2022-12-06 21:23:14 发送: <ip>127.0.0.1</ip><port>5005</port><ptype>2</ptype><srvpath>/home/erwin/Coding/mini-project/tmp/server</srvpath><srvpathbak>/home/erwin/Coding/mini-project/tmp/serverbak</srvpathbak><andchild>true</andchild><matchname>*.XML,*.CSV,*.JSON</matchname><clientpath>/home/erwin/Coding/mini-project/tmp/client</clientpath><timetvl>10</timetvl><timeout>50</timeout><pname>tcpgetfiles_metdata</pname><clienttype>2</clienttype>
+2022-12-06 21:23:14 接收: 成功.
+2022-12-06 21:23:14 登录 (127.0.0.1 : 5005) 成功.
+2022-12-06 21:23:14 strrecvbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.csv</filename><mtime>2022-12-06 20:46:46</mtime><size>46768</size>
+2022-12-06 21:23:14 接收 /home/erwin/Coding/mini-project/tmp/client/SURF_ZH_20221126182231_30780.csv(46768) ...成功.
+2022-12-06 21:23:14 strsendbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.csv</filename><result>ok</result>
+2022-12-06 21:23:14 strrecvbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.json</filename><mtime>2022-12-06 20:46:46</mtime><size>107932</size>
+2022-12-06 21:23:14 接收 /home/erwin/Coding/mini-project/tmp/client/SURF_ZH_20221126182231_30780.json(107932) ...成功.
+2022-12-06 21:23:14 strsendbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.json</filename><result>ok</result>
+2022-12-06 21:23:14 strrecvbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.xml</filename><mtime>2022-12-06 20:46:46</mtime><size>125554</size>
+2022-12-06 21:23:14 接收 /home/erwin/Coding/mini-project/tmp/client/SURF_ZH_20221126182231_30780.xml(125554) ...成功.
+2022-12-06 21:23:14 strsendbuffer = <filename>/home/erwin/Coding/mini-project/tmp/server/SURF_ZH_20221126182231_30780.xml</filename><result>ok</result>
+2022-12-06 21:23:19 程序退出, sig = 2
+
