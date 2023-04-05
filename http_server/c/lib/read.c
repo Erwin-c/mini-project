@@ -6,23 +6,26 @@
 
 #include "common.h"
 
-size_t readn(int fd, void *buffer, size_t size) {
-  char *buffer_pointer = buffer;
-  int length = size;
+size_t readn(int fd, void* buffer, size_t size) {
+  char* buffer_pointer = buffer;
+  size_t length = size;
 
   while (length > 0) {
     int result = read(fd, buffer_pointer, length);
 
     if (result < 0) {
-      if (errno == EINTR)
-        continue; /* 考虑非阻塞的情况，这里需要再次调用read */
-      else
-        return (-1);
-    } else if (result == 0)
-      break; /* EOF(End of File)表示套接字关闭 */
+      if (errno == EINTR) {
+        continue;  // 考虑非阻塞的情况, 这里需要再次调用 read().
+      } else {
+        return -1;
+      }
+    } else if (result == 0) {
+      break;  // EOF (End of File) 表示套接字关闭.
+    }
 
     length -= result;
     buffer_pointer += result;
   }
-  return (size - length); /* 返回的是实际读取的字节数*/
+
+  return size - length;  // 返回的是实际读取的字节数.
 }

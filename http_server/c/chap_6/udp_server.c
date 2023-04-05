@@ -10,7 +10,7 @@ static int count;
 
 static void recvfrom_int(int signo) {
   printf("\nreceived %d datagrams\n", count);
-  exit(0);
+  return;
 }
 
 int main(int argc, char** argv) {
@@ -47,4 +47,6 @@ int main(int argc, char** argv) {
 
     ++count;
   }
+
+  exit(0);
 }
