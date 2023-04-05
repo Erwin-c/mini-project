@@ -6,30 +6,28 @@
 
 #include "lib/common.h"
 
-#define NDG 2000   /* datagrams to send */
-#define DGLEN 1400 /* length of each datagram */
+#define NDG 2000    // datagrams to send.
+#define DGLEN 1400  // length of each datagram.
 #define MAXLINE 4096
 
 int main(int argc, char** argv) {
+  int socket_fd = 0;
+  socklen_t server_len = 0, reply_len = 0;
+  struct sockaddr_in server_addr = {0}, reply_addr = {0};
+  char send_line[MAXLINE] = {0}, recv_line[MAXLINE + 1] = {0};
+
   if (argc != 2) {
     error(1, 0, "usage: udpclient <IPaddress>");
   }
 
-  int socket_fd;
   socket_fd = socket(AF_INET, SOCK_DGRAM, 0);
 
-  struct sockaddr_in server_addr;
-  bzero(&server_addr, sizeof(server_addr));
   server_addr.sin_family = AF_INET;
   server_addr.sin_port = htons(SERV_PORT);
   inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
 
-  socklen_t server_len = sizeof(server_addr);
+  server_len = sizeof(server_addr);
 
-  struct sockaddr* reply_addr;
-  reply_addr = malloc(server_len);
-
-  char send_line[MAXLINE], recv_line[MAXLINE + 1];
   socklen_t len;
   int n;
 
