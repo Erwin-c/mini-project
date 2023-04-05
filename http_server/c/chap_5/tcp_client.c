@@ -22,14 +22,14 @@ void send_data(int sockfd) {
   cp = query;
   remaining = strlen(query);
   while (remaining != 0) {
-    int n_written = send(sockfd, cp, remaining, 0);
-    fprintf(stdout, "send into buffer %d\n", n_written);
-    if (n_written <= 0) {
-      error(1, errno, "send failed");
+    ssize_t write_rc = write(sockfd, cp, remaining);
+    fprintf(stdout, "write into buffer %d\n", write_rc);
+    if (write_rc <= 0) {
+      error(1, errno, "write failed");
       return;
     }
-    remaining -= n_written;
-    cp += n_written;
+    remaining -= write_rc;
+    cp += write_rc;
   }
 
   free((void*)query);
