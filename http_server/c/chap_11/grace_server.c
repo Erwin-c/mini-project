@@ -44,14 +44,14 @@ int main(void) {
   }
 
   for (;;) {
-    int n = read(connfd, message, MAXLINE);
+    ssize_t n = read(connfd, message, MAXLINE);
     if (n < 0) {
       error(1, errno, "error read");
     } else if (n == 0) {
       error(1, 0, "client closed");
     }
     message[n] = 0;
-    printf("received %d bytes: %s\n", n, message);
+    printf("received %ld bytes: %s\n", n, message);
     ++count;
 
     sprintf(send_line, "Hi, %s", message);
