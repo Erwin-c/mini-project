@@ -38,8 +38,7 @@ int main(int argc, char** argv) {
     }
 
     if (FD_ISSET(socket_fd, &readmask)) {
-      int n = 0;
-      n = read(socket_fd, recv_line, MAXLINE);
+      ssize_t n = read(socket_fd, recv_line, MAXLINE);
       if (n < 0) {
         error(1, errno, "read error");
       } else if (n == 0) {
@@ -65,7 +64,7 @@ int main(int argc, char** argv) {
           sleep(5);
           exit(0);
         } else {
-          int i = strlen(send_line);
+          size_t i = strlen(send_line);
           if (send_line[i - 1] == '\n') {
             send_line[i - 1] = 0;
           }
