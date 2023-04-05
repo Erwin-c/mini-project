@@ -40,29 +40,29 @@ int main(void) {
   client_len = sizeof(client_addr);
   if ((connfd = accept(listenfd, (struct sockaddr*)&client_addr, &client_len)) <
       0) {
-    error(1, errno, "bind failed ");
+    error(1, errno, "bind failed");
   }
 
   for (;;) {
-    ssize_t n = read(connfd, message, MAXLINE);
-    if (n < 0) {
-      error(1, errno, "error read");
-    } else if (n == 0) {
+    ssize_t read_rc = read(connfd, message, MAXLINE);
+    if (read_rc < 0) {
+      error(1, errno, "read failed");
+    } else if (read_rc == 0) {
       error(1, 0, "client closed");
     }
-    message[n] = 0;
-    printf("received %ld bytes: %s\n", n, message);
+    message[read_rc] = 0;
+    printf("received %ld bytes: %s\n", read_rc, message);
     ++count;
 
     sprintf(send_line, "Hi, %s", message);
 
     sleep(5);
 
-    ssize_t write_nc = send(connfd, send_line, strlen(send_line), 0);
-    if (write_nc < 0) {
-      error(1, errno, "error write");
+    ssize_t write_rc = write(connfd, send_line, strlen(send_line));
+    if (write_rc < 0) {
+      error(1, errno, "write failed");
     }
-    printf("send bytes: %ld\n", write_nc);
+    printf("send bytes: %ld\n", write_rc);
   }
 
   exit(0);
