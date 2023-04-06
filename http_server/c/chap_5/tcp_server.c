@@ -42,7 +42,6 @@ int main(void) {
 
   // 循环处理用户请求.
   for (;;) {
-    clilen = sizeof(cliaddr);
     connfd = accept(listenfd, (struct sockaddr*)&cliaddr, &clilen);
     read_data(connfd);  // 读取数据.
     close(connfd);      // 关闭连接套接字, 注意不是监听套接字.

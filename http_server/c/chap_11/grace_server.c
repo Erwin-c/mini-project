@@ -37,7 +37,6 @@ int main(void) {
   signal(SIGINT, sig_int);
   signal(SIGPIPE, SIG_DFL);
 
-  client_len = sizeof(client_addr);
   if ((connfd = accept(listenfd, (struct sockaddr*)&client_addr, &client_len)) <
       0) {
     error(1, errno, "bind failed");

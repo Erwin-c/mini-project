@@ -8,7 +8,6 @@
 
 int main(int argc, char** argv) {
   int socket_fd = 0;
-  socklen_t server_len = 0;
   struct sockaddr_in server_addr = {0};
   fd_set readmask = {0}, allreads = {0};
   char send_line[MAXLINE] = {0}, recv_line[MAXLINE + 1] = {0};
@@ -23,8 +22,8 @@ int main(int argc, char** argv) {
   server_addr.sin_port = htons(SERV_PORT);
   inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
 
-  server_len = sizeof(server_addr);
-  if (connect(socket_fd, (struct sockaddr*)&server_addr, server_len) < 0) {
+  if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) <
+      0) {
     error(1, errno, "connect failed");
   }
 
