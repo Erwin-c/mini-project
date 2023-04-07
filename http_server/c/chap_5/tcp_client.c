@@ -8,7 +8,7 @@
 
 #define MESSAGE_SIZE 102400
 
-void send_data(int sockfd) {
+void send_data(int sock_fd) {
   char* query = NULL;
   const char* cp = NULL;
   size_t remaining = 0;
@@ -22,7 +22,7 @@ void send_data(int sockfd) {
   cp = query;
   remaining = strlen(query);
   while (remaining != 0) {
-    ssize_t write_rc = write(sockfd, cp, remaining);
+    ssize_t write_rc = write(sock_fd, cp, remaining);
     fprintf(stdout, "write into buffer %d\n", write_rc);
     if (write_rc <= 0) {
       error(1, errno, "write failed");
@@ -38,23 +38,24 @@ void send_data(int sockfd) {
 }
 
 int main(int argc, char** argv) {
-  int sockfd = 0;
-  struct sockaddr_in servaddr = {0};
+  int sock_fd = 0;
+  struct sockaddr_in server_addr = {0};
 
   if (argc != 2) {
     error(1, 0, "usage: tcpclient <IPaddress>");
   }
 
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
-  servaddr.sin_family = AF_INET;
-  servaddr.sin_port = htons(12345);
-  inet_pton(AF_INET, argv[1], &servaddr.sin_addr);
-  if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) < 0) {
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_port = htons(12345);
+  inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
+  if (connect(sock_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) <
+      0) {
     error(1, errno, "connect failed");
   }
 
-  send_data(sockfd);
+  send_data(sock_fd);
 
   exit(0);
 }

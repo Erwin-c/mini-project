@@ -6,11 +6,13 @@
 
 #include "lib/common.h"
 
+char recv_line[MAXLINE + 1];
+char send_line[MAXLINE];
+
 int main(int argc, char** argv) {
   int socket_fd = 0;
   struct sockaddr_in server_addr = {0};
   fd_set readmask = {0}, allreads = {0};
-  char send_line[MAXLINE] = {0}, recv_line[MAXLINE + 1] = {0};
 
   if (argc != 2) {
     error(1, 0, "usage: graceclient <IPaddress>");
@@ -32,6 +34,7 @@ int main(int argc, char** argv) {
   FD_SET(socket_fd, &allreads);
   for (;;) {
     readmask = allreads;
+
     if (select(socket_fd + 1, &readmask, NULL, NULL, NULL) <= 0) {
       error(1, errno, "select failed");
     }
@@ -43,6 +46,7 @@ int main(int argc, char** argv) {
       } else if (read_rc == 0) {
         error(1, 0, "server terminated");
       }
+
       recv_line[read_rc] = 0;
       fputs(recv_line, stdout);
       fputs("\n", stdout);
@@ -60,7 +64,9 @@ int main(int argc, char** argv) {
           if (close(socket_fd)) {
             error(1, errno, "close failed");
           }
+
           sleep(5);
+
           exit(0);
         } else {
           size_t send_line_len = strlen(send_line);
@@ -69,10 +75,12 @@ int main(int argc, char** argv) {
           }
 
           printf("now sending %s\n", send_line);
+
           ssize_t write_rc = write(socket_fd, send_line, strlen(send_line));
           if (write_rc < 0) {
             error(1, errno, "write failed");
           }
+
           printf("send bytes: %ld\n", write_rc);
         }
       }
