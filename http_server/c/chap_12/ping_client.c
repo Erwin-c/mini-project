@@ -12,14 +12,15 @@
 #define KEEP_ALIVE_INTERVAL 3
 #define KEEP_ALIVE_PROBETIMES 3
 
+char recv_line[MAXLINE + 1];
+
 int main(int argc, char** argv) {
   int socket_fd = 0;
   int heartbeats = 0;
   struct sockaddr_in server_addr = {0};
   struct timeval tv = {0};
   fd_set readmask = {0}, allreads = {0};
-  messageObject messageObject = {0};
-  char recv_line[MAXLINE + 1] = {0};
+  messageObject message = {0};
 
   if (argc != 2) {
     error(1, 0, "usage: tcpclient <IPaddress>");
@@ -43,6 +44,7 @@ int main(int argc, char** argv) {
   FD_SET(socket_fd, &allreads);
   for (;;) {
     readmask = allreads;
+
     int select_rc = select(socket_fd + 1, &readmask, NULL, NULL, &tv);
     if (select_rc < 0) {
       error(1, errno, "select failed");
@@ -54,12 +56,12 @@ int main(int argc, char** argv) {
       }
 
       printf("sending heartbeat #%d\n", heartbeats);
-      messageObject.type = htonl(MSG_PING);
-      ssize_t write_rc =
-          write(socket_fd, &messageObject, sizeof(messageObject));
+      message.type = htonl(MSG_PING);
+      ssize_t write_rc = write(socket_fd, &message, sizeof(message));
       if (write_rc < 0) {
         error(1, errno, "write failed");
       }
+
       tv.tv_sec = KEEP_ALIVE_INTERVAL;
       continue;
     }

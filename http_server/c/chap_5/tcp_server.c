@@ -25,26 +25,26 @@ void read_data(int sockfd) {
 }
 
 int main(void) {
-  int listenfd = 0, connfd = 0;
-  socklen_t clilen = 0;
-  struct sockaddr_in cliaddr = {0}, servaddr = {0};
+  int listen_fd = 0, conn_fd = 0;
+  socklen_t client_len = 0;
+  struct sockaddr_in client_addr = {0}, server_addr = {0};
 
-  listenfd = socket(AF_INET, SOCK_STREAM, 0);
+  listen_fd = socket(AF_INET, SOCK_STREAM, 0);
 
-  servaddr.sin_family = AF_INET;
-  servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-  servaddr.sin_port = htons(12345);
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  server_addr.sin_port = htons(12345);
 
   // bind() 到本地地址, 端口为 12345.
-  bind(listenfd, (struct sockaddr*)&servaddr, sizeof(servaddr));
+  bind(listen_fd, (struct sockaddr*)&server_addr, sizeof(server_addr));
   // listen() 的 backlog 为 1024.
-  listen(listenfd, 1024);
+  listen(listen_fd, 1024);
 
   // 循环处理用户请求.
   for (;;) {
-    connfd = accept(listenfd, (struct sockaddr*)&cliaddr, &clilen);
-    read_data(connfd);  // 读取数据.
-    close(connfd);      // 关闭连接套接字, 注意不是监听套接字.
+    conn_fd = accept(listen_fd, (struct sockaddr*)&client_addr, &client_len);
+    read_data(conn_fd);  // 读取数据.
+    close(conn_fd);      // 关闭连接套接字, 注意不是监听套接字.
   }
 
   exit(0);
