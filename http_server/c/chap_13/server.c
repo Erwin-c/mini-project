@@ -42,6 +42,7 @@ int main(void) {
     }
 
     message[read_rc] = 0;
+
     printf("received %ld bytes: %s\n", read_rc, message);
   }
 

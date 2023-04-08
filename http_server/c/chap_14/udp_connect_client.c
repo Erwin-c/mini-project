@@ -43,7 +43,6 @@ int main(int argc, char** argv) {
 
     printf("send bytes: %ld\n", send_rc);
 
-    recv_line[0] = 0;
     ssize_t recv_rc = recv(socket_fd, recv_line, MAXLINE, 0);
     if (recv_rc < 0) {
       error(1, errno, "recv failed");

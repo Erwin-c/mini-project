@@ -7,7 +7,6 @@
 #include "lib/common.h"
 #include "message_object.h"
 
-#define MAXLINE 4096
 #define KEEP_ALIVE_TIME 10
 #define KEEP_ALIVE_INTERVAL 3
 #define KEEP_ALIVE_PROBETIMES 3
@@ -73,6 +72,8 @@ int main(int argc, char** argv) {
       } else if (read_rc == 0) {
         error(1, 0, "server terminated\n");
       }
+
+      recv_line[read_rc] = 0;
 
       printf("received heartbeat, make heartbeats to 0\n");
       heartbeats = 0;
