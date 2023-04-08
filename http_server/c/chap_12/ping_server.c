@@ -10,7 +10,7 @@
 int count;
 
 void sig_int(int signo) {
-  printf("signo: %d\n", signo);
+  printf("\nsigno: %d\n", signo);
   printf("\nreceived %d datagrams\n", count);
   exit(0);
 }
