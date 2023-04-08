@@ -1,5 +1,5 @@
 /*
- * udp_client.c
+ * udp_connect_client.c
  *
  *  Author: Erwin
  */
@@ -11,8 +11,7 @@ char recv_line[MAXLINE + 1];
 
 int main(int argc, char** argv) {
   int socket_fd = 0;
-  socklen_t reply_len = 0;
-  struct sockaddr_in server_addr = {0}, reply_addr = {0};
+  struct sockaddr_in server_addr = {0};
 
   if (argc != 2) {
     error(1, 0, "usage: udpclient <IPaddress>");
@@ -24,12 +23,10 @@ int main(int argc, char** argv) {
   server_addr.sin_port = htons(SERV_PORT);
   inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
 
-  /*
   if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) <
       0) {
     error(1, errno, "connect failed");
   }
-  */
 
   while (fgets(send_line, MAXLINE, stdin) != NULL) {
     size_t send_line_len = strlen(send_line);
@@ -39,20 +36,17 @@ int main(int argc, char** argv) {
 
     printf("now sending %s\n", send_line);
 
-    ssize_t send_rc =
-        sendto(socket_fd, send_line, strlen(send_line), 0,
-               (struct sockaddr*)&server_addr, sizeof(server_addr));
+    ssize_t send_rc = send(socket_fd, send_line, strlen(send_line), 0);
     if (send_rc < 0) {
-      error(1, errno, "sendto failed");
+      error(1, errno, "send failed");
     }
 
     printf("send bytes: %ld\n", send_rc);
 
     recv_line[0] = 0;
-    ssize_t recv_rc = recvfrom(socket_fd, recv_line, MAXLINE, 0,
-                               (struct sockaddr*)&reply_addr, &reply_len);
+    ssize_t recv_rc = recv(socket_fd, recv_line, MAXLINE, 0);
     if (recv_rc < 0) {
-      error(1, errno, "recvfrom failed");
+      error(1, errno, "recv failed");
     }
 
     recv_line[recv_rc] = 0;
