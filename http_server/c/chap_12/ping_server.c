@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
   }
 
   for (;;) {
-    ssize_t read_rc = read(conn_fd, &message, sizeof(messageObject));
+    ssize_t read_rc = read(conn_fd, &message, sizeof(message));
     if (read_rc < 0) {
       error(1, errno, "read failed");
     } else if (read_rc == 0) {

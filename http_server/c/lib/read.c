@@ -20,7 +20,7 @@ size_t readn(int fd, void* buffer, size_t size) {
         return -1;
       }
     } else if (result == 0) {
-      break;  // EOF (End of File) 表示套接字关闭.
+      break;  // EOF (End of File) 表示 Socket 关闭.
     }
 
     length -= result;
