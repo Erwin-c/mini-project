@@ -6,9 +6,10 @@
 
 #include "lib/common.h"
 
+char buf[1024];
+
 void read_data(int sockfd) {
   int time = 0;
-  char buf[1024] = {0};
 
   for (;;) {
     fprintf(stdout, "block in read\n");
@@ -43,6 +44,7 @@ int main(void) {
   // 循环处理用户请求.
   for (;;) {
     conn_fd = accept(listen_fd, (struct sockaddr*)&client_addr, &client_len);
+    memset(buf, 0, sizeof(buf));
     read_data(conn_fd);  // 读取数据.
     close(conn_fd);      // 关闭连接套接字, 注意不是监听套接字.
   }
