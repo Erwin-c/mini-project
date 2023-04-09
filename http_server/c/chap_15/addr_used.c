@@ -1,12 +1,20 @@
 /*
- * server.c
+ * addr_used.c
  *
  *  Author: Erwin
  */
 
 #include "lib/common.h"
 
+int count;
+
 char message[MAXLINE];
+
+void sig_int(int signo) {
+  printf("\nsigno: %d\n", signo);
+  printf("\nreceived %d datagrams\n", count);
+  exit(0);
+}
 
 int main(void) {
   int listen_fd = 0, conn_fd = 0;
@@ -28,9 +36,11 @@ int main(void) {
     error(1, errno, "listen failed");
   }
 
+  signal(SIGPIPE, SIG_IGN);
+
   if ((conn_fd = accept(listen_fd, (struct sockaddr*)&client_addr,
                         &client_len)) == -1) {
-    error(1, errno, "bind failed");
+    error(1, errno, "accept failed");
   }
 
   for (;;) {
@@ -44,6 +54,8 @@ int main(void) {
     message[read_rc] = 0;
 
     printf("received %ld bytes: %s\n", read_rc, message);
+
+    ++count;
   }
 
   exit(0);

@@ -24,8 +24,8 @@ int main(int argc, char** argv) {
   server_addr.sin_port = htons(SERV_PORT);
   inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
 
-  if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) <
-      0) {
+  if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) ==
+      -1) {
     error(1, errno, "connect failed");
   }
 

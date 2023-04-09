@@ -28,12 +28,12 @@ int main(void) {
   server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   server_addr.sin_port = htons(SERV_PORT);
 
-  if (bind(listen_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) <
-      0) {
+  if (bind(listen_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) ==
+      -1) {
     error(1, errno, "bind failed");
   }
 
-  if (listen(listen_fd, LISTENQ)) {
+  if (listen(listen_fd, LISTENQ) == -1) {
     error(1, errno, "listen failed");
   }
 
@@ -41,13 +41,13 @@ int main(void) {
   signal(SIGPIPE, SIG_DFL);
 
   if ((conn_fd = accept(listen_fd, (struct sockaddr*)&client_addr,
-                        &client_len)) < 0) {
+                        &client_len)) == -1) {
     error(1, errno, "bind failed");
   }
 
   for (;;) {
     ssize_t read_rc = read(conn_fd, message, MAXLINE);
-    if (read_rc < 0) {
+    if (read_rc == -1) {
       error(1, errno, "read failed");
     } else if (read_rc == 0) {
       error(1, 0, "client closed");
@@ -62,7 +62,7 @@ int main(void) {
     sleep(5);
 
     ssize_t write_rc = write(conn_fd, send_line, strlen(send_line));
-    if (write_rc < 0) {
+    if (write_rc == -1) {
       error(1, errno, "write failed");
     }
 
