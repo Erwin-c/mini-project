@@ -38,6 +38,7 @@ int main(void) {
 
   // bind() 到本地地址, 端口为 12345.
   bind(listen_fd, (struct sockaddr*)&server_addr, sizeof(server_addr));
+
   // listen() 的 backlog 为 1024.
   listen(listen_fd, 1024);
 

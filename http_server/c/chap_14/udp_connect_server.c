@@ -17,7 +17,7 @@ void recvfrom_int(int signo) {
   exit(0);
 }
 
-int main() {
+int main(void) {
   int socket_fd = 0;
   socklen_t client_len;
   struct sockaddr_in server_addr = {0}, client_addr = {0};
@@ -34,14 +34,14 @@ int main() {
 
   ssize_t recv_rc = recvfrom(socket_fd, message, MAXLINE, 0,
                              (struct sockaddr*)&client_addr, &client_len);
-  if (recv_rc < 0) {
+  if (recv_rc == -1) {
     error(1, errno, "recvfrom failed");
   }
 
   message[recv_rc] = 0;
   printf("received %ld bytes: %s\n", recv_rc, message);
 
-  if (connect(socket_fd, (struct sockaddr*)&client_addr, client_len)) {
+  if (connect(socket_fd, (struct sockaddr*)&client_addr, client_len) == -1) {
     error(1, errno, "connect failed");
   }
 
@@ -49,13 +49,13 @@ int main() {
     sprintf(send_line, "Hi, %s", message);
 
     ssize_t send_rc = send(socket_fd, send_line, strlen(send_line), 0);
-    if (send_rc < 0) {
+    if (send_rc == -1) {
       error(1, errno, "send failed");
     }
     printf("send bytes: %ld\n", send_rc);
 
     ssize_t recv_rc = recv(socket_fd, message, MAXLINE, 0);
-    if (recv_rc < 0) {
+    if (recv_rc == -1) {
       error(1, errno, "recv failed");
     }
 

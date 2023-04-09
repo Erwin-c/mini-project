@@ -23,11 +23,12 @@ void send_data(int sock_fd) {
   remaining = strlen(query);
   while (remaining != 0) {
     ssize_t write_rc = write(sock_fd, cp, remaining);
-    fprintf(stdout, "write into buffer %d\n", write_rc);
     if (write_rc <= 0) {
       error(1, errno, "write failed");
       return;
     }
+
+    fprintf(stdout, "write into buffer %d\n", write_rc);
     remaining -= write_rc;
     cp += write_rc;
   }

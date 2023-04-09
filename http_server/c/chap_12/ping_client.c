@@ -31,8 +31,8 @@ int main(int argc, char** argv) {
   server_addr.sin_port = htons(SERV_PORT);
   inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
 
-  if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) <
-      0) {
+  if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) ==
+      -1) {
     error(1, errno, "connect failed");
   }
 
@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
     readmask = allreads;
 
     int select_rc = select(socket_fd + 1, &readmask, NULL, NULL, &tv);
-    if (select_rc < 0) {
+    if (select_rc == -1) {
       error(1, errno, "select failed");
     }
 
@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
       printf("sending heartbeat #%d\n", heartbeats);
       message.type = htonl(MSG_PING);
       ssize_t write_rc = write(socket_fd, &message, sizeof(message));
-      if (write_rc < 0) {
+      if (write_rc == -1) {
         error(1, errno, "write failed");
       }
 
@@ -67,7 +67,7 @@ int main(int argc, char** argv) {
 
     if (FD_ISSET(socket_fd, &readmask)) {
       ssize_t read_rc = read(socket_fd, recv_line, MAXLINE);
-      if (read_rc < 0) {
+      if (read_rc == -1) {
         error(1, errno, "read failed");
       } else if (read_rc == 0) {
         error(1, 0, "server terminated\n");

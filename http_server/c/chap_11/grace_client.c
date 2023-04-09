@@ -24,8 +24,8 @@ int main(int argc, char** argv) {
   server_addr.sin_port = htons(SERV_PORT);
   inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
 
-  if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) <
-      0) {
+  if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) ==
+      -1) {
     error(1, errno, "connect failed");
   }
 
@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
 
     if (FD_ISSET(socket_fd, &readmask)) {
       ssize_t read_rc = read(socket_fd, recv_line, MAXLINE);
-      if (read_rc < 0) {
+      if (read_rc == -1) {
         error(1, errno, "read failed");
       } else if (read_rc == 0) {
         error(1, 0, "server terminated");
@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
           printf("now sending %s\n", send_line);
 
           ssize_t write_rc = write(socket_fd, send_line, strlen(send_line));
-          if (write_rc < 0) {
+          if (write_rc == -1) {
             error(1, errno, "write failed");
           }
 

@@ -23,8 +23,8 @@ int main(int argc, char** argv) {
   server_addr.sin_port = htons(SERV_PORT);
   inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
 
-  if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) <
-      0) {
+  if (connect(socket_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) ==
+      -1) {
     error(1, errno, "connect failed");
   }
 
@@ -37,14 +37,14 @@ int main(int argc, char** argv) {
     printf("now sending %s\n", send_line);
 
     ssize_t send_rc = send(socket_fd, send_line, strlen(send_line), 0);
-    if (send_rc < 0) {
+    if (send_rc == -1) {
       error(1, errno, "send failed");
     }
 
     printf("send bytes: %ld\n", send_rc);
 
     ssize_t recv_rc = recv(socket_fd, recv_line, MAXLINE, 0);
-    if (recv_rc < 0) {
+    if (recv_rc == -1) {
       error(1, errno, "recv failed");
     }
 
