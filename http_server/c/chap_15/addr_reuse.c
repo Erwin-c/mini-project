@@ -40,6 +40,7 @@ int main(void) {
     error(1, errno, "listen failed");
   }
 
+  signal(SIGINT, sig_int);
   signal(SIGPIPE, SIG_IGN);
 
   if ((conn_fd = accept(listen_fd, (struct sockaddr*)&client_addr,

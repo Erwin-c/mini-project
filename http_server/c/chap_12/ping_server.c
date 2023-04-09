@@ -23,7 +23,7 @@ int main(int argc, char** argv) {
   struct sockaddr_in server_addr = {0}, client_addr = {0};
 
   if (argc != 2) {
-    error(1, 0, "usage: tcpsever <sleepingtime>");
+    error(1, 0, "usage: pingsever <sleepingtime>");
   }
 
   sleepingTime = atoi(argv[1]);

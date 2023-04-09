@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
   struct sockaddr_in server_addr = {0};
 
   if (argc != 2) {
-    error(1, 0, "usage: tcpclient <IPaddress>");
+    error(1, 0, "usage: streamclient <IPaddress>");
   }
 
   socket_fd = socket(AF_INET, SOCK_STREAM, 0);

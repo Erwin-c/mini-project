@@ -1,22 +1,12 @@
 /*
- * stream_server.c
+ * tcp_server.c
  *
  *  Author: Erwin
  */
 
-#include "lib/common.h"
+#include "common.h"
 
-int count;
-
-char buf[128];
-
-void sig_int(int signo) {
-  printf("\nsigno: %d\n", signo);
-  printf("\nreceived %d datagrams\n", count);
-  exit(0);
-}
-
-int main(void) {
+int tcp_server(int port) {
   int listen_fd = 0, conn_fd = 0;
   int on = 0;
   socklen_t client_len = 0;
@@ -26,7 +16,7 @@ int main(void) {
 
   server_addr.sin_family = AF_INET;
   server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-  server_addr.sin_port = htons(SERV_PORT);
+  server_addr.sin_port = htons(port);
 
   on = 1;
   setsockopt(listen_fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on));
@@ -40,7 +30,6 @@ int main(void) {
     error(1, errno, "listen failed");
   }
 
-  signal(SIGINT, sig_int);
   signal(SIGPIPE, SIG_IGN);
 
   if ((conn_fd = accept(listen_fd, (struct sockaddr *)&client_addr,
@@ -48,20 +37,5 @@ int main(void) {
     error(1, errno, "accept failed");
   }
 
-  while (1) {
-    ssize_t read_rc = read_message(conn_fd, buf, sizeof(buf));
-    if (read_rc < 0) {
-      error(1, errno, "read message failed");
-    } else if (read_rc == 0) {
-      error(1, 0, "client closed");
-    }
-
-    buf[read_rc] = 0;
-
-    printf("received %ld bytes: %s\n", read_rc, buf);
-
-    ++count;
-  }
-
-  exit(0);
+  return conn_fd;
 }
