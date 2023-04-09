@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
   struct sockaddr_in server_addr = {0};
 
   if (argc != 2) {
-    error(1, 0, "usage: udpclient <IPaddress>");
+    error(1, 0, "usage: udpconnectclient <IPaddress>");
   }
 
   socket_fd = socket(AF_INET, SOCK_DGRAM, 0);
@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
 
     printf("now sending %s\n", send_line);
 
-    ssize_t send_rc = send(socket_fd, send_line, strlen(send_line), 0);
+    ssize_t send_rc = send(socket_fd, send_line, send_line_len, 0);
     if (send_rc == -1) {
       error(1, errno, "send failed");
     }

@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
   messageObject message = {0};
 
   if (argc != 2) {
-    error(1, 0, "usage: tcpclient <IPaddress>");
+    error(1, 0, "usage: pingclient <IPaddress>");
   }
 
   socket_fd = socket(AF_INET, SOCK_STREAM, 0);

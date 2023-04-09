@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
 
           printf("now sending %s\n", send_line);
 
-          ssize_t write_rc = write(socket_fd, send_line, strlen(send_line));
+          ssize_t write_rc = write(socket_fd, send_line, send_line_len);
           if (write_rc == -1) {
             error(1, errno, "write failed");
           }
