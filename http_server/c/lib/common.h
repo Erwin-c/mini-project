@@ -23,7 +23,6 @@
 #include <sys/select.h>  // for convenience.
 #include <sys/socket.h>  // basic socket definitions.
 #include <sys/stat.h>    // for S_xxx file mode constants.
-#include <unistd.h>
 // #include <sys/sysctl.h>
 #include <sys/time.h>   // timeval{} for select().
 #include <sys/types.h>  // basic system data types.
@@ -31,6 +30,7 @@
 #include <sys/un.h>     // for Unix domain sockets.
 #include <sys/wait.h>
 #include <time.h>  // timespec{} for pselect().
+#include <unistd.h>
 
 // #include "channel_map.h"
 // #include "config.h"
@@ -56,9 +56,9 @@ void error(int status, int err, char *fmt, ...);
 
 char *sock_ntop(const struct sockaddr_in *sin, socklen_t salen);
 
-size_t readn(int fd, void *vptr, size_t n);
+ssize_t readn(int fd, void *vptr, size_t n);
 
-size_t read_message(int fd, char *buffer, size_t length);
+ssize_t read_message(int fd, void *buffer, size_t length);
 
 size_t readline(int fd, char *buffer, size_t length);
 
