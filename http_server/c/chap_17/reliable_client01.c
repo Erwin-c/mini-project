@@ -10,6 +10,8 @@ char buf[1024];
 
 int main(int argc, char** argv) {
   int socket_fd = 0;
+  ssize_t rc = 0;
+  size_t buf_len = 0;
 
   if (argc != 2) {
     error(1, 0, "usage: reliableclient01 <IPaddress>");
@@ -18,12 +20,12 @@ int main(int argc, char** argv) {
   socket_fd = tcp_client(argv[1], SERV_PORT);
 
   while (fgets(buf, sizeof(buf), stdin) != NULL) {
-    size_t buf_len = strlen(buf);
+    buf_len = strlen(buf);
     if (buf[buf_len - 1] == '\n') {
       buf[buf_len - 1] = 0;
     }
 
-    ssize_t rc = write(socket_fd, buf, buf_len);
+    rc = write(socket_fd, buf, buf_len);
     if (rc == -1) {
       error(1, errno, "write failed");
     }

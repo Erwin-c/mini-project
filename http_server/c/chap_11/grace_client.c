@@ -11,6 +11,8 @@ char send_line[MAXLINE];
 
 int main(int argc, char** argv) {
   int socket_fd = 0;
+  ssize_t rc = 0;
+  size_t send_line_len = 0;
   struct sockaddr_in server_addr = {0};
   fd_set readmask = {0}, allreads = {0};
 
@@ -40,14 +42,14 @@ int main(int argc, char** argv) {
     }
 
     if (FD_ISSET(socket_fd, &readmask)) {
-      ssize_t read_rc = read(socket_fd, recv_line, MAXLINE);
-      if (read_rc == -1) {
+      rc = read(socket_fd, recv_line, MAXLINE);
+      if (rc == -1) {
         error(1, errno, "read failed");
-      } else if (read_rc == 0) {
+      } else if (rc == 0) {
         error(1, 0, "server terminated");
       }
 
-      recv_line[read_rc] = 0;
+      recv_line[rc] = 0;
       fputs(recv_line, stdout);
       fputs("\n", stdout);
     }
@@ -69,19 +71,19 @@ int main(int argc, char** argv) {
 
           exit(0);
         } else {
-          size_t send_line_len = strlen(send_line);
+          send_line_len = strlen(send_line);
           if (send_line[send_line_len - 1] == '\n') {
             send_line[send_line_len - 1] = 0;
           }
 
           printf("now sending %s\n", send_line);
 
-          ssize_t write_rc = write(socket_fd, send_line, send_line_len);
-          if (write_rc == -1) {
+          rc = write(socket_fd, send_line, send_line_len);
+          if (rc == -1) {
             error(1, errno, "write failed");
           }
 
-          printf("send bytes: %ld\n", write_rc);
+          printf("send bytes: %ld\n", rc);
         }
       }
     }

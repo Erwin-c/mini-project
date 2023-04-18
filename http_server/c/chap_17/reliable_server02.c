@@ -1,32 +1,31 @@
-//
-// Created by shengym on 2019-07-07.
-//
+/*
+ * reliable_server02.c
+ *
+ *  Author: Erwin
+ */
 
 #include "lib/common.h"
 
+int main(void) {
+  int conn_fd = 0;
+  int time = 0;
+  ssize_t rc = 0;
+  char buf[1024] = {0};
 
-int main(int argc, char **argv) {
-    int connfd;
-    char buf[1024];
-    int time = 0;
+  conn_fd = tcp_server(SERV_PORT);
 
-    connfd = tcp_server(SERV_PORT);
-
-    while (1) {
-        int n = read(connfd, buf, 1024);
-        if (n < 0) {
-            error(1, errno, "error read");
-        } else if (n == 0) {
-            error(1, 0, "client closed \n");
-        }
-
-        time++;
-        fprintf(stdout, "1K read for %d \n", time);
-        usleep(10000);
+  while (1) {
+    rc = read(conn_fd, buf, 1024);
+    if (rc == -1) {
+      error(1, errno, "read failed");
+    } else if (rc == 0) {
+      error(1, 0, "client closed\n");
     }
 
-    exit(0);
+    ++time;
+    fprintf(stdout, "1K read for %d\n", time);
+    usleep(10000);
+  }
 
+  exit(0);
 }
-
-
