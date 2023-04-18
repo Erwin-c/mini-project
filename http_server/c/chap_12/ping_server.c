@@ -18,6 +18,7 @@ void sig_int(int signo) {
 int main(int argc, char** argv) {
   int listen_fd = 0, conn_fd = 0;
   int sleepingTime = 0;
+  ssize_t rc = 0;
   socklen_t client_len = 0;
   messageObject message = {0}, pong_message = {0};
   struct sockaddr_in server_addr = {0}, client_addr = {0};
@@ -52,14 +53,14 @@ int main(int argc, char** argv) {
   }
 
   for (;;) {
-    ssize_t read_rc = read(conn_fd, &message, sizeof(message));
-    if (read_rc == -1) {
+    rc = read(conn_fd, &message, sizeof(message));
+    if (rc == -1) {
       error(1, errno, "read failed");
-    } else if (read_rc == 0) {
+    } else if (rc == 0) {
       error(1, 0, "client closed\n");
     }
 
-    printf("received %ld bytes\n", read_rc);
+    printf("received %ld bytes\n", rc);
     ++count;
 
     switch (ntohl(message.type)) {
@@ -75,8 +76,8 @@ int main(int argc, char** argv) {
         pong_message.type = MSG_PONG;
         sleep(sleepingTime);
 
-        ssize_t write_rc = write(conn_fd, &pong_message, sizeof(pong_message));
-        if (write_rc == -1) {
+        rc = write(conn_fd, &pong_message, sizeof(pong_message));
+        if (rc == -1) {
           error(1, errno, "write failed");
         }
         break;

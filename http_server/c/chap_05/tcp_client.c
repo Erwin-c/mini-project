@@ -12,6 +12,7 @@ void send_data(int sock_fd) {
   char* query = NULL;
   const char* cp = NULL;
   size_t remaining = 0;
+  ssize_t write_rc = 0;
 
   query = malloc(MESSAGE_SIZE + 1);
   for (int i = 0; i < MESSAGE_SIZE; ++i) {
@@ -22,7 +23,7 @@ void send_data(int sock_fd) {
   cp = query;
   remaining = strlen(query);
   while (remaining != 0) {
-    ssize_t write_rc = write(sock_fd, cp, remaining);
+    write_rc = write(sock_fd, cp, remaining);
     if (write_rc <= 0) {
       error(1, errno, "write failed");
       return;
@@ -51,8 +52,8 @@ int main(int argc, char** argv) {
   server_addr.sin_family = AF_INET;
   server_addr.sin_port = htons(12345);
   inet_pton(AF_INET, argv[1], &server_addr.sin_addr);
-  if (connect(sock_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) <
-      0) {
+  if (connect(sock_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) ==
+      -1) {
     error(1, errno, "connect failed");
   }
 

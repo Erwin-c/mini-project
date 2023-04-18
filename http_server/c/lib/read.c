@@ -9,9 +9,10 @@
 ssize_t readn(int fd, void* buffer, size_t size) {
   char* buffer_pointer = buffer;
   size_t length = size;
+  ssize_t read_rc = 0;
 
   while (length > 0) {
-    ssize_t read_rc = read(fd, buffer_pointer, length);
+    read_rc = read(fd, buffer_pointer, length);
 
     if (read_rc < 0) {
       if (errno == EINTR) {

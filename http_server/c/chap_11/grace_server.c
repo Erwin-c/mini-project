@@ -19,6 +19,7 @@ void sig_int(int signo) {
 
 int main(void) {
   int listen_fd = 0, conn_fd = 0;
+  ssize_t rc = 0;
   socklen_t client_len = 0;
   struct sockaddr_in server_addr = {0}, client_addr = {0};
 
@@ -46,27 +47,27 @@ int main(void) {
   }
 
   for (;;) {
-    ssize_t read_rc = read(conn_fd, message, MAXLINE);
-    if (read_rc == -1) {
+    rc = read(conn_fd, message, MAXLINE);
+    if (rc == -1) {
       error(1, errno, "read failed");
-    } else if (read_rc == 0) {
+    } else if (rc == 0) {
       error(1, 0, "client closed");
     }
 
-    message[read_rc] = 0;
-    printf("received %ld bytes: %s\n", read_rc, message);
+    message[rc] = 0;
+    printf("received %ld bytes: %s\n", rc, message);
     ++count;
 
     sprintf(send_line, "Hi, %s", message);
 
     sleep(5);
 
-    ssize_t write_rc = write(conn_fd, send_line, strlen(send_line));
-    if (write_rc == -1) {
+    rc = write(conn_fd, send_line, strlen(send_line));
+    if (rc == -1) {
       error(1, errno, "write failed");
     }
 
-    printf("send bytes: %ld\n", write_rc);
+    printf("send bytes: %ld\n", rc);
   }
 
   exit(0);

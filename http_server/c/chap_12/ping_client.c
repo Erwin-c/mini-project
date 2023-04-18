@@ -16,6 +16,7 @@ char recv_line[MAXLINE + 1];
 int main(int argc, char** argv) {
   int socket_fd = 0;
   int heartbeats = 0;
+  ssize_t rc = 0;
   struct sockaddr_in server_addr = {0};
   struct timeval tv = {0};
   fd_set readmask = {0}, allreads = {0};
@@ -56,8 +57,8 @@ int main(int argc, char** argv) {
 
       printf("sending heartbeat #%d\n", heartbeats);
       message.type = htonl(MSG_PING);
-      ssize_t write_rc = write(socket_fd, &message, sizeof(message));
-      if (write_rc == -1) {
+      rc = write(socket_fd, &message, sizeof(message));
+      if (rc == -1) {
         error(1, errno, "write failed");
       }
 
@@ -66,14 +67,14 @@ int main(int argc, char** argv) {
     }
 
     if (FD_ISSET(socket_fd, &readmask)) {
-      ssize_t read_rc = read(socket_fd, recv_line, MAXLINE);
-      if (read_rc == -1) {
+      rc = read(socket_fd, recv_line, MAXLINE);
+      if (rc == -1) {
         error(1, errno, "read failed");
-      } else if (read_rc == 0) {
+      } else if (rc == 0) {
         error(1, 0, "server terminated\n");
       }
 
-      recv_line[read_rc] = 0;
+      recv_line[rc] = 0;
 
       printf("received heartbeat, make heartbeats to 0\n");
       heartbeats = 0;
