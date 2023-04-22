@@ -1,5 +1,5 @@
 /*
- * buffer_client.c
+ * buffer_client01.c
  *
  *  Author: Erwin
  */
@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
   char buf[12] = {0};
 
   if (argc != 2) {
-    error(1, 0, "usage: bufferclient <IPaddress>");
+    error(1, 0, "usage: bufferclient01 <IPaddress>");
   }
 
   socket_fd = tcp_client(argv[1], SERV_PORT);

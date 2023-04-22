@@ -1,5 +1,5 @@
 /*
- * sample_buffer01.c
+ * buffer_server01.c
  *
  *  Author: Erwin
  */
