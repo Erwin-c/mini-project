@@ -6,8 +6,6 @@
 
 #include "lib/common.h"
 
-#define MESSAGE_SIZE 102400
-
 int main(int argc, char** argv) {
   char* msg = "network programming";
   int count = 10000000;
@@ -23,10 +21,10 @@ int main(int argc, char** argv) {
   signal(SIGPIPE, SIG_IGN);
 
   while (count > 0) {
-    rc = send(socket_fd, msg, strlen(msg), 0);
-    fprintf(stdout, "send into buffer %ld\n", rc);
+    rc = write(socket_fd, msg, strlen(msg));
+    fprintf(stdout, "write into buffer %ld\n", rc);
     if (rc <= 0) {
-      error(1, errno, "send failed");
+      error(1, errno, "write failed");
     }
 
     --count;

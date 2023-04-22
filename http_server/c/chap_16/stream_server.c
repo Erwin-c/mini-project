@@ -57,7 +57,7 @@ int main(void) {
       error(1, 0, "client closed");
     }
 
-    buf[rc] = 0;
+    buf[rc] = '\0';
 
     printf("received %ld bytes: %s\n", rc, buf);
 

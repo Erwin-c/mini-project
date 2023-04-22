@@ -39,7 +39,7 @@ int main(void) {
     error(1, errno, "recvfrom failed");
   }
 
-  message[rc] = 0;
+  message[rc] = '\0';
   printf("received %ld bytes: %s\n", rc, message);
 
   if (connect(socket_fd, (struct sockaddr*)&client_addr, client_len) == -1) {

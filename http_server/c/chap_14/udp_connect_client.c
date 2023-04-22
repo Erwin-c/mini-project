@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
   while (fgets(send_line, MAXLINE, stdin) != NULL) {
     send_line_len = strlen(send_line);
     if (send_line[send_line_len - 1] == '\n') {
-      send_line[send_line_len - 1] = 0;
+      send_line[send_line_len - 1] = '\0';
     }
 
     printf("now sending %s\n", send_line);
@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
       error(1, errno, "recv failed");
     }
 
-    recv_line[rc] = 0;
+    recv_line[rc] = '\0';
 
     fputs(recv_line, stdout);
     fputs("\n", stdout);

@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
         error(1, 0, "server terminated\n");
       }
 
-      recv_line[rc] = 0;
+      recv_line[rc] = '\0';
 
       printf("received heartbeat, make heartbeats to 0\n");
       heartbeats = 0;

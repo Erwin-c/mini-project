@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
   while (fgets(send_line, MAXLINE, stdin) != NULL) {
     send_line_len = strlen(send_line);
     if (send_line[send_line_len - 1] == '\n') {
-      send_line[send_line_len - 1] = 0;
+      send_line[send_line_len - 1] = '\0';
     }
 
     printf("now sending %s\n", send_line);

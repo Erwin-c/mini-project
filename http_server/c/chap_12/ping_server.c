@@ -57,7 +57,7 @@ int main(int argc, char** argv) {
     if (rc == -1) {
       error(1, errno, "read failed");
     } else if (rc == 0) {
-      error(1, 0, "client closed\n");
+      error(1, 0, "client closed");
     }
 
     printf("received %ld bytes\n", rc);

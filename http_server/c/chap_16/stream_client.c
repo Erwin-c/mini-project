@@ -35,7 +35,7 @@ int main(int argc, char** argv) {
   while (fgets(message.data, sizeof(message.data), stdin) != NULL) {
     data_len = strlen(message.data);
     if (message.data[data_len - 1] == '\n') {
-      message.data[data_len - 1] = 0;
+      message.data[data_len - 1] = '\0';
     }
 
     message.message_length = htonl(data_len);
