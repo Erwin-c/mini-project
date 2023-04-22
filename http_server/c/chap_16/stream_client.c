@@ -36,6 +36,7 @@ int main(int argc, char** argv) {
     data_len = strlen(message.data);
     if (message.data[data_len - 1] == '\n') {
       message.data[data_len - 1] = '\0';
+      --data_len;
     }
 
     message.message_length = htonl(data_len);
