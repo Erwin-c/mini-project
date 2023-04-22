@@ -49,7 +49,7 @@ int main(int argc, char** argv) {
         error(1, 0, "server terminated");
       }
 
-      recv_line[rc] = 0;
+      recv_line[rc] = '\0';
       fputs(recv_line, stdout);
       fputs("\n", stdout);
     }
@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
         } else {
           send_line_len = strlen(send_line);
           if (send_line[send_line_len - 1] == '\n') {
-            send_line[send_line_len - 1] = 0;
+            send_line[send_line_len - 1] = '\0';
           }
 
           printf("now sending %s\n", send_line);

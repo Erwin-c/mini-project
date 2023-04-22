@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
   while (fgets(send_line, MAXLINE, stdin) != NULL) {
     int i = strlen(send_line);
     if (send_line[i - 1] == '\n') {
-      send_line[i - 1] = 0;
+      send_line[i - 1] = '\0';
     }
     size_t nbytes = strlen(send_line);
     printf("now sending %s \n", send_line);
