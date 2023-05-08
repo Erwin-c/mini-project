@@ -11,7 +11,7 @@ char buf[1024];
 void read_data(int sockfd) {
   int time = 0;
 
-  for (;;) {
+  while (1) {
     fprintf(stdout, "block in read\n");
     if (readn(sockfd, buf, 1024) == 0) {
       return;
@@ -43,7 +43,7 @@ int main(void) {
   listen(listen_fd, 1024);
 
   // 循环处理用户请求.
-  for (;;) {
+  while (1) {
     conn_fd = accept(listen_fd, (struct sockaddr*)&client_addr, &client_len);
     memset(buf, 0, sizeof(buf));
     read_data(conn_fd);  // 读取数据.

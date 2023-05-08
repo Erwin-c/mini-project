@@ -8,9 +8,6 @@
 
 int count;
 
-char message[MAXLINE];
-char send_line[MAXLINE + 5];
-
 void sig_int(int signo) {
   printf("signo: %d\n", signo);
   printf("received %d datagrams", count);
@@ -22,6 +19,8 @@ int main(void) {
   ssize_t rc = 0;
   socklen_t client_len = 0;
   struct sockaddr_in server_addr = {0}, client_addr = {0};
+  char message[MAXLINE] = {0};
+  char send_line[MAXLINE + 5] = {0};
 
   listen_fd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -46,8 +45,8 @@ int main(void) {
     error(1, errno, "bind failed");
   }
 
-  for (;;) {
-    rc = read(conn_fd, message, MAXLINE);
+  while (1) {
+    rc = read(conn_fd, message, MAXLINE - 1);
     if (rc == -1) {
       error(1, errno, "read failed");
     } else if (rc == 0) {

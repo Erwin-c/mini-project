@@ -13,7 +13,7 @@ int main(void) {
 
   conn_fd = tcp_server(SERV_PORT);
 
-  for (;;) {
+  while (1) {
     rc = read(conn_fd, buf, sizeof(buf) - 1);
     if (rc == -1) {
       error(1, errno, "read failed");

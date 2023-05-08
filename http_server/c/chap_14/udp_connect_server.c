@@ -8,9 +8,6 @@
 
 int count;
 
-char message[MAXLINE];
-char send_line[MAXLINE + 5];
-
 void recvfrom_int(int signo) {
   printf("\nsigno: %d\n", signo);
   printf("\nreceived %d datagrams\n", count);
@@ -22,6 +19,8 @@ int main(void) {
   ssize_t rc = 0;
   socklen_t client_len;
   struct sockaddr_in server_addr = {0}, client_addr = {0};
+  char message[MAXLINE] = {0};
+  char send_line[MAXLINE + 5] = {0};
 
   socket_fd = socket(AF_INET, SOCK_DGRAM, 0);
 
@@ -33,8 +32,8 @@ int main(void) {
 
   signal(SIGINT, recvfrom_int);
 
-  rc = recvfrom(socket_fd, message, MAXLINE, 0, (struct sockaddr*)&client_addr,
-                &client_len);
+  rc = recvfrom(socket_fd, message, MAXLINE - 1, 0,
+                (struct sockaddr*)&client_addr, &client_len);
   if (rc == -1) {
     error(1, errno, "recvfrom failed");
   }
@@ -53,12 +52,15 @@ int main(void) {
     if (rc == -1) {
       error(1, errno, "send failed");
     }
+
     printf("send bytes: %ld\n", rc);
 
-    rc = recv(socket_fd, message, MAXLINE, 0);
+    rc = recv(socket_fd, message, MAXLINE - 1, 0);
     if (rc == -1) {
       error(1, errno, "recv failed");
     }
+
+    message[rc] = '\0';
 
     ++count;
   }
