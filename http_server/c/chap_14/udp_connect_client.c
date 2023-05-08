@@ -6,14 +6,13 @@
 
 #include "lib/common.h"
 
-char send_line[MAXLINE];
-char recv_line[MAXLINE + 1];
-
 int main(int argc, char** argv) {
   int socket_fd = 0;
   ssize_t rc = 0;
   size_t send_line_len = 0;
   struct sockaddr_in server_addr = {0};
+  char send_line[MAXLINE] = {0};
+  char recv_line[MAXLINE + 1] = {0};
 
   if (argc != 2) {
     error(1, 0, "usage: udpconnectclient <IPaddress>");
@@ -34,6 +33,7 @@ int main(int argc, char** argv) {
     send_line_len = strlen(send_line);
     if (send_line[send_line_len - 1] == '\n') {
       send_line[send_line_len - 1] = '\0';
+      --send_line_len;
     }
 
     printf("now sending %s\n", send_line);
@@ -45,7 +45,7 @@ int main(int argc, char** argv) {
 
     printf("send bytes: %ld\n", rc);
 
-    rc = recv(socket_fd, recv_line, MAXLINE, 0);
+    rc = recv(socket_fd, recv_line, MAXLINE - 1, 0);
     if (rc == -1) {
       error(1, errno, "recv failed");
     }

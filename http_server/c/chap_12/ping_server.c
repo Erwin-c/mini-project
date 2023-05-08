@@ -52,7 +52,7 @@ int main(int argc, char** argv) {
     error(1, errno, "bind failed ");
   }
 
-  for (;;) {
+  while (1) {
     rc = read(conn_fd, &message, sizeof(message));
     if (rc == -1) {
       error(1, errno, "read failed");

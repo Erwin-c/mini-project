@@ -33,7 +33,7 @@ int main(int argc, char** argv) {
 
   struct sockaddr_in client_addr;
   client_len = sizeof(client_addr);
-  for (;;) {
+  while (1) {
     int n = recvfrom(socket_fd, message, MAXLINE, 0,
                      (struct sockaddr*)&client_addr, &client_len);
     message[n] = 0;

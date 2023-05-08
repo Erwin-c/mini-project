@@ -6,6 +6,8 @@
 
 #include "lib/common.h"
 
+int count;
+
 void sig_int(int signo) {
   printf("\nsigno: %d\n", signo);
   printf("\nreceived %d datagrams\n", count);
@@ -15,7 +17,6 @@ void sig_int(int signo) {
 int main(void) {
   int listen_fd = 0, conn_fd = 0;
   int on = 0;
-  int count = 0;
   ssize_t rc = 0;
   socklen_t client_len = 0;
   struct sockaddr_in server_addr = {0}, client_addr = {0};
@@ -48,7 +49,7 @@ int main(void) {
   }
 
   while (1) {
-    rc = read_message(conn_fd, buf, sizeof(buf));
+    rc = read_message(conn_fd, buf, sizeof(buf) - 1);
     if (rc < 0) {
       error(1, errno, "read message failed");
     } else if (rc == 0) {

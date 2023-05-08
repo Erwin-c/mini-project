@@ -6,13 +6,13 @@
 
 #include "lib/common.h"
 
-char buf[128];
-
 int main(int argc, char** argv) {
   int socket_fd = 0;
+  size_t buf_len = 0;
   struct sockaddr_in server_addr = {0};
   struct iovec iov[2] = {0};
-  char* send_one = "hello,";
+  char* send_one = "hello, ";
+  char buf[128] = {0};
 
   if (argc != 2) {
     error(1, 0, "usage: batchwrite <IPaddress>");
@@ -33,9 +33,15 @@ int main(int argc, char** argv) {
   iov[0].iov_len = strlen(send_one);
   iov[1].iov_base = buf;
   while (fgets(buf, sizeof(buf), stdin) != NULL) {
-    iov[1].iov_len = strlen(buf);
+    buf_len = strlen(buf);
+    if (buf[buf_len - 1] == '\n') {
+      buf[buf_len - 1] = '\0';
+      --buf_len;
+    }
+
+    iov[1].iov_len = buf_len;
     if (writev(socket_fd, iov, 2) < 0) {
-      error(1, errno, "writev failure");
+      error(1, errno, "writev failed");
     }
   }
 
