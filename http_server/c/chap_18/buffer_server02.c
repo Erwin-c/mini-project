@@ -25,7 +25,7 @@ int main(void) {
 
     buf[rc] = '\0';
 
-    printf("received %ld bytes: %s\n", rc, buf);
+    printf("received %zd bytes: %s\n", rc, buf);
   }
 
   exit(0);

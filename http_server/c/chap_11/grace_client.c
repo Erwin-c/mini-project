@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
             error(1, errno, "write failed");
           }
 
-          printf("send bytes: %ld\n", rc);
+          printf("send bytes: %zd\n", rc);
         }
       }
     }

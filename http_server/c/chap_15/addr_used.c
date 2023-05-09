@@ -54,7 +54,7 @@ int main(void) {
 
     message[rc] = '\0';
 
-    printf("received %ld bytes: %s\n", rc, message);
+    printf("received %zd bytes: %s\n", rc, message);
 
     ++count;
   }

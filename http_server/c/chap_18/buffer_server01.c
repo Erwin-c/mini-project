@@ -31,7 +31,7 @@ int main(void) {
       write(conn_fd, response, strlen(response));
     }
 
-    printf("received %ld bytes: %s\n", rc, buffer);
+    printf("received %zd bytes: %s\n", rc, buffer);
   }
 
   exit(0);

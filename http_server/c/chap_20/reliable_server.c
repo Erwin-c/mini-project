@@ -1,5 +1,5 @@
 /*
- * reliable_server01.c
+ * reliable_server.c
  *
  *  Author: Erwin
  */
