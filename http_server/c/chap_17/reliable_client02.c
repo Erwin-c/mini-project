@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
 
   while (count > 0) {
     rc = write(socket_fd, msg, strlen(msg));
-    fprintf(stdout, "write into buffer %ld\n", rc);
+    fprintf(stdout, "write into buffer %zd\n", rc);
     if (rc <= 0) {
       error(1, errno, "write failed");
     }

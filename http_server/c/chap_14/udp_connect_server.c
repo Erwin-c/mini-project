@@ -39,7 +39,7 @@ int main(void) {
   }
 
   message[rc] = '\0';
-  printf("received %ld bytes: %s\n", rc, message);
+  printf("received %zd bytes: %s\n", rc, message);
 
   if (connect(socket_fd, (struct sockaddr*)&client_addr, client_len) == -1) {
     error(1, errno, "connect failed");
@@ -53,7 +53,7 @@ int main(void) {
       error(1, errno, "send failed");
     }
 
-    printf("send bytes: %ld\n", rc);
+    printf("send bytes: %zd\n", rc);
 
     rc = recv(socket_fd, message, MAXLINE - 1, 0);
     if (rc == -1) {

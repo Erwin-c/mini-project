@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
       error(1, 0, "client closed");
     }
 
-    printf("received %ld bytes\n", rc);
+    printf("received %zd bytes\n", rc);
     ++count;
 
     switch (ntohl(message.type)) {
