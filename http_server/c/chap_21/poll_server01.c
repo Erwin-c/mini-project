@@ -1,5 +1,5 @@
 /*
- * select.c
+ * poll_server01.c
  *
  *  Author: Erwin
  */
@@ -39,7 +39,7 @@ int main(void) {
       connected_fd =
           accept(listen_fd, (struct sockaddr*)&client_addr, &client_len);
 
-      // 找到一个可以记录该连接套接字的位置.
+      // 找到一个可以记录该连接 Socket 的位置.
       for (i = 1; i < INIT_SIZE; ++i) {
         if (event_set[i].fd == -1) {
           event_set[i].fd = connected_fd;
@@ -92,4 +92,3 @@ int main(void) {
 
   exit(0);
 }
-d
