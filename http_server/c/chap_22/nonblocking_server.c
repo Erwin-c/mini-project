@@ -22,9 +22,9 @@ char rot13_char(char c) {
     return c + 13;
   } else if ((c >= 'n' && c <= 'z') || (c >= 'N' && c <= 'Z')) {
     return c - 13;
+  } else {
+    return c;
   }
-
-  return c;
 }
 
 // 分配一个 Buffer 对象, 初始化 writeIdnex 和 readIndex 等.
